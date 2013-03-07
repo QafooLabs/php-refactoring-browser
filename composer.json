@@ -1,0 +1,19 @@
+{
+    "name": "qafoo/php-refactoring-browser",
+    "description": "Refactoring Browser for PHP",
+    "license": "Apache2",
+
+    "authors": [
+        {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"}
+    ],
+
+    "require": {
+        "scrutinizer/php-analyzer": "dev-master"
+    },
+
+    "repositories": [
+        {"type": "vcs", "url": "https://github.com/schmittjoh/PHP-Parser"}
+    ],
+
+    "minimum-stability": "dev"
+}
