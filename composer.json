@@ -11,6 +11,10 @@
         "scrutinizer/php-analyzer": "dev-master"
     },
 
+    "require-dev": {
+        "behat/behat": "*"
+    },
+
     "repositories": [
         {"type": "vcs", "url": "https://github.com/schmittjoh/PHP-Parser"}
     ],
