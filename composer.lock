@@ -1,5 +1,5 @@
 {
-    "hash": "35de00aa63b5bcb690c263909ce99059",
+    "hash": "d1ecfb5ba541414810140fad238b186b",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1194,6 +1194,36 @@
                 "parser"
             ],
             "time": "2013-03-02 10:38:40"
+        },
+        {
+            "name": "mikey179/vfsStream",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikey179/vfsStream.git",
+                "reference": "06f7338e87b0b4469d28215e57417cd3ff70488b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/06f7338e87b0b4469d28215e57417cd3ff70488b",
+                "reference": "06f7338e87b0b4469d28215e57417cd3ff70488b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "org\\bovigo\\vfs\\": "src/main/php"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "homepage": "http://vfs.bovigo.org/",
+            "time": "2013-02-26 22:07:16"
         },
         {
             "name": "symfony/dependency-injection",

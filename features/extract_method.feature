@@ -15,7 +15,11 @@ Feature: Extract Method
                 }
             }
             """
-        When I use refactoring "extract-method" with "src/Foo.php 6,6 hello"
+        When I use refactoring "extract-method" with:
+            | arg       | value       |
+            | file      | src/Foo.php |
+            | range     | 6,6         |
+            | newmethod | hello       |
         Then the PHP File "src/Foo.php" should be refactored:
             """
             <?php

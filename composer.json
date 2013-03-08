@@ -12,12 +12,19 @@
     },
 
     "require-dev": {
-        "behat/behat": "*"
+        "behat/behat": "*",
+        "mikey179/vfsStream": "*"
     },
 
     "repositories": [
         {"type": "vcs", "url": "https://github.com/schmittjoh/PHP-Parser"}
     ],
+
+    "autoload": {
+        "psr-0": {
+            "QafooLabs\\Refactoring": "src/main/"
+        }
+    },
 
     "minimum-stability": "dev"
 }

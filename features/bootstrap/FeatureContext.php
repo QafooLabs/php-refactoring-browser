@@ -7,18 +7,19 @@ use Behat\Behat\Context\ClosuredContextInterface,
 use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
 
-//
-// Require 3rd-party libraries here:
-//
-//   require_once 'PHPUnit/Autoload.php';
-//   require_once 'PHPUnit/Framework/Assert/Functions.php';
-//
+use org\bovigo\vfs\vfsStream;
+
+use Symfony\Component\Console\Input\ArrayInput;
+
+use QafooLabs\Refactoring\Application\CliApplication;
 
 /**
  * Features context.
  */
 class FeatureContext extends BehatContext
 {
+    private $root;
+
     /**
      * Initializes context.
      * Every scenario gets it's own context object.
@@ -27,18 +28,52 @@ class FeatureContext extends BehatContext
      */
     public function __construct(array $parameters)
     {
-        // Initialize your context here
+        $this->root = vfsStream::setup('project');
     }
 
-//
-// Place your definition and hook methods here:
-//
-//    /**
-//     * @Given /^I have done something with "([^"]*)"$/
-//     */
-//    public function iHaveDoneSomethingWith($argument)
-//    {
-//        doSomethingWith($argument);
-//    }
-//
+    /**
+     * @Given /^a PHP File named "([^"]*)" with:$/
+     */
+    public function aPhpFileNamedWith($file, PyStringNode $code)
+    {
+        $parts = explode("/", $file);
+        $structure = array();
+        $root = &$structure;
+
+        while ($part = array_shift($parts)) {
+            $structure = array($part => (string)$code);
+            $structure = &$structure[$part];
+        }
+
+        vfsStream::create($root, $this->root);
+
+        $path = vfsStream::url('project') . "/" . $file;
+        file_put_contents($path, (string)$code);
+    }
+
+    /**
+     * @When /^I use refactoring "([^"]*)" with:$/
+     */
+    public function iUseRefactoringWith($refactoringName, TableNode $table)
+    {
+        $data = array('command' => $refactoringName);
+        foreach ($table->getHash() as $line) {
+            $data[$line['arg']] = $line['value'];
+        }
+
+        $input = new ArrayInput($data);
+
+        $app = new CliApplication();
+        $app->setAutoExit(false);
+        $app->run($input);
+    }
+
+    /**
+     * @Then /^the PHP File "([^"]*)" should be refactored:$/
+     */
+    public function thePhpFileShouldBeRefactored($arg1, PyStringNode $string)
+    {
+        throw new PendingException();
+    }
+
 }
