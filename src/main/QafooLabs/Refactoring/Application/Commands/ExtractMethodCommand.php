@@ -41,12 +41,6 @@ class ExtractMethodCommand extends Command
         $parser = new PHPParser_Parser();
         $stmts = $parser->parse(new PHPParser_Lexer($code));
 
-        $methodCall = new \PHPParser_Node_Expr_MethodCall(
-            new \PHPParser_Node_Expr_Variable("this"),
-            $newMethodName,
-            array()
-        );
-
         $collector = new LineRangeStatementCollector($range);
 
         $traverser     = new PHPParser_NodeTraverser;
@@ -60,6 +54,35 @@ class ExtractMethodCommand extends Command
         if ( ! $selectedStatements) {
             return;
         }
+
+
+        $localVariableCollector = new LocalVariableCollector();
+        $traverser     = new PHPParser_NodeTraverser;
+        $traverser->addVisitor($localVariableCollector);
+        $traverser->traverse($selectedStatements);
+
+        $localVariables = $localVariableCollector->getLocalVariables();
+
+        $arguments = array();
+        $params = array();
+        foreach ($localVariables as $localVariable) {
+            $arguments[] = new \PHPParser_Node_Arg(
+                new \PHPParser_Node_Expr_Variable($localVariable->name),
+                false
+            );
+            $params[] = new \PHPParser_Node_Param(
+                $localVariable->name,
+                null,
+                null,
+                false
+            );
+        }
+
+        $methodCall = new \PHPParser_Node_Expr_MethodCall(
+            new \PHPParser_Node_Expr_Variable("this"),
+            $newMethodName,
+            $arguments
+        );
 
         $traverser     = new PHPParser_NodeTraverser;
         $traverser->addVisitor(new StatementReplacer($selectedStatements, $methodCall));
@@ -77,8 +100,9 @@ class ExtractMethodCommand extends Command
 
         $classStmts = $classNode->stmts;
         $classStmts[] = new \PHPParser_Node_Stmt_ClassMethod($newMethodName, array(
-            'type' => $type,
-            'stmts' => $selectedStatements
+            'type'   => $type,
+            'stmts'  => $selectedStatements,
+            'params' => $params,
         ));
 
         $classNode->stmts = $classStmts;
@@ -140,6 +164,25 @@ class LineRangeStatementCollector extends \PHPParser_NodeVisitorAbstract
     public function getStatements()
     {
         return $this->statements;
+    }
+}
+
+class LocalVariableCollector extends \PHPParser_NodeVisitorAbstract
+{
+    private $localVariables = array();
+
+    public function enterNode(PHPParser_Node $node)
+    {
+        if ( ! ($node instanceof \PHPParser_Node_Expr_Variable)) {
+            return;
+        }
+
+        $this->localVariables[] = $node;
+    }
+
+    public function getLocalVariables()
+    {
+        return $this->localVariables;
     }
 }
 

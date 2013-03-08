@@ -104,3 +104,38 @@ Feature: Extract Method
              }
             \ No newline at end of file
             """
+
+    Scenario: "Extract Method with local variable"
+        Given a PHP File named "src/WithLocal.php" with:
+            """
+            <?php
+            class WithLocal
+            {
+                public function test()
+                {
+                    $hello = 'Hello World!';
+                    echo $hello;
+                }
+            }
+            """
+        When I use refactoring "extract-method" with:
+            | arg       | value                |
+            | file      | src/WithLocal.php |
+            | range     | 7-7                  |
+            | newmethod | printHello           |
+        Then the PHP File "src/WithLocal.php" should be refactored:
+            """
+            @@ -4,6 +4,10 @@ class WithLocal
+                 public function test()
+                 {
+                     $hello = 'Hello World!';
+            +        $this->printHello($hello);
+            +    }
+            +    private function printHello($hello)
+            +    {
+                     echo $hello;
+                 }
+             }
+            \ No newline at end of file
+
+            """
