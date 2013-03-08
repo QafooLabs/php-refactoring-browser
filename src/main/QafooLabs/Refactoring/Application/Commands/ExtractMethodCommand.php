@@ -70,9 +70,14 @@ class ExtractMethodCommand extends Command
 
         $traverser->traverse($methodNode->stmts);
 
+        $type = \PHPParser_Node_Stmt_Class::MODIFIER_PRIVATE;
+        if ($methodNode->type & \PHPParser_Node_Stmt_Class::MODIFIER_STATIC) {
+            $type |= \PHPParser_Node_Stmt_Class::MODIFIER_STATIC;
+        }
+
         $classStmts = $classNode->stmts;
         $classStmts[] = new \PHPParser_Node_Stmt_ClassMethod($newMethodName, array(
-            'type' => \PHPParser_Node_Stmt_Class::MODIFIER_PRIVATE,
+            'type' => $type,
             'stmts' => $selectedStatements
         ));
 
