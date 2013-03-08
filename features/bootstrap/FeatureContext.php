@@ -46,9 +46,6 @@ class FeatureContext extends BehatContext
         }
 
         vfsStream::create($root, $this->root);
-
-        $path = vfsStream::url('project') . "/" . $file;
-        file_put_contents($path, (string)$code);
     }
 
     /**
