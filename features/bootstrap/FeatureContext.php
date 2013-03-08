@@ -13,6 +13,9 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 use QafooLabs\Refactoring\Application\CliApplication;
 
+require_once 'PHPUnit/Autoload.php';
+require_once 'PHPUnit/Framework/Assert/Functions.php';
+
 /**
  * Features context.
  */
@@ -58,19 +61,27 @@ class FeatureContext extends BehatContext
             $data[$line['arg']] = $line['value'];
         }
 
+        if (isset($data['file'])) {
+            $data['file'] = vfsStream::url('project/' . $data['file']);
+        }
+
+        $fh = fopen("php://memory", "rw");
         $input = new ArrayInput($data);
+        $output = new \Symfony\Component\Console\Output\StreamOutput($fh);
 
         $app = new CliApplication();
         $app->setAutoExit(false);
-        $app->run($input);
+        $app->run($input, $output);
+
+        rewind($fh);
+        $this->output = stream_get_contents($fh);
     }
 
     /**
      * @Then /^the PHP File "([^"]*)" should be refactored:$/
      */
-    public function thePhpFileShouldBeRefactored($arg1, PyStringNode $string)
+    public function thePhpFileShouldBeRefactored($file, PyStringNode $expectedPatch)
     {
-        throw new PendingException();
+        assertEquals(rtrim((string)$expectedPatch), rtrim($this->output), rtrim($this->output));
     }
-
 }

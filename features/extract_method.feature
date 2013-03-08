@@ -18,21 +18,21 @@ Feature: Extract Method
         When I use refactoring "extract-method" with:
             | arg       | value       |
             | file      | src/Foo.php |
-            | range     | 6,6         |
+            | range     | 6-6         |
             | newmethod | hello       |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            <?php
-            class Foo
-            {
-                public function operation()
-                {
-                    $this->hello();
-                }
-
-                private function hello()
-                {
-                    echo "Hello World";
-                }
-            }
+            @@ -3,6 +3,10 @@ class Foo
+             {
+                 public function operation()
+                 {
+            -        echo "Hello World";
+            +        $this->hello();
+            +    }
+            +    private function hello()
+            +    {
+            +        echo 'Hello World';
+                 }
+             }
+            \ No newline at end of file
             """
