@@ -8,10 +8,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
+use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LineRangeStatementCollector;
+use QafooLabs\Refactoring\Domain\Model\LineRange;
+
 use PHPParser_Parser;
 use PHPParser_Lexer;
 use PHPParser_Node;
 use PHPParser_Node_Stmt;
+use PHPParser_Node_Expr_FuncCall;
 use PHPParser_NodeTraverser;
 
 /**
@@ -40,9 +44,6 @@ class ExtractMethodCommand extends Command
 
         $parser = new PHPParser_Parser();
         $stmts = $parser->parse(new PHPParser_Lexer($code));
-
-        print_r($stmts);
-        var_dump($range);
 
         $collector = new LineRangeStatementCollector($range);
 
@@ -114,59 +115,6 @@ class ExtractMethodCommand extends Command
 
         $diff = \Scrutinizer\Util\DiffUtils::generate($code, $newCode);
         $output->writeln($diff);
-    }
-}
-
-class LineRange
-{
-    private $lines = array();
-
-    static public function fromString($range)
-    {
-        list($start, $end) = explode("-", $range);
-
-        $list = new self();
-
-        for ($i = $start; $i <= $end; $i++) {
-            $list->lines[$i] = $i;
-        }
-
-        return $list;
-    }
-
-    public function isInRange($line)
-    {
-        return isset($this->lines[$line]);
-    }
-}
-
-class LineRangeStatementCollector extends \PHPParser_NodeVisitorAbstract
-{
-    private $lineRange;
-    private $statements;
-
-    public function __construct(LineRange $lineRange)
-    {
-        $this->lineRange = $lineRange;
-    }
-
-    public function enterNode(PHPParser_Node $node)
-    {
-        if ( ! $this->lineRange->isInRange($node->getLine())) {
-            return;
-        }
-
-        if ( ! ($node instanceof PHPParser_Node_Stmt) &&
-             ! ($node instanceof PHPParser_Node_Expr_FuncCall)) {
-            return;
-        }
-
-        $this->statements[] = $node;
-    }
-
-    public function getStatements()
-    {
-        return $this->statements;
     }
 }
 

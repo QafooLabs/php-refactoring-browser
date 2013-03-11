@@ -161,18 +161,21 @@ Feature: Extract Method
             | newmethod | foo                         |
         Then the PHP File "src/MultiLineCorrection.php" should be refactored:
             """
-            @@ -4,6 +4,10 @@ class WithLocal
+            @@ -3,8 +3,10 @@ class MultiLineCorrection
+             {
                  public function test()
                  {
+            -        foo(
+            -            "bar"
+            -        );
             +        $this->foo();
             +    }
             +    private function foo()
             +    {
-                    foo(
-                        "bar"
-                    );
+            +        foo('bar');
                  }
              }
             \ No newline at end of file
+
 
             """
