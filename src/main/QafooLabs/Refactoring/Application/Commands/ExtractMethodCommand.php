@@ -177,6 +177,10 @@ class LocalVariableCollector extends \PHPParser_NodeVisitorAbstract
             return;
         }
 
+        if ($node->name === "this") {
+            return;
+        }
+
         $this->localVariables[] = $node;
     }
 
