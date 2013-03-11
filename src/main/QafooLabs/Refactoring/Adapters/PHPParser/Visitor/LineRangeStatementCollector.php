@@ -32,6 +32,7 @@ class LineRangeStatementCollector extends \PHPParser_NodeVisitorAbstract
 
         $parent = $node->getAttribute('parent');
 
+        // TODO: Expensive (?)
         do {
             if ($parent && $this->statements->contains($parent)) {
                 return;

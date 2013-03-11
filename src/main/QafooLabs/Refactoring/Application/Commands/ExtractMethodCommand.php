@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LineRangeStatementCollector;
+use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LocalVariableClassifier;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 
 use PHPParser_Parser;
@@ -59,22 +60,23 @@ class ExtractMethodCommand extends Command
             throw new \RuntimeException("No statements found in line range.");
         }
 
-        $localVariableCollector = new LocalVariableCollector();
+        $localVariableClassifier = new LocalVariableClassifier();
         $traverser     = new PHPParser_NodeTraverser;
-        $traverser->addVisitor($localVariableCollector);
+        $traverser->addVisitor($localVariableClassifier);
         $traverser->traverse($selectedStatements);
 
-        $localVariables = $localVariableCollector->getLocalVariables();
+        $localVariables = $localVariableClassifier->getUsedLocalVariables();
+        $assignments = $localVariableClassifier->getAssignments();
 
         $arguments = array();
         $params = array();
         foreach ($localVariables as $localVariable) {
             $arguments[] = new \PHPParser_Node_Arg(
-                new \PHPParser_Node_Expr_Variable($localVariable->name),
+                new \PHPParser_Node_Expr_Variable($localVariable),
                 false
             );
             $params[] = new \PHPParser_Node_Param(
-                $localVariable->name,
+                $localVariable,
                 null,
                 null,
                 false
@@ -86,6 +88,17 @@ class ExtractMethodCommand extends Command
             $newMethodName,
             $arguments
         );
+
+        if (count($assignments) == 1) {
+            $selectedStatements[] = new \PHPParser_Node_Stmt_Return(
+                new \PHPParser_Node_Expr_Variable($assignments[0])
+            );
+            $methodCall = new \PHPParser_Node_Expr_Assign(
+                new \PHPParser_Node_Expr_Variable($assignments[0]),
+                $methodCall
+            );
+        }
+
 
         $traverser     = new PHPParser_NodeTraverser;
         $traverser->addVisitor(new StatementReplacer($selectedStatements, $methodCall));
@@ -115,29 +128,6 @@ class ExtractMethodCommand extends Command
 
         $diff = \Scrutinizer\Util\DiffUtils::generate($code, $newCode);
         $output->writeln($diff);
-    }
-}
-
-class LocalVariableCollector extends \PHPParser_NodeVisitorAbstract
-{
-    private $localVariables = array();
-
-    public function enterNode(PHPParser_Node $node)
-    {
-        if ( ! ($node instanceof \PHPParser_Node_Expr_Variable)) {
-            return;
-        }
-
-        if ($node->name === "this") {
-            return;
-        }
-
-        $this->localVariables[] = $node;
-    }
-
-    public function getLocalVariables()
-    {
-        return $this->localVariables;
     }
 }
 

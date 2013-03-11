@@ -179,3 +179,40 @@ Feature: Extract Method
 
 
             """
+
+    Scenario: "Extract Method with one assignment returns value"
+        Given a PHP File named "src/Assignment.php" with:
+            """
+            <?php
+            class Assignment
+            {
+                public function test()
+                {
+                    $var = "foo";
+                }
+            }
+            """
+        When I use refactoring "extract-method" with:
+            | arg       | value                       |
+            | file      | src/Assignment.php |
+            | range     | 6-6                         |
+            | newmethod | foo                         |
+        Then the PHP File "src/Assignment.php" should be refactored:
+            """
+            @@ -3,6 +3,11 @@ class Assignment
+             {
+                 public function test()
+                 {
+            -        $var = "foo";
+            +        $var = $this->foo();
+            +    }
+            +    private function foo()
+            +    {
+            +        $var = 'foo';
+            +        return $var;
+                 }
+             }
+            \ No newline at end of file
+
+
+            """
