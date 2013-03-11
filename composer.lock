@@ -1,5 +1,5 @@
 {
-    "hash": "d1ecfb5ba541414810140fad238b186b",
+    "hash": "96d85e5b07881b5e79f4aeddbb8dfaba",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -748,12 +748,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/scrutinizer-ci/php-analyzer.git",
-                "reference": "8669ce8afd43079dc41d83eb4ee4cf79a74122f1"
+                "reference": "c376d7535c94c8dc540f960d5e37a402d6a25604"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/scrutinizer-ci/php-analyzer/zipball/8669ce8afd43079dc41d83eb4ee4cf79a74122f1",
-                "reference": "8669ce8afd43079dc41d83eb4ee4cf79a74122f1",
+                "url": "https://api.github.com/repos/scrutinizer-ci/php-analyzer/zipball/c376d7535c94c8dc540f960d5e37a402d6a25604",
+                "reference": "c376d7535c94c8dc540f960d5e37a402d6a25604",
                 "shasum": ""
             },
             "require": {
@@ -799,12 +799,12 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
             "description": "Advanced Static Analysis of and Auto-Fixer for PHP Code",
-            "time": "2013-03-06 07:38:18"
+            "time": "2013-03-10 10:20:37"
         },
         {
             "name": "scrutinizer/utils",
@@ -1140,22 +1140,22 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Gherkin.git",
-                "reference": "v2.2.9"
+                "reference": "70a37689d6fc5d4b9772dfac35c112f031306d09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Gherkin/zipball/v2.2.9",
-                "reference": "v2.2.9",
+                "url": "https://api.github.com/repos/Behat/Gherkin/zipball/70a37689d6fc5d4b9772dfac35c112f031306d09",
+                "reference": "70a37689d6fc5d4b9772dfac35c112f031306d09",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.1",
-                "symfony/finder": ">=2.0,<2.4-dev"
+                "symfony/finder": ">=2.0,<3.0"
             },
             "require-dev": {
-                "symfony/config": ">=2.0,<2.4-dev",
-                "symfony/translation": ">=2.0,<2.4-dev",
-                "symfony/yaml": ">=2.0,<2.4-dev"
+                "symfony/config": ">=2.0,<3.0",
+                "symfony/translation": ">=2.0,<3.0",
+                "symfony/yaml": ">=2.0,<3.0"
             },
             "suggest": {
                 "symfony/config": "If you want to use Config component to manage resources",
@@ -1193,7 +1193,40 @@
                 "Symfony2",
                 "parser"
             ],
-            "time": "2013-03-02 10:38:40"
+            "time": "2013-03-08 10:25:28"
+        },
+        {
+            "name": "davedevelopment/hamcrest-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/davedevelopment/hamcrest-php.git",
+                "reference": "e4ffaf43b25065fe7d1e5fa173d271ca7e065ff0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/davedevelopment/hamcrest-php/zipball/e4ffaf43b25065fe7d1e5fa173d271ca7e065ff0",
+                "reference": "e4ffaf43b25065fe7d1e5fa173d271ca7e065ff0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Hamcrest": "hamcrest"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "description": "This is the PHP port of Hamcrest Matchers",
+            "keywords": [
+                "test"
+            ],
+            "time": "2012-06-13 21:26:30"
         },
         {
             "name": "mikey179/vfsStream",
@@ -1232,12 +1265,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "ebe5b56ba6931a22e2543640d6595eaa7f6d0d8b"
+                "reference": "ecd097445ce5c98c2f7e9818dbe51594437f7253"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/ebe5b56ba6931a22e2543640d6595eaa7f6d0d8b",
-                "reference": "ebe5b56ba6931a22e2543640d6595eaa7f6d0d8b",
+                "url": "https://api.github.com/repos/symfony/DependencyInjection/zipball/ecd097445ce5c98c2f7e9818dbe51594437f7253",
+                "reference": "ecd097445ce5c98c2f7e9818dbe51594437f7253",
                 "shasum": ""
             },
             "require": {
@@ -1278,7 +1311,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-06 17:38:49"
+            "time": "2013-03-07 13:36:36"
         },
         {
             "name": "symfony/event-dispatcher",

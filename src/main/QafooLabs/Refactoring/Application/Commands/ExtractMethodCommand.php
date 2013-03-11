@@ -41,6 +41,9 @@ class ExtractMethodCommand extends Command
         $parser = new PHPParser_Parser();
         $stmts = $parser->parse(new PHPParser_Lexer($code));
 
+        print_r($stmts);
+        var_dump($range);
+
         $collector = new LineRangeStatementCollector($range);
 
         $traverser     = new PHPParser_NodeTraverser;
@@ -52,9 +55,8 @@ class ExtractMethodCommand extends Command
         $selectedStatements = $collector->getStatements();
 
         if ( ! $selectedStatements) {
-            return;
+            throw new \RuntimeException("No statements found in line range.");
         }
-
 
         $localVariableCollector = new LocalVariableCollector();
         $traverser     = new PHPParser_NodeTraverser;
@@ -154,7 +156,8 @@ class LineRangeStatementCollector extends \PHPParser_NodeVisitorAbstract
             return;
         }
 
-        if ( ! ($node instanceof PHPParser_Node_Stmt)) {
+        if ( ! ($node instanceof PHPParser_Node_Stmt) &&
+             ! ($node instanceof PHPParser_Node_Expr_FuncCall)) {
             return;
         }
 

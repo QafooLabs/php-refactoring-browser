@@ -139,3 +139,40 @@ Feature: Extract Method
             \ No newline at end of file
 
             """
+
+    Scenario: "Extract Method with formatting that requires line range correction"
+        Given a PHP File named "src/MultiLineCorrection.php" with:
+            """
+            <?php
+            class MultiLineCorrection
+            {
+                public function test()
+                {
+                    foo(
+                        "bar"
+                    );
+                }
+            }
+            """
+        When I use refactoring "extract-method" with:
+            | arg       | value                       |
+            | file      | src/MultiLineCorrection.php |
+            | range     | 6-7                         |
+            | newmethod | foo                         |
+        Then the PHP File "src/MultiLineCorrection.php" should be refactored:
+            """
+            @@ -4,6 +4,10 @@ class WithLocal
+                 public function test()
+                 {
+            +        $this->foo();
+            +    }
+            +    private function foo()
+            +    {
+                    foo(
+                        "bar"
+                    );
+                 }
+             }
+            \ No newline at end of file
+
+            """
