@@ -90,4 +90,16 @@ DIFF
 DIFF
             , $builder->generateUnifiedDiff());
     }
+
+    public function testRemoveLine()
+    {
+        $builder = new DiffBuilder("foo");
+        $builder->removeLine(1);
+
+        $this->assertEquals(<<<DIFF
+@@ -1,1 +0,0 @@
+-foo
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
 }

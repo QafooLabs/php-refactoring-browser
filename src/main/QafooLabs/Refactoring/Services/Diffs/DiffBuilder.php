@@ -9,6 +9,7 @@ class DiffBuilder
 {
     const OPERATION_APPEND = 'append';
     const OPERATION_CHANGE = 'change';
+    const OPERATION_REMOVE = 'remove';
 
     private $lines = null;
 
@@ -34,6 +35,13 @@ class DiffBuilder
         $this->operations[$originalLine][] = array(
             'type' => self::OPERATION_CHANGE,
             'newLine' => $newLine,
+        );
+    }
+
+    public function removeLine($originalLine)
+    {
+        $this->operations[$originalLine][] = array(
+            'type' => self::OPERATION_REMOVE,
         );
     }
 
@@ -79,6 +87,8 @@ class DiffBuilder
                         ),
                         array_slice($lines, 1)
                     );
+                } else if ($operation['type'] === self::OPERATION_REMOVE) {
+                    $lines = array('-' . ltrim($lines[0]));
                 }
             }
 
@@ -92,9 +102,14 @@ class DiffBuilder
                 return substr($x, 0, 1) !== '-';
             })) + count($before)+count($after);
 
+            $newFileStart = max(1, $start);
+            if ($newFileHunkRange === 0) {
+                $newFileStart--;
+            }
+
             $context = "";
             $hunk = sprintf("@@ -%s,%s +%s,%s @@%s",
-                $start, $size, max(1, $start), $newFileHunkRange, $context);
+                $start, $size, $newFileStart, $newFileHunkRange, $context);
 
             $hunks = array($hunk . "\n" . $diff);
         }
@@ -122,6 +137,5 @@ class DiffBuilder
         }
 
         return $after;
-
     }
 }
