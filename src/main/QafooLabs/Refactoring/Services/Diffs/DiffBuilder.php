@@ -111,7 +111,7 @@ class DiffBuilder
             $hunk = sprintf("@@ -%s,%s +%s,%s @@%s",
                 $start, $size, $newFileStart, $newFileHunkRange, $context);
 
-            $hunks = array($hunk . "\n" . $diff);
+            $hunks[] = $hunk . "\n" . $diff;
         }
 
         return implode("\n", $hunks);

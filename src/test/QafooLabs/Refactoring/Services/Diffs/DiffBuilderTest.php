@@ -102,4 +102,20 @@ DIFF
 DIFF
             , $builder->generateUnifiedDiff());
     }
+
+    public function testRemoveLineInbetween()
+    {
+        $builder = new DiffBuilder("foo\nfoo\nbar\nbar\nbar");
+        $builder->removeLine(4);
+
+        $this->assertEquals(<<<DIFF
+@@ -1,5 +1,4 @@
+ foo
+ foo
+ bar
+-bar
+ bar
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
 }
