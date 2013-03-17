@@ -15,4 +15,49 @@ class DiffBuilderTest extends \PHPUnit_Framework_TestCase
 DIFF
             , $builder->generateUnifiedDiff());
     }
+
+    public function testAppendLineInText()
+    {
+        $builder = new DiffBuilder("foo\nbar\nbaz");
+        $builder->appendToLine(2, 'boing');
+
+        $this->assertEquals(<<<DIFF
+@@ -1,3 +1,4 @@
+ foo
+ bar
++boing
+ baz
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
+
+    public function testAppendLineInBiggerText()
+    {
+        $builder = new DiffBuilder("foo\nfoo\nbar\nbaz\nbaz");
+        $builder->appendToLine(3, 'boing');
+
+        $this->assertEquals(<<<DIFF
+@@ -1,5 +1,6 @@
+ foo
+ foo
+ bar
++boing
+ baz
+ baz
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
+
+    public function testChangeLine()
+    {
+        $builder = new DiffBuilder("foo");
+        $builder->changeLine(1, 'boing');
+
+        $this->assertEquals(<<<DIFF
+@@ -1,1 +1,1 @@
+-foo
++boing
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
 }

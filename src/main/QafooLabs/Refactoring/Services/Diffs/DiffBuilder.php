@@ -8,8 +8,9 @@ namespace QafooLabs\Refactoring\Services\Diffs;
 class DiffBuilder
 {
     const OPERATION_APPEND = 'append';
+    const OPERATION_CHANGE = 'change';
 
-    private $lines = array();
+    private $lines = null;
 
     private $operations = array();
 
@@ -28,6 +29,14 @@ class DiffBuilder
         );
     }
 
+    public function changeLine($originalLine, $newLine)
+    {
+        $this->operations[$originalLine][] = array(
+            'type' => self::OPERATION_CHANGE,
+            'newLine' => $newLine,
+        );
+    }
+
     public function generateUnifiedDiff()
     {
         $hunks = array();
@@ -35,16 +44,24 @@ class DiffBuilder
         foreach ($this->operations as $line => $lineOperations) {
             $line--;
 
-            $before = $this->getLinesBefore($line, 2);
-            $after = $this->getLinesAfter($line, 2);
-
-            $size = count($before)+count($after);
-            $start = max(0, $line - 2);
-
-            if (isset($this->lines[$line])) {
-                $lines = array(' ' . $this->lines[$line]);
+            if ($this->lines === null) {
+                $before = $after = $lines = array();
+                $start = 0;
+                $size = 0;
             } else {
-                $lines = arraY();
+
+                $before = $this->getLinesBefore($line, 2);
+                $after = $this->getLinesAfter($line, 2);
+
+                $start = max(1, $line - 2);
+
+                if (isset($this->lines[$line])) {
+                    $lines = array(' ' . $this->lines[$line]);
+                } else {
+                    $lines = array();
+                }
+
+                $size = count($before)+count($after)+count($lines);
             }
 
             foreach ($lineOperations as $operation) {
@@ -54,6 +71,14 @@ class DiffBuilder
                         array_map(function($x) {
                             return '+' . $x;
                         }, $operation['lines']));
+                } else if ($operation['type'] === self::OPERATION_CHANGE) {
+                    $lines = array_merge(
+                        array(
+                            '-' . ltrim($lines[0]),
+                            '+' . $operation['newLine'],
+                        ),
+                        array_slice($lines, 1)
+                    );
                 }
             }
 
@@ -63,9 +88,13 @@ class DiffBuilder
                 $after
             ));
 
+            $newFileHunkRange = count(array_filter($lines, function ($x) {
+                return substr($x, 0, 1) !== '-';
+            })) + count($before)+count($after);
+
             $context = "";
             $hunk = sprintf("@@ -%s,%s +%s,%s @@%s",
-                $start, $size, max(1, $start), count($lines), $context);
+                $start, $size, max(1, $start), $newFileHunkRange, $context);
 
             $hunks = array($hunk . "\n" . $diff);
         }
@@ -77,8 +106,8 @@ class DiffBuilder
     {
         $before = array();
 
-        for ($i = $line-1; $i > 0 && $i > ($line-$num); $i--) {
-            $before[] = ' ' . $this->lines[$i];
+        for ($i = $line; $i > 0 && $i >= ($line-$num); $i--) {
+            $before[] = ' ' . $this->lines[$i - 1];
         }
 
         return $before;
@@ -88,7 +117,7 @@ class DiffBuilder
     {
         $after = array();
 
-        for ($i = $line+1; $i < count($this->lines) && $i < ($line+$num); $i++) {
+        for ($i = $line+1; $i < count($this->lines) && $i <= ($line+$num); $i++) {
             $after[] =  ' ' . $this->lines[$i];
         }
 
