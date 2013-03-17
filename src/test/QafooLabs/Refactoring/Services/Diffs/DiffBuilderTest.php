@@ -60,4 +60,34 @@ DIFF
 DIFF
             , $builder->generateUnifiedDiff());
     }
+
+    public function testChangeAndAppendLine()
+    {
+        $builder = new DiffBuilder("foo");
+        $builder->changeLine(1, 'hello');
+        $builder->appendToLine(1, 'world');
+
+        $this->assertEquals(<<<DIFF
+@@ -1,1 +1,2 @@
+-foo
++hello
++world
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
+
+    public function testAppendAndChangeLine()
+    {
+        $builder = new DiffBuilder("foo");
+        $builder->appendToLine(1, 'world');
+        $builder->changeLine(1, 'hello');
+
+        $this->assertEquals(<<<DIFF
+@@ -1,1 +1,2 @@
+-foo
++hello
++world
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
 }
