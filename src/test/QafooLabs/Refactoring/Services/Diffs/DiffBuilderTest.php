@@ -118,4 +118,20 @@ DIFF
 DIFF
             , $builder->generateUnifiedDiff());
     }
+
+    public function testRemoveNonExistantLine()
+    {
+        $builder = new DiffBuilder("foo");
+
+        $this->setExpectedException('QafooLabs\Refactoring\Services\Diffs\UnknownLineException', 'Accessed non existing line 10 in code.');
+        $builder->removeLine(10);
+    }
+
+    public function testChangeNonExistantLine()
+    {
+        $builder = new DiffBuilder("foo");
+
+        $this->setExpectedException('QafooLabs\Refactoring\Services\Diffs\UnknownLineException', 'Accessed non existing line 10 in code.');
+        $builder->changeLine(10, 'foo');
+    }
 }

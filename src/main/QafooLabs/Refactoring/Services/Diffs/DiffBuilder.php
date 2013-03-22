@@ -22,19 +22,30 @@ class DiffBuilder
         }
     }
 
+    private function assertLineExists($line)
+    {
+        if ( ! isset($this->lines[$line - 1])) {
+            throw new UnknownLineException($line);
+        }
+    }
+
     public function appendToLine($originalLine, $lines)
     {
-        $this->operations[$originalLine][] = new AppendOperation(explode("\n", $lines));
+        $this->operations[$originalLine - 1][] = new AppendOperation(explode("\n", $lines));
     }
 
     public function changeLine($originalLine, $newLine)
     {
-        $this->operations[$originalLine][] = new ChangeOperation($newLine);
+        $this->assertLineExists($originalLine);
+
+        $this->operations[$originalLine - 1][] = new ChangeOperation($newLine);
     }
 
     public function removeLine($originalLine)
     {
-        $this->operations[$originalLine][] = new RemoveOperation();
+        $this->assertLineExists($originalLine);
+
+        $this->operations[$originalLine - 1][] = new RemoveOperation();
     }
 
     public function generateUnifiedDiff()
@@ -42,8 +53,6 @@ class DiffBuilder
         $hunks = array();
 
         foreach ($this->operations as $line => $lineOperations) {
-            $line--;
-
             if ($this->lines === null) {
                 $before = $after = $lines = array();
                 $start = 0;
