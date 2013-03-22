@@ -24,25 +24,17 @@ class DiffBuilder
 
     public function appendToLine($originalLine, $lines)
     {
-        $this->operations[$originalLine][] = array(
-            'type' => self::OPERATION_APPEND,
-            'lines' => explode("\n", $lines),
-        );
+        $this->operations[$originalLine][] = new AppendOperation(explode("\n", $lines));
     }
 
     public function changeLine($originalLine, $newLine)
     {
-        $this->operations[$originalLine][] = array(
-            'type' => self::OPERATION_CHANGE,
-            'newLine' => $newLine,
-        );
+        $this->operations[$originalLine][] = new ChangeOperation($newLine);
     }
 
     public function removeLine($originalLine)
     {
-        $this->operations[$originalLine][] = array(
-            'type' => self::OPERATION_REMOVE,
-        );
+        $this->operations[$originalLine][] = new RemoveOperation();
     }
 
     public function generateUnifiedDiff()
@@ -73,23 +65,7 @@ class DiffBuilder
             }
 
             foreach ($lineOperations as $operation) {
-                if ($operation['type'] === self::OPERATION_APPEND) {
-                    $lines = array_merge(
-                        $lines,
-                        array_map(function($x) {
-                            return '+' . $x;
-                        }, $operation['lines']));
-                } else if ($operation['type'] === self::OPERATION_CHANGE) {
-                    $lines = array_merge(
-                        array(
-                            '-' . ltrim($lines[0]),
-                            '+' . $operation['newLine'],
-                        ),
-                        array_slice($lines, 1)
-                    );
-                } else if ($operation['type'] === self::OPERATION_REMOVE) {
-                    $lines = array('-' . ltrim($lines[0]));
-                }
+                $lines = $operation->perform($lines);
             }
 
             $diff = implode("\n", array_merge(
@@ -125,7 +101,7 @@ class DiffBuilder
             $before[] = ' ' . $this->lines[$i - 1];
         }
 
-        return $before;
+        return array_reverse($before);
     }
 
     private function getLinesAfter($line, $num)
