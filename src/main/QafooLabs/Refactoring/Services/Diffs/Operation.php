@@ -4,5 +4,5 @@ namespace QafooLabs\Refactoring\Services\Diffs;
 
 interface Operation
 {
-    public function perform(array $lines);
+    public function perform(Hunk $hunk);
 }

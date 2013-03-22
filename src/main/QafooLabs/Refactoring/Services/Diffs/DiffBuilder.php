@@ -54,73 +54,18 @@ class DiffBuilder
 
         foreach ($this->operations as $line => $lineOperations) {
             if ($this->lines === null) {
-                $before = $after = $lines = array();
-                $start = 0;
-                $size = 0;
+                $hunk = Hunk::forEmptyFile();
             } else {
-
-                $before = $this->getLinesBefore($line, 2);
-                $after = $this->getLinesAfter($line, 2);
-
-                $start = max(1, $line - 2);
-
-                if (isset($this->lines[$line])) {
-                    $lines = array(' ' . $this->lines[$line]);
-                } else {
-                    $lines = array();
-                }
-
-                $size = count($before)+count($after)+count($lines);
+                $hunk = Hunk::forLine($line, $this->lines);
             }
 
             foreach ($lineOperations as $operation) {
-                $lines = $operation->perform($lines);
+                $hunk = $operation->perform($hunk);
             }
 
-            $diff = implode("\n", array_merge(
-                $before,
-                $lines,
-                $after
-            ));
-
-            $newFileHunkRange = count(array_filter($lines, function ($x) {
-                return substr($x, 0, 1) !== '-';
-            })) + count($before)+count($after);
-
-            $newFileStart = max(1, $start);
-            if ($newFileHunkRange === 0) {
-                $newFileStart--;
-            }
-
-            $context = "";
-            $hunk = sprintf("@@ -%s,%s +%s,%s @@%s",
-                $start, $size, $newFileStart, $newFileHunkRange, $context);
-
-            $hunks[] = $hunk . "\n" . $diff;
+            $hunks[] = $hunk;
         }
 
         return implode("\n", $hunks);
-    }
-
-    private function getLinesBefore($line, $num)
-    {
-        $before = array();
-
-        for ($i = $line; $i > 0 && $i >= ($line-$num); $i--) {
-            $before[] = ' ' . $this->lines[$i - 1];
-        }
-
-        return array_reverse($before);
-    }
-
-    private function getLinesAfter($line, $num)
-    {
-        $after = array();
-
-        for ($i = $line+1; $i < count($this->lines) && $i <= ($line+$num); $i++) {
-            $after[] =  ' ' . $this->lines[$i];
-        }
-
-        return $after;
     }
 }

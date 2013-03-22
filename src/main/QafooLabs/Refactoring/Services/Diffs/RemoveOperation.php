@@ -4,8 +4,8 @@ namespace QafooLabs\Refactoring\Services\Diffs;
 
 class RemoveOperation implements Operation
 {
-    public function perform(array $lines)
+    public function perform(Hunk $hunk)
     {
-        return array('-' . ltrim($lines[0]));
+        return $hunk->removeLines();
     }
 }

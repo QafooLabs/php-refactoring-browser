@@ -11,12 +11,8 @@ class AppendOperation implements Operation
         $this->appendLines = $appendLines;
     }
 
-    public function perform(array $lines)
+    public function perform(Hunk $hunk)
     {
-        return array_merge(
-            $lines,
-            array_map(function($line) {
-                return '+' . $line;
-            }, $this->appendLines));
+        return $hunk->appendLines($this->appendLines);
     }
 }

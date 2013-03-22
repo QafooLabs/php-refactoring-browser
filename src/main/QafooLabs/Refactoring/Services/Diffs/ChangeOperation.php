@@ -11,14 +11,8 @@ class ChangeOperation implements Operation
         $this->newLine = $newLine;
     }
 
-    public function perform(array $lines)
+    public function perform(Hunk $hunk)
     {
-        return array_merge(
-            array(
-                '-' . ltrim($lines[0]),
-                '+' . $this->newLine,
-            ),
-            array_slice($lines, 1)
-        );
+        return $hunk->changeLines($this->newLine);
     }
 }
