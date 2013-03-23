@@ -10,6 +10,12 @@ use Symfony\Component\Console\Command\Command;
 
 use QafooLabs\Refactoring\Domain\Model\File;
 
+use QafooLabs\Refactoring\Application\RenameLocalVariable;
+use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
+use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
+use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
+use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
+
 class RenameLocalVariableCommand extends Command
 {
     protected function configure()
@@ -27,8 +33,15 @@ class RenameLocalVariableCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = File::createFromPath($input->getArgument('file'), getcwd());
-        $line = $input->getArgument('line');
+        $line = (int)$input->getArgument('line');
         $name = $input->getArgument('name');
         $newName = $input->getArgument('new-name');
+
+        $scanner = new ParserVariableScanner();
+        $codeAnalysis = new StaticCodeAnalysis();
+        $editor = new PatchEditor(new OutputPatchCommand($output));
+
+        $renameLocalVariable = new RenameLocalVariable($scanner, $codeAnalysis, $editor);
+        $renameLocalVariable->refactor($file, $line, $name, $newName);
     }
 }

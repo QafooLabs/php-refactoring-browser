@@ -64,6 +64,7 @@ class FeatureContext extends BehatContext
         if (isset($data['file'])) {
             $data['file'] = vfsStream::url('project/' . $data['file']);
         }
+        $data['--verbose'] = true;
 
         $fh = fopen("php://memory", "rw");
         $input = new ArrayInput($data);
@@ -82,6 +83,9 @@ class FeatureContext extends BehatContext
      */
     public function thePhpFileShouldBeRefactored($file, PyStringNode $expectedPatch)
     {
-        assertEquals(rtrim((string)$expectedPatch), rtrim($this->output), "Refactored File:\n" . rtrim($this->output));
+        $output = implode("\n", array_map('trim', explode("\n", rtrim($this->output))));
+        $expectedPatch = implode("\n", array_map('trim', explode("\n", rtrim((string)$expectedPatch))));
+
+        assertEquals($expectedPatch, $output, "Refactored File:\n" . $output);
     }
 }

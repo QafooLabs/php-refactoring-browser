@@ -38,10 +38,31 @@ class RenameLocalVariable
 
     public function refactor(File $file, $line, $oldName, $newName)
     {
+        $oldName = ltrim($oldName, '$');
+        $newName = ltrim($newName, '$');
+
         $methodRange = $this->findMethodRange($file, $line);
         $declaredVariables = $this->variableScanner->scanForVariables($file, $methodRange);
 
+        if ( ! isset($declaredVariables->localVariables[$oldName]) &&
+             ! isset($declaredVariables->assignments[$oldName])) {
+
+            return;
+        }
+
         $buffer = $this->editor->openBuffer($file);
+
+        if (isset($declaredVariables->localVariables[$oldName])) {
+            foreach ($declaredVariables->localVariables[$oldName] as $line) {
+                $buffer->replaceString($line, '$' . $oldName, '$' . $newName);
+            }
+        }
+
+        if (isset($declaredVariables->assignments[$oldName])) {
+            foreach ($declaredVariables->assignments[$oldName] as $line) {
+                $buffer->replaceString($line, '$' . $oldName, '$' . $newName);
+            }
+        }
 
         $this->editor->save();
     }

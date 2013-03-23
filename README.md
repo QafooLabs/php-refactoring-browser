@@ -20,7 +20,7 @@ The refactoring browser is used with:
 List of Refactorings to implement:
 
 * Extract Method (Prototype Done)
-* Rename Local Variable
+* Rename Local Variable (Prototype Done)
 * Rename Method
     * Private Methods Only first
 * Rename Instance Variable

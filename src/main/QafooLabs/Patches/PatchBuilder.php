@@ -32,6 +32,22 @@ class PatchBuilder
     }
 
     /**
+     * Change Token in given line from old to new.
+     *
+     * @param int $originalLine
+     * @param string $oldToken
+     * @param string $newToken
+     *
+     * @return void
+     */
+    public function changeToken($originalLine, $oldToken, $newToken)
+    {
+        $this->assertValidOriginalLine($originalLine);
+
+        $this->operations[$originalLine] = new ChangeTokenOperation($originalLine, $oldToken, $newToken);
+    }
+
+    /**
      * Append new lines to an original line of the file.
      *
      * @param int $originalLine
@@ -166,7 +182,7 @@ class PatchBuilder
         $currentLineGroup = array(array_shift($affectedLines));
 
         foreach ($affectedLines as $affectedLine) {
-            if ($affectedLine - max($currentLineGroup) < 3) {
+            if ($affectedLine - max($currentLineGroup) < 4) {
                 $currentLineGroup[] = $affectedLine;
             } else {
                 $lineGroups[] = $currentLineGroup;

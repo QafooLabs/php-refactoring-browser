@@ -63,6 +63,14 @@ class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
 
     public function getAssignments()
     {
-        return $this->assignments;
+        $assignments = $this->assignments;
+
+        foreach ($this->localVariables as $localVariable => $lines) {
+            if (isset($assignments[$localVariable])) {
+                $assignments[$localVariable] = array_unique($lines);
+            }
+        }
+
+        return $assignments;
     }
 }

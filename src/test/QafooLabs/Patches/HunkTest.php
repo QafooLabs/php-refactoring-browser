@@ -132,4 +132,17 @@ HUNK
 HUNK
             , (string)$hunk);
     }
+
+    public function testChangeToken()
+    {
+        $hunk = Hunk::forLine(1, array('$foo = $foo;'));
+        $newHunk = $hunk->changeToken(1, '$foo', '$bar');
+
+        $this->assertEquals(<<<'HUNK'
+@@ -1,1 +1,1 @@
+-$foo = $foo;
++$bar = $bar;
+HUNK
+            , (string)$newHunk);
+    }
 }

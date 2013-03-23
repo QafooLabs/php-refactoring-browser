@@ -159,6 +159,27 @@ class Hunk
         ));
     }
 
+    public function changeToken($originalLine, $oldToken, $newToken)
+    {
+        $relativeLine = $this->getRelativeLine($originalLine);
+        $beforeLines = array_slice($this->lines, 0, $relativeLine);
+        $afterLines = array_slice($this->lines, $relativeLine + 1);
+
+        $newLine = substr($this->lines[$relativeLine], 1);
+        $newLine = preg_replace(
+            '(([^a-zA-Z0-9]?)(' . preg_quote($oldToken) . ')([^[a-zA-Z0-9]?))',
+            '\1' . $newToken . '\3',
+            $newLine
+        );
+
+        return $this->newLines(array_merge(
+            $beforeLines,
+            array('-' . substr($this->lines[$relativeLine], 1)),
+            array('+' . $newLine),
+            $afterLines
+        ));
+    }
+
     private function newLines(array $newLines)
     {
         return new Hunk($this->before, $this->after, $newLines, $this->start, $this->size);
