@@ -14,7 +14,7 @@ class HunkTest extends \PHPUnit_Framework_TestCase
     public function testAppendLines()
     {
         $hunk = Hunk::forEmptyFile();
-        $newHunk = $hunk->appendLines(array("foo"));
+        $newHunk = $hunk->appendLines(0, array("foo"));
 
         $this->assertEquals("@@ -0,0 +1,1 @@\n+foo", (string)$newHunk);
     }
@@ -44,7 +44,7 @@ HUNK
     public function testForLineAppend()
     {
         $hunk = Hunk::forLine(2, array("foo", "foo", "bar", "baz", "baz"));
-        $newHunk = $hunk->appendLines(array("bar"));
+        $newHunk = $hunk->appendLines(2, array("bar"));
 
         $this->assertEquals(<<<'HUNK'
 @@ -1,5 +1,6 @@
@@ -77,7 +77,7 @@ HUNK
     public function testForLineChangeLines()
     {
         $hunk = Hunk::forLine(2, array("foo", "foo", "bar", "baz", "baz"));
-        $newHunk = $hunk->changeLines("lol");
+        $newHunk = $hunk->changeLine(3, "lol");
 
         $this->assertEquals(<<<'HUNK'
 @@ -1,5 +1,5 @@
@@ -107,6 +107,26 @@ HUNK
  foo
  bar
  bar
+ baz
+ baz
+HUNK
+            , (string)$hunk);
+    }
+
+    public function testForLinesAppend()
+    {
+        $hunk = Hunk::forLines(2, 3, array("foo", "foo", "bar", "bar", "baz", "baz"));
+        $hunk = $hunk->appendLines(2, array("hello"));
+        $hunk = $hunk->appendLines(3, array("world"));
+
+        $this->assertEquals(<<<'HUNK'
+@@ -1,6 +1,8 @@
+ foo
+ foo
+ bar
++hello
+ bar
++world
  baz
  baz
 HUNK

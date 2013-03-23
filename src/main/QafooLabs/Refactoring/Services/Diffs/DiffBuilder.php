@@ -27,14 +27,14 @@ class DiffBuilder
 
     public function appendToLine($originalLine, $lines)
     {
-        $this->operations[$originalLine - 1][] = new AppendOperation(explode("\n", $lines));
+        $this->operations[$originalLine - 1][] = new AppendOperation($originalLine, explode("\n", $lines));
     }
 
     public function changeLine($originalLine, $newLine)
     {
         $this->assertLineExists($originalLine);
 
-        $this->operations[$originalLine - 1][] = new ChangeOperation($newLine);
+        $this->operations[$originalLine - 1][] = new ChangeOperation($originalLine, $newLine);
     }
 
     public function removeLine($originalLine)

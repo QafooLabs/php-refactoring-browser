@@ -33,22 +33,7 @@ class Hunk
      */
     public static function forLine($line, array $fromLines)
     {
-        Assertion::integer($line, "Start line number has to be an integer.");
-
-        $before = self::getLinesBefore($line, $fromLines);
-        $after = self::getLinesAfter($line, $fromLines);
-
-        $start = max(1, $line - 2);
-
-        if (isset($fromLines[$line])) {
-            $lines = array(' ' . $fromLines[$line]);
-        } else {
-            $lines = array();
-        }
-
-        $size = count($before)+count($after)+count($lines);
-
-        return new Hunk($before, $after, $lines, $start, $size);
+        return self::forLines($line, $line, $fromLines);
     }
 
     public static function forLines($start, $end, array $fromLines)
@@ -67,7 +52,9 @@ class Hunk
 
         $lines = array();
         for ($i = 0; $i <= ($end-$start); $i++) {
-            $lines[] = ' ' . $fromLines[$start + $i];
+            if (isset($fromLines[$start + $i])) { // TODO: WHY?
+                $lines[] = ' ' . $fromLines[$start + $i];
+            }
         }
 
         $size = count($before)+count($after)+count($lines);
@@ -113,23 +100,61 @@ class Hunk
         return $this->newLines(array('-' . ltrim($this->lines[0])));
     }
 
-    public function appendLines(array $appendLines)
+    private function getRelativeLine($originalLine)
     {
-        return $this->newLines(array_merge(
-            $this->lines,
-            array_map(function($line) {
-                return '+' . $line;
-            }, $appendLines)));
+        if ($originalLine === $this->start) {
+            return 1;
+        }
+
+        // Additions to the original lines have to be taken into account.
+        // Deletions replace the orignal line so are not relevant.
+        $additions = count(array_filter($this->lines, function ($line) { return substr($line, 0, 1) === '+'; }));
+        $relativeLine = $originalLine - $this->start + $additions - count($this->before) + 1;
+
+        if ( ! isset($this->lines[$relativeLine - 1])) {
+            #throw new \InvalidArgumentException(sprintf("Line %d is not part of the editable lines of this hunk.", $originalLine));
+        }
+
+        return $relativeLine;
     }
 
-    public function changeLines($newLine)
+    public function appendLines($originalLine, array $appendLines)
     {
+        if ($originalLine === 0) {
+            return $this->newLines($this->markLinesAdd($appendLines));
+        }
+
+        $relativeLine = $this->getRelativeLine($originalLine);
+        $beforeLines = array_slice($this->lines, 0, $relativeLine - 1 + 2);
+        $afterLines = array_slice($this->lines, $relativeLine - 1 + 2);
+
         return $this->newLines(array_merge(
+            $beforeLines,
+            $this->markLinesAdd($appendLines),
+            $afterLines
+        ));
+    }
+
+    private function markLinesAdd(array $lines)
+    {
+        return array_map(function ($line) {
+            return '+' . $line;
+        }, $lines);
+    }
+
+    public function changeLine($originalLine, $newLine)
+    {
+        $relativeLine = $this->getRelativeLine($originalLine);
+        $beforeLines = array_slice($this->lines, 0, $relativeLine - 1);
+        $afterLines = array_slice($this->lines, $relativeLine - 1 + 1);
+
+        return $this->newLines(array_merge(
+            $beforeLines,
             array(
-                '-' . ltrim($this->lines[0]),
+                '-' . substr($this->lines[$relativeLine - 1], 1),
                 '+' . $newLine,
             ),
-            array_slice($this->lines, 1)
+            $afterLines
         ));
     }
 
