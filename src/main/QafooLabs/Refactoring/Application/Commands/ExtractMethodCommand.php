@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
 use QafooLabs\Refactoring\Application\Service\ExtractMethod;
+use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 
@@ -34,7 +35,8 @@ class ExtractMethodCommand extends Command
         $range = LineRange::fromString($input->getArgument('range'));
         $newMethodName = $input->getArgument('newmethod');
 
-        $extractMethod = new ExtractMethod();
+        $scanner = new ParserVariableScanner();
+        $extractMethod = new ExtractMethod($scanner);
 
         $output->writeln($extractMethod->refactor($file, $range, $newMethodName));
     }

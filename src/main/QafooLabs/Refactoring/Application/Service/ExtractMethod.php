@@ -2,22 +2,17 @@
 
 namespace QafooLabs\Refactoring\Application\Service;
 
-use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LineRangeStatementCollector;
-use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LocalVariableClassifier;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
-
-use PHPParser_Parser;
-use PHPParser_Lexer;
-use PHPParser_Node;
-use PHPParser_Node_Stmt;
-use PHPParser_Node_Expr_FuncCall;
-use PHPParser_NodeTraverser;
+use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 
 class ExtractMethod
 {
-    public function __construct()
+    private $variableScanner;
+
+    public function __construct(VariableScanner $variableScanner)
     {
+        $this->variableScanner = $variableScanner;
     }
 
     public function refactor(File $file, LineRange $range, $newMethodName)
@@ -26,7 +21,7 @@ class ExtractMethod
 
         $isStatic = $this->isMethodStatic($file->getCode(), $range->getEnd(), $file);
 
-        list ($localVariables, $assignments) = $this->scanForVariables($file->getCode(), $range);
+        list ($localVariables, $assignments) = $this->variableScanner->scanForVariables($file, $range);
 
         $methodCall = $this->generateMethodCall($newMethodName, $localVariables, $assignments, $isStatic);
 
@@ -40,36 +35,6 @@ class ExtractMethod
         $patchBuilder->appendToLine($methodEndLine, array_merge(array(''), $methodCode));
 
         return $patchBuilder->generateUnifiedDiff();
-    }
-
-    private function scanForVariables($code, $range)
-    {
-        $parser = new PHPParser_Parser();
-        $stmts = $parser->parse(new PHPParser_Lexer($code));
-
-        $collector = new LineRangeStatementCollector($range);
-
-        $traverser     = new PHPParser_NodeTraverser;
-        $traverser->addVisitor(new \PHPParser_NodeVisitor_NodeConnector);
-        $traverser->addVisitor($collector);
-
-        $traverser->traverse($stmts);
-
-        $selectedStatements = $collector->getStatements();
-
-        if ( ! $selectedStatements) {
-            throw new \RuntimeException("No statements found in line range.");
-        }
-
-        $localVariableClassifier = new LocalVariableClassifier();
-        $traverser     = new PHPParser_NodeTraverser;
-        $traverser->addVisitor($localVariableClassifier);
-        $traverser->traverse($selectedStatements);
-
-        $localVariables = $localVariableClassifier->getUsedLocalVariables();
-        $assignments = $localVariableClassifier->getAssignments();
-
-        return array(array_unique($localVariables), array_unique($assignments), $stmts);
     }
 
     private function generateMethodCall($newMethodName, $localVariables, $assignments, $isStatic)

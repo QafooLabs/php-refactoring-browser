@@ -4,12 +4,14 @@ namespace QafooLabs\Refactoring\Application\Service;
 
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
+use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 
 class ExtractMethodTest extends \PHPUnit_Framework_TestCase
 {
     public function testRefactorSimpleMethod()
     {
-        $refactoring = new ExtractMethod();
+        $scanner = new ParserVariableScanner();
+        $refactoring = new ExtractMethod($scanner);
         $patch = $refactoring->refactor(new File("foo.php", <<<'PHP'
 <?php
 class Foo
