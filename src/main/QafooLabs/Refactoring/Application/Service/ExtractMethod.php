@@ -5,21 +5,31 @@ namespace QafooLabs\Refactoring\Application\Service;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
+use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 
 class ExtractMethod
 {
+    /**
+     * @var \QafooLabs\Refactoring\Domain\Services\VariableScanner
+     */
     private $variableScanner;
 
-    public function __construct(VariableScanner $variableScanner)
+    /**
+     * @var \QafooLabs\Refactoring\Domain\Services\CodeAnalysis
+     */
+    private $codeAnalysis;
+
+    public function __construct(VariableScanner $variableScanner, CodeAnalysis $codeAnalysis)
     {
         $this->variableScanner = $variableScanner;
+        $this->codeAnalysis = $codeAnalysis;
     }
 
     public function refactor(File $file, LineRange $range, $newMethodName)
     {
         $patchBuilder = new \QafooLabs\Patches\PatchBuilder($file->getCode());
 
-        $isStatic = $this->isMethodStatic($file->getCode(), $range->getEnd(), $file);
+        $isStatic = $this->codeAnalysis->isMethodStatic($file, $range);
 
         list ($localVariables, $assignments) = $this->variableScanner->scanForVariables($file, $range);
 
@@ -31,7 +41,7 @@ class ExtractMethod
 
         $methodCode = $this->appendNewMethod($newMethodName, $selectedCode , $localVariables, $assignments, $isStatic);
 
-        $methodEndLine = $this->getMethodEndLine($file->getCode(), $range->getEnd(), $file);
+        $methodEndLine = $this->codeAnalysis->getMethodEndLine($file, $range);
         $patchBuilder->appendToLine($methodEndLine, array_merge(array(''), $methodCode));
 
         return $patchBuilder->generateUnifiedDiff();
@@ -52,45 +62,6 @@ class ExtractMethod
         }
 
         return $ws . $call;
-    }
-
-    private function getMethodEndLine($code, $lastLine, $file)
-    {
-        $broker = new \TokenReflection\Broker(new \TokenReflection\Broker\Backend\Memory);
-        $file = $broker->processString($code, $file->getRelativePath(), true);
-        $endLineClass = 0;
-
-        foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->geTclasses() as $class) {
-                foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
-                        return $method->getEndLine();
-                    }
-                }
-
-                $endLineClass = $class->getEndLine() - 1;
-            }
-        }
-
-        return $endLineClass;
-    }
-
-    private function isMethodStatic($code, $lastLine, $file)
-    {
-        $broker = new \TokenReflection\Broker(new \TokenReflection\Broker\Backend\Memory);
-        $file = $broker->processString($code, $file->getRelativePath(), true);
-
-        foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->geTclasses() as $class) {
-                foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
-                        return $method->isStatic();
-                    }
-                }
-            }
-        }
-
-        return false;
     }
 
     private function implodeVariables($variableNames)
