@@ -2,11 +2,11 @@
 
 namespace QafooLabs\Patches;
 
-class DiffBuilderTest extends \PHPUnit_Framework_TestCase
+class PatchBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testEmptyFileAppendLine()
     {
-        $builder = new DiffBuilder('');
+        $builder = new PatchBuilder('');
         $builder->appendToLine(0, array('foo'));
 
         $this->assertEquals(<<<DIFF
@@ -18,7 +18,7 @@ DIFF
 
     public function testAppendNoLines_ThrowsException()
     {
-        $builder = new DiffBuilder('');
+        $builder = new PatchBuilder('');
 
         $this->setExpectedException('InvalidArgumentException');
         $builder->appendToLine(0, array());
@@ -26,7 +26,7 @@ DIFF
 
     public function testAppendLineInText()
     {
-        $builder = new DiffBuilder("foo\nbar\nbaz");
+        $builder = new PatchBuilder("foo\nbar\nbaz");
         $builder->appendToLine(2, array('boing'));
 
         $this->assertEquals(<<<DIFF
@@ -41,7 +41,7 @@ DIFF
 
     public function testAppendLineInBiggerText()
     {
-        $builder = new DiffBuilder("foo\nfoo\nbar\nbaz\nbaz");
+        $builder = new PatchBuilder("foo\nfoo\nbar\nbaz\nbaz");
         $builder->appendToLine(3, array('boing'));
 
         $this->assertEquals(<<<DIFF
@@ -58,7 +58,7 @@ DIFF
 
     public function testChangeLine()
     {
-        $builder = new DiffBuilder("foo");
+        $builder = new PatchBuilder("foo");
         $builder->changeLines(1, array('boing'));
 
         $this->assertEquals(<<<DIFF
@@ -71,7 +71,7 @@ DIFF
 
     public function testChangeLine_NoNewLines_throwsException()
     {
-        $builder = new DiffBuilder("foo");
+        $builder = new PatchBuilder("foo");
 
         $this->setExpectedException("InvalidArgumentException");
         $builder->changeLines(1, array());
@@ -79,7 +79,7 @@ DIFF
 
     public function testRemoveLine()
     {
-        $builder = new DiffBuilder("foo");
+        $builder = new PatchBuilder("foo");
         $builder->removeLine(1);
 
         $this->assertEquals(<<<DIFF
@@ -91,7 +91,7 @@ DIFF
 
     public function testRemoveLineInbetween()
     {
-        $builder = new DiffBuilder("foo\nfoo\nbar\nbar\nbar");
+        $builder = new PatchBuilder("foo\nfoo\nbar\nbar\nbar");
         $builder->removeLine(4);
 
         $this->assertEquals(<<<DIFF
@@ -106,7 +106,7 @@ DIFF
 
     public function testRemoveNonExistantLine()
     {
-        $builder = new DiffBuilder("foo");
+        $builder = new PatchBuilder("foo");
 
         $this->setExpectedException('QafooLabs\Patches\UnknownLineException', 'Accessed non existing line 10 in code.');
         $builder->removeLine(10);
@@ -114,7 +114,7 @@ DIFF
 
     public function testChangeNonExistantLine()
     {
-        $builder = new DiffBuilder("foo");
+        $builder = new PatchBuilder("foo");
 
         $this->setExpectedException('QafooLabs\Patches\UnknownLineException', 'Accessed non existing line 10 in code.');
         $builder->changeLines(10, array('foo'));
@@ -122,7 +122,7 @@ DIFF
 
     public function testReplaceLines()
     {
-        $builder = new DiffBuilder("foo\nfoo\nbar\nbar\nbar");
+        $builder = new PatchBuilder("foo\nfoo\nbar\nbar\nbar");
         $builder->replaceLines(1, 5, array("Hello World!"));
 
         $this->assertEquals(<<<DIFF

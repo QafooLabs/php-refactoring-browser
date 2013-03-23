@@ -3,7 +3,7 @@
 namespace QafooLabs\Patches;
 
 /**
- * Works on the contents of a file and records changes in unified diff format.
+ * Build patch for contents of a file and records operations in unified diff format.
  *
  * There can only be one operation per line, otherwise its impossible to
  * guarantee the correctness of a generated diff. The operations allow
@@ -18,7 +18,7 @@ namespace QafooLabs\Patches;
  *
  * - Replace multiple lines with new other lines.
  */
-class DiffBuilder
+class PatchBuilder
 {
     private $lines = null;
 
