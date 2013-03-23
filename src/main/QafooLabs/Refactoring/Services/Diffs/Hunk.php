@@ -33,6 +33,8 @@ class Hunk
      */
     public static function forLine($line, array $fromLines)
     {
+        Assertion::integer($line, "Start line number has to be an integer.");
+
         $before = self::getLinesBefore($line, $fromLines);
         $after = self::getLinesAfter($line, $fromLines);
 
@@ -47,6 +49,30 @@ class Hunk
         $size = count($before)+count($after)+count($lines);
 
         return new Hunk($before, $after, $lines, $start, $size);
+    }
+
+    public static function forLines($start, $end, array $fromLines)
+    {
+        Assertion::integer($start, "Start line number has to be an integer.");
+        Assertion::integer($end, "End line number has to be an integer.");
+
+        if ($start > $end) {
+            throw new \InvalidArgumentException("Start line number should be smaller than End line number.");
+        }
+
+        $before = self::getLinesBefore($start, $fromLines);
+        $after = self::getLinesAfter($end, $fromLines);
+
+        $startLine = max(1, $start - 2);
+
+        $lines = array();
+        for ($i = 0; $i <= ($end-$start); $i++) {
+            $lines[] = ' ' . $fromLines[$start + $i];
+        }
+
+        $size = count($before)+count($after)+count($lines);
+
+        return new Hunk($before, $after, $lines, $startLine, $size);
     }
 
     private static function getLinesBefore($line, $lines)

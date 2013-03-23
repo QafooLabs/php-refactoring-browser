@@ -90,4 +90,26 @@ HUNK
 HUNK
             , (string)$newHunk);
     }
+
+    public function testForLines()
+    {
+        $hunk = Hunk::forLines(0, 1, array("foo", "bar"));
+        $this->assertEquals("@@ -1,2 +1,2 @@\n foo\n bar", (string)$hunk);
+    }
+
+    public function testForLinesWithBeforeAndAfter()
+    {
+        $hunk = Hunk::forLines(2, 3, array("foo", "foo", "bar", "bar", "baz", "baz"));
+
+        $this->assertEquals(<<<'HUNK'
+@@ -1,6 +1,6 @@
+ foo
+ foo
+ bar
+ bar
+ baz
+ baz
+HUNK
+            , (string)$hunk);
+    }
 }

@@ -8,7 +8,8 @@
     ],
 
     "require": {
-        "scrutinizer/php-analyzer": "dev-master"
+        "scrutinizer/php-analyzer": "dev-master",
+        "beberlei/assert": "@stable"
     },
 
     "require-dev": {

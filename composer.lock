@@ -1,6 +1,41 @@
 {
-    "hash": "96d85e5b07881b5e79f4aeddbb8dfaba",
+    "hash": "40d9b5da26db19a1ff0f811b4c44fe38",
     "packages": [
+        {
+            "name": "beberlei/assert",
+            "version": "v1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/assert.git",
+                "reference": "v1.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/beberlei/assert/zipball/v1.2",
+                "reference": "v1.2",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Assert": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                }
+            ],
+            "description": "Thin assertion library for input validation in business models.",
+            "keywords": [
+                "assert",
+                "assertion",
+                "validation"
+            ],
+            "time": "2012-07-23 13:22:31"
+        },
         {
             "name": "doctrine/annotations",
             "version": "v1.0",
@@ -1475,7 +1510,8 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "scrutinizer/php-analyzer": 20
+        "scrutinizer/php-analyzer": 20,
+        "beberlei/assert": 0
     },
     "platform": [
 
