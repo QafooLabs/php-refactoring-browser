@@ -7,7 +7,7 @@ class DiffBuilderTest extends \PHPUnit_Framework_TestCase
     public function testEmptyFileAppendLine()
     {
         $builder = new DiffBuilder('');
-        $builder->appendToLine(1, 'foo');
+        $builder->appendToLine(0, 'foo');
 
         $this->assertEquals(<<<DIFF
 @@ -0,0 +1,1 @@
@@ -51,7 +51,7 @@ DIFF
     public function testChangeLine()
     {
         $builder = new DiffBuilder("foo");
-        $builder->changeLine(1, 'boing');
+        $builder->changeLines(1, array('boing'));
 
         $this->assertEquals(<<<DIFF
 @@ -1,1 +1,1 @@
@@ -61,35 +61,6 @@ DIFF
             , $builder->generateUnifiedDiff());
     }
 
-    public function testChangeAndAppendLine()
-    {
-        $builder = new DiffBuilder("foo");
-        $builder->changeLine(1, 'hello');
-        $builder->appendToLine(1, 'world');
-
-        $this->assertEquals(<<<DIFF
-@@ -1,1 +1,2 @@
--foo
-+hello
-+world
-DIFF
-            , $builder->generateUnifiedDiff());
-    }
-
-    public function testAppendAndChangeLine()
-    {
-        $builder = new DiffBuilder("foo");
-        $builder->appendToLine(1, 'world');
-        $builder->changeLine(1, 'hello');
-
-        $this->assertEquals(<<<DIFF
-@@ -1,1 +1,2 @@
--foo
-+hello
-+world
-DIFF
-            , $builder->generateUnifiedDiff());
-    }
 
     public function testRemoveLine()
     {
@@ -131,6 +102,6 @@ DIFF
         $builder = new DiffBuilder("foo");
 
         $this->setExpectedException('QafooLabs\Refactoring\Services\Diffs\UnknownLineException', 'Accessed non existing line 10 in code.');
-        $builder->changeLine(10, 'foo');
+        $builder->changeLines(10, array('foo'));
     }
 }

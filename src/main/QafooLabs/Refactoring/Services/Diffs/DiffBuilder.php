@@ -27,39 +27,35 @@ class DiffBuilder
 
     public function appendToLine($originalLine, $lines)
     {
-        $this->operations[$originalLine][] = new AppendOperation($originalLine, explode("\n", $lines));
+        $this->operations[$originalLine] = new AppendOperation($originalLine, explode("\n", $lines));
     }
 
-    public function changeLine($originalLine, $newLine)
+    public function changeLines($originalLine, array $newLines)
     {
         $this->assertLineExists($originalLine);
 
-        $this->operations[$originalLine][] = new ChangeOperation($originalLine, $newLine);
+        $this->operations[$originalLine] = new ChangeOperation($originalLine, $newLines);
     }
 
     public function removeLine($originalLine)
     {
         $this->assertLineExists($originalLine);
 
-        $this->operations[$originalLine][] = new RemoveOperation();
+        $this->operations[$originalLine] = new RemoveOperation();
     }
 
     public function generateUnifiedDiff()
     {
         $hunks = array();
 
-        foreach ($this->operations as $line => $lineOperations) {
+        foreach ($this->operations as $line => $operation) {
             if ($this->lines === null) {
                 $hunk = Hunk::forEmptyFile();
             } else {
                 $hunk = Hunk::forLine($line, $this->lines);
             }
 
-            foreach ($lineOperations as $operation) {
-                $hunk = $operation->perform($hunk);
-            }
-
-            $hunks[] = $hunk;
+            $hunks[] = $operation->perform($hunk);
         }
 
         return implode("\n", $hunks);

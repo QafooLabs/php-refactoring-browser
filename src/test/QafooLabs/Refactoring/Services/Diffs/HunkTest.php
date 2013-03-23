@@ -77,7 +77,7 @@ HUNK
     public function testForLineChangeLines()
     {
         $hunk = Hunk::forLine(3, array("foo", "foo", "bar", "baz", "baz"));
-        $newHunk = $hunk->changeLine(3, "lol");
+        $newHunk = $hunk->changeLines(3, array("lol"));
 
         $this->assertEquals(<<<'HUNK'
 @@ -1,5 +1,5 @@

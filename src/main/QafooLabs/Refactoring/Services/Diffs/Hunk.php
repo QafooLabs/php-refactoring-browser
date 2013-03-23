@@ -104,17 +104,18 @@ class Hunk
 
     private function getRelativeLine($originalLine)
     {
-        if ($originalLine === $this->start) {
-            return 1;
-        }
-
         // Additions to the original lines have to be taken into account.
         // Deletions replace the orignal line so are not relevant.
         $additions = count(array_filter($this->lines, function ($line) { return substr($line, 0, 1) === '+'; }));
-        $relativeLine = $originalLine - $this->start + $additions - count($this->before) + 1;
 
-        if ( ! isset($this->lines[$relativeLine - 1])) {
-            #throw new \InvalidArgumentException(sprintf("Line %d is not part of the editable lines of this hunk.", $originalLine));
+        if ($originalLine === $this->start) {
+            return $additions;
+        }
+
+        $relativeLine = $originalLine - $this->start + $additions - count($this->before);
+
+        if ( ! isset($this->lines[$relativeLine])) {
+            throw new \InvalidArgumentException(sprintf("Line %d is not part of the editable lines of this hunk.", $originalLine));
         }
 
         return $relativeLine;
@@ -127,8 +128,8 @@ class Hunk
         }
 
         $relativeLine = $this->getRelativeLine($originalLine);
-        $beforeLines = array_slice($this->lines, 0, $relativeLine - 1 + 2);
-        $afterLines = array_slice($this->lines, $relativeLine - 1 + 2);
+        $beforeLines = array_slice($this->lines, 0, $relativeLine + 1);
+        $afterLines = array_slice($this->lines, $relativeLine + 1);
 
         return $this->newLines(array_merge(
             $beforeLines,
@@ -144,18 +145,16 @@ class Hunk
         }, $lines);
     }
 
-    public function changeLine($originalLine, $newLine)
+    public function changeLines($originalLine, array $newLines)
     {
         $relativeLine = $this->getRelativeLine($originalLine);
-        $beforeLines = array_slice($this->lines, 0, $relativeLine - 1);
-        $afterLines = array_slice($this->lines, $relativeLine - 1 + 1);
+        $beforeLines = array_slice($this->lines, 0, $relativeLine);
+        $afterLines = array_slice($this->lines, $relativeLine + 1);
 
         return $this->newLines(array_merge(
             $beforeLines,
-            array(
-                '-' . substr($this->lines[$relativeLine - 1], 1),
-                '+' . $newLine,
-            ),
+            array('-' . substr($this->lines[$relativeLine], 1)),
+            $this->markLinesAdd($newLines),
             $afterLines
         ));
     }

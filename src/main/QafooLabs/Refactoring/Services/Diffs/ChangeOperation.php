@@ -5,16 +5,16 @@ namespace QafooLabs\Refactoring\Services\Diffs;
 class ChangeOperation implements Operation
 {
     private $originalLine;
-    private $newLine;
+    private $newLines;
 
-    public function __construct($originalLine, $newLine)
+    public function __construct($originalLine, array $newLines)
     {
         $this->originalLine = $originalLine;
-        $this->newLine = $newLine;
+        $this->newLines = $newLines;
     }
 
     public function perform(Hunk $hunk)
     {
-        return $hunk->changeLine($this->originalLine, $this->newLine);
+        return $hunk->changeLines($this->originalLine, $this->newLines);
     }
 }
