@@ -99,15 +99,7 @@ class Hunk
 
     public function removeLine($originalLine)
     {
-        $relativeLine = $this->getRelativeLine($originalLine);
-        $beforeLines = array_slice($this->lines, 0, $relativeLine);
-        $afterLines = array_slice($this->lines, $relativeLine + 1);
-
-        return $this->newLines(array_merge(
-            $beforeLines,
-            array('-' . ltrim($this->lines[$relativeLine])),
-            $afterLines
-        ));
+        return $this->changeLines($originalLine, array());
     }
 
     private function getRelativeLine($originalLine)
