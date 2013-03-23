@@ -35,14 +35,8 @@ class ExtractMethodCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    private function scanForVariables($code, $range)
     {
-        $file = $input->getArgument('file');
-        $range = LineRange::fromString($input->getArgument('range'));
-        $newMethodName = $input->getArgument('newmethod');
-
-        $code = file_get_contents($file);
-
         $parser = new PHPParser_Parser();
         $stmts = $parser->parse(new PHPParser_Lexer($code));
 
@@ -68,17 +62,16 @@ class ExtractMethodCommand extends Command
         $localVariables = $localVariableClassifier->getUsedLocalVariables();
         $assignments = $localVariableClassifier->getAssignments();
 
+        return array($localVariables, $assignments, $selectedStatements, $stmts);
+    }
+
+    private function generateMethodCall($newMethodName, $localVariables, $assignments)
+    {
         $arguments = array();
-        $params = array();
+
         foreach ($localVariables as $localVariable) {
             $arguments[] = new \PHPParser_Node_Arg(
                 new \PHPParser_Node_Expr_Variable($localVariable),
-                false
-            );
-            $params[] = new \PHPParser_Node_Param(
-                $localVariable,
-                null,
-                null,
                 false
             );
         }
@@ -90,31 +83,82 @@ class ExtractMethodCommand extends Command
         );
 
         if (count($assignments) == 1) {
-            $selectedStatements[] = new \PHPParser_Node_Stmt_Return(
-                new \PHPParser_Node_Expr_Variable($assignments[0])
-            );
             $methodCall = new \PHPParser_Node_Expr_Assign(
                 new \PHPParser_Node_Expr_Variable($assignments[0]),
                 $methodCall
             );
         }
 
+        return $methodCall;
+    }
 
-        $traverser     = new PHPParser_NodeTraverser;
+    private function replaceStatementsWithMethodCall($selectedStatements, $methodCall)
+    {
+        $traverser = new PHPParser_NodeTraverser;
         $traverser->addVisitor(new StatementReplacer($selectedStatements, $methodCall));
 
         // TODO: Only works for simple case
         $methodNode = $selectedStatements[0]->getAttribute('parent');
-        $classNode = $methodNode->getAttribute('parent');
 
         $traverser->traverse($methodNode->stmts);
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $file = $input->getArgument('file');
+        $range = LineRange::fromString($input->getArgument('range'));
+        $newMethodName = $input->getArgument('newmethod');
+
+        $code = file_get_contents($file);
+
+        list ($localVariables, $assignments, $selectedStatements, $stmts) = $this->scanForVariables($code, $range);
+
+        $methodCall = $this->generateMethodCall($newMethodName, $localVariables, $assignments);
+        $this->replaceStatementsWithMethodCall($selectedStatements, $methodCall);
+
+        $this->appendNewMethod($newMethodName, $selectedStatements, $localVariables, $assignments);
+
+        $output->writeln($this->generateDiff($code, $stmts));
+    }
+
+    private function generateDiff($code, $stmts)
+    {
+        $prettyPrinter = new \PHPParser_PrettyPrinter_Zend;
+        $newCode = "<?php\n" . $prettyPrinter->prettyPrint($stmts);
+
+        $diff = \Scrutinizer\Util\DiffUtils::generate($code, $newCode);
+
+        return $diff;
+    }
+
+    private function appendNewMethod($newMethodName, $selectedStatements, $localVariables, $assignments)
+    {
+        if (count($assignments) == 1) {
+            $selectedStatements[] = new \PHPParser_Node_Stmt_Return(
+                new \PHPParser_Node_Expr_Variable($assignments[0])
+            );
+        }
+
+        $params = array();
+        $methodNode = $selectedStatements[0]->getAttribute('parent');
+        $classNode = $methodNode->getAttribute('parent');
+
+        $classStmts = $classNode->stmts;
 
         $type = \PHPParser_Node_Stmt_Class::MODIFIER_PRIVATE;
         if ($methodNode->type & \PHPParser_Node_Stmt_Class::MODIFIER_STATIC) {
             $type |= \PHPParser_Node_Stmt_Class::MODIFIER_STATIC;
         }
 
-        $classStmts = $classNode->stmts;
+        foreach ($localVariables as $localVariable) {
+            $params[] = new \PHPParser_Node_Param(
+                $localVariable,
+                null,
+                null,
+                false
+            );
+        }
+
         $classStmts[] = new \PHPParser_Node_Stmt_ClassMethod($newMethodName, array(
             'type'   => $type,
             'stmts'  => $selectedStatements,
@@ -122,12 +166,6 @@ class ExtractMethodCommand extends Command
         ));
 
         $classNode->stmts = $classStmts;
-
-        $prettyPrinter = new \PHPParser_PrettyPrinter_Zend;
-        $newCode = "<?php\n" . $prettyPrinter->prettyPrint($stmts);
-
-        $diff = \Scrutinizer\Util\DiffUtils::generate($code, $newCode);
-        $output->writeln($diff);
     }
 }
 
