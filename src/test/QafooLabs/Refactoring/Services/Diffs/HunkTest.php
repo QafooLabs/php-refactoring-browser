@@ -43,8 +43,8 @@ HUNK
 
     public function testForLineAppend()
     {
-        $hunk = Hunk::forLine(2, array("foo", "foo", "bar", "baz", "baz"));
-        $newHunk = $hunk->appendLines(2, array("bar"));
+        $hunk = Hunk::forLine(3, array("foo", "foo", "bar", "baz", "baz"));
+        $newHunk = $hunk->appendLines(3, array("bar"));
 
         $this->assertEquals(<<<'HUNK'
 @@ -1,5 +1,6 @@
@@ -60,7 +60,7 @@ HUNK
 
     public function testForLineRemove()
     {
-        $hunk = Hunk::forLine(2, array("foo", "foo", "bar", "baz", "baz"));
+        $hunk = Hunk::forLine(3, array("foo", "foo", "bar", "baz", "baz"));
         $newHunk = $hunk->removeLines();
 
         $this->assertEquals(<<<'HUNK'
@@ -76,7 +76,7 @@ HUNK
 
     public function testForLineChangeLines()
     {
-        $hunk = Hunk::forLine(2, array("foo", "foo", "bar", "baz", "baz"));
+        $hunk = Hunk::forLine(3, array("foo", "foo", "bar", "baz", "baz"));
         $newHunk = $hunk->changeLine(3, "lol");
 
         $this->assertEquals(<<<'HUNK'
@@ -93,13 +93,13 @@ HUNK
 
     public function testForLines()
     {
-        $hunk = Hunk::forLines(0, 1, array("foo", "bar"));
+        $hunk = Hunk::forLines(1, 2, array("foo", "bar"));
         $this->assertEquals("@@ -1,2 +1,2 @@\n foo\n bar", (string)$hunk);
     }
 
     public function testForLinesWithBeforeAndAfter()
     {
-        $hunk = Hunk::forLines(2, 3, array("foo", "foo", "bar", "bar", "baz", "baz"));
+        $hunk = Hunk::forLines(3, 4, array("foo", "foo", "bar", "bar", "baz", "baz"));
 
         $this->assertEquals(<<<'HUNK'
 @@ -1,6 +1,6 @@
@@ -115,9 +115,9 @@ HUNK
 
     public function testForLinesAppend()
     {
-        $hunk = Hunk::forLines(2, 3, array("foo", "foo", "bar", "bar", "baz", "baz"));
-        $hunk = $hunk->appendLines(2, array("hello"));
-        $hunk = $hunk->appendLines(3, array("world"));
+        $hunk = Hunk::forLines(3, 4, array("foo", "foo", "bar", "bar", "baz", "baz"));
+        $hunk = $hunk->appendLines(3, array("hello"));
+        $hunk = $hunk->appendLines(4, array("world"));
 
         $this->assertEquals(<<<'HUNK'
 @@ -1,6 +1,8 @@

@@ -109,8 +109,7 @@ DIFF
         $builder->removeLine(4);
 
         $this->assertEquals(<<<DIFF
-@@ -1,5 +1,4 @@
- foo
+@@ -2,4 +2,3 @@
  foo
  bar
 -bar

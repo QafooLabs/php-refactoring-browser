@@ -45,10 +45,12 @@ class Hunk
             throw new \InvalidArgumentException("Start line number should be smaller than End line number.");
         }
 
+        $startLine = max(1, $start - 2);
+        $start--;
+        $end--;
+
         $before = self::getLinesBefore($start, $fromLines);
         $after = self::getLinesAfter($end, $fromLines);
-
-        $startLine = max(1, $start - 2);
 
         $lines = array();
         for ($i = 0; $i <= ($end-$start); $i++) {
@@ -67,7 +69,7 @@ class Hunk
         $num = 2;
         $before = array();
 
-        for ($i = $line; $i > 0 && $i >= ($line-$num); $i--) {
+        for ($i = $line; $i > 0 && $i > ($line-$num); $i--) {
             $before[] = ' ' . $lines[$i - 1];
         }
 

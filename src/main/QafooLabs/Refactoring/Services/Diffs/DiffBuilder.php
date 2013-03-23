@@ -27,21 +27,21 @@ class DiffBuilder
 
     public function appendToLine($originalLine, $lines)
     {
-        $this->operations[$originalLine - 1][] = new AppendOperation($originalLine, explode("\n", $lines));
+        $this->operations[$originalLine][] = new AppendOperation($originalLine, explode("\n", $lines));
     }
 
     public function changeLine($originalLine, $newLine)
     {
         $this->assertLineExists($originalLine);
 
-        $this->operations[$originalLine - 1][] = new ChangeOperation($originalLine, $newLine);
+        $this->operations[$originalLine][] = new ChangeOperation($originalLine, $newLine);
     }
 
     public function removeLine($originalLine)
     {
         $this->assertLineExists($originalLine);
 
-        $this->operations[$originalLine - 1][] = new RemoveOperation();
+        $this->operations[$originalLine][] = new RemoveOperation();
     }
 
     public function generateUnifiedDiff()
