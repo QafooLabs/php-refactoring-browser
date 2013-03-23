@@ -22,6 +22,8 @@ Feature: Extract Method
             | newmethod | hello       |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
             @@ -4,5 +4,10 @@
                  public function operation()
                  {
@@ -55,6 +57,8 @@ Feature: Extract Method
             | newmethod | hello       |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
             @@ -4,5 +4,10 @@
                  public static function operation()
                  {
@@ -89,6 +93,8 @@ Feature: Extract Method
             | newmethod | printHello           |
         Then the PHP File "src/WithInstance.php" should be refactored:
             """
+            --- a/vfs://project/src/WithInstance.php
+            +++ b/vfs://project/src/WithInstance.php
             @@ -5,5 +5,10 @@
                  public function test()
                  {
@@ -123,6 +129,8 @@ Feature: Extract Method
             | newmethod | printHello           |
         Then the PHP File "src/WithLocal.php" should be refactored:
             """
+            --- a/vfs://project/src/WithLocal.php
+            +++ b/vfs://project/src/WithLocal.php
             @@ -5,5 +5,10 @@
                  {
                      $hello = 'Hello World!';
@@ -158,6 +166,8 @@ Feature: Extract Method
             | newmethod | foo                         |
         Then the PHP File "src/MultiLineCorrection.php" should be refactored:
             """
+            --- a/vfs://project/src/MultiLineCorrection.php
+            +++ b/vfs://project/src/MultiLineCorrection.php
             @@ -4,7 +4,12 @@
                  public function test()
                  {
@@ -195,6 +205,8 @@ Feature: Extract Method
             | newmethod | foo                         |
         Then the PHP File "src/Assignment.php" should be refactored:
             """
+            --- a/vfs://project/src/Assignment.php
+            +++ b/vfs://project/src/Assignment.php
             @@ -4,5 +4,12 @@
                  public function test()
                  {
@@ -231,6 +243,8 @@ Feature: Extract Method
             | newmethod | foo                         |
         Then the PHP File "src/MultiAssignment.php" should be refactored:
             """
+            --- a/vfs://project/src/MultiAssignment.php
+            +++ b/vfs://project/src/MultiAssignment.php
             @@ -4,6 +4,13 @@
                  public function test()
                  {
@@ -269,6 +283,8 @@ Feature: Extract Method
             | newmethod | foo                         |
         Then the PHP File "src/MultiAssignment.php" should be refactored:
             """
+            --- a/vfs://project/src/MultiAssignment.php
+            +++ b/vfs://project/src/MultiAssignment.php
             @@ -4,6 +4,13 @@
                  public function test()
                  {

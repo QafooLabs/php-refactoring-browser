@@ -29,6 +29,8 @@ Feature: Rename Local Variable
             | new-name  | number      |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
             @@ -4,11 +4,11 @@
                  public function operation()
                  {

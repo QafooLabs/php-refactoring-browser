@@ -20,15 +20,31 @@ namespace QafooLabs\Patches;
  */
 class PatchBuilder
 {
+    /**
+     * @var array|null
+     */
     private $lines = null;
 
+    /**
+     * @var array
+     */
     private $operations = array();
 
-    public function __construct($contents)
+    /**
+     * @var string
+     */
+    private $path;
+
+    /**
+     * @param string $contents
+     * @param string $path
+     */
+    public function __construct($contents, $path = null)
     {
         if ( ! empty($contents)) {
             $this->lines = explode("\n", $contents);
         }
+        $this->path = $path;
     }
 
     /**
@@ -170,7 +186,16 @@ class PatchBuilder
             $hunks[] = $hunk;
         }
 
-        return implode("\n", $hunks);
+        $output = "";
+
+        if ($this->path) {
+            $output .= "--- a/" . $this->path . "\n";
+            $output .= "+++ b/" . $this->path . "\n";
+        }
+
+        $output .= implode("\n", $hunks);
+
+        return $output;
     }
 
     private function getLineGroups()

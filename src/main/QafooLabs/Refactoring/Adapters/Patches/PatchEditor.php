@@ -25,7 +25,9 @@ class PatchEditor implements Editor
     public function openBuffer(File $file)
     {
         if ( ! isset($this->builders[$file->getRelativePath()])) {
-            $this->builders[$file->getRelativePath()] = new PatchBuilder($file->getCode());
+            $this->builders[$file->getRelativePath()] = new PatchBuilder(
+                $file->getCode(), $file->getRelativePath()
+            );
         }
 
         return new PatchBuffer($this->builders[$file->getRelativePath()]);
