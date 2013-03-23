@@ -62,7 +62,7 @@ class ExtractMethodCommand extends Command
         $localVariables = $localVariableClassifier->getUsedLocalVariables();
         $assignments = $localVariableClassifier->getAssignments();
 
-        return array($localVariables, $assignments, $selectedStatements, $stmts);
+        return array(array_unique($localVariables), array_unique($assignments), $selectedStatements, $stmts);
     }
 
     private function generateMethodCall($newMethodName, $localVariables, $assignments, $isStatic)
