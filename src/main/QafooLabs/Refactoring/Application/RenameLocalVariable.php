@@ -3,6 +3,7 @@
 namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
@@ -41,24 +42,37 @@ class RenameLocalVariable
         $oldName = ltrim($oldName, '$');
         $newName = ltrim($newName, '$');
 
-        $methodRange = $this->findMethodRange($file, $line);
-        $definedVariables = $this->variableScanner->scanForVariables($file, $methodRange);
+        $definedVariables = $this->variableScanner->scanForVariables(
+            $file,
+            $this->findMethodRange($file, $line)
+        );
 
-        if ( ! isset($definedVariables->localVariables[$oldName]) &&
-             ! isset($definedVariables->assignments[$oldName])) {
-
+        if ( ! $this->isVariableInRange($definedVariables, $oldName)) {
             return;
         }
 
         $buffer = $this->editor->openBuffer($file);
 
-        $this->replaceString($buffer, $definedVariables->localVariables, $oldName, $newName);
-        $this->replaceString($buffer, $definedVariables->assignments, $oldName, $newName);
+        $this->replaceString($buffer, $definedVariables, $oldName, $newName);
 
         $this->editor->save();
     }
 
-    private function replaceString($buffer, array $variables, $oldName, $newName)
+    private function isVariableInRange(DefinedVariables $definedVariables, $oldName)
+    {
+        return (
+            isset($definedVariables->localVariables[$oldName]) ||
+            isset($definedVariables->assignments[$oldName])
+        );
+    }
+
+    private function replaceString($buffer, DefinedVariables $definedVariables, $oldName, $newName)
+    {
+        $this->replaceStringInArray($buffer, $definedVariables->localVariables, $oldName, $newName);
+        $this->replaceStringInArray($buffer, $definedVariables->assignments, $oldName, $newName);
+    }
+
+    private function replaceStringInArray($buffer, array $variables, $oldName, $newName)
     {
         if (isset($variables[$oldName])) {
             foreach ($variables[$oldName] as $line) {
