@@ -65,31 +65,60 @@ class ExtractMethodCommand extends Command
         return array($localVariables, $assignments, $selectedStatements, $stmts);
     }
 
-    private function generateMethodCall($newMethodName, $localVariables, $assignments)
+    private function generateMethodCall($newMethodName, $localVariables, $assignments, $isStatic)
     {
-        $arguments = array();
+        $ws = str_repeat(' ', 8);
+        $argumentLine = $this->implodeVariables($localVariables);
 
-        foreach ($localVariables as $localVariable) {
-            $arguments[] = new \PHPParser_Node_Arg(
-                new \PHPParser_Node_Expr_Variable($localVariable),
-                false
-            );
-        }
-
-        $methodCall = new \PHPParser_Node_Expr_MethodCall(
-            new \PHPParser_Node_Expr_Variable("this"),
-            $newMethodName,
-            $arguments
-        );
+        $code = $isStatic ? 'self::%s(%s);' : '$this->%s(%s);';
+        $call = sprintf($code, $newMethodName, $argumentLine);
 
         if (count($assignments) == 1) {
-            $methodCall = new \PHPParser_Node_Expr_Assign(
-                new \PHPParser_Node_Expr_Variable($assignments[0]),
-                $methodCall
-            );
+            $call = '$' . $assignments[0] . ' = ' . $call;
+        } else if (count($assignments) > 1) {
+            $call = 'list(' . $this->implodeVariables($assignments) . ') = ' . $call;
         }
 
-        return $methodCall;
+        return $ws . $call;
+    }
+
+    private function getMethodEndLine($code, $lastLine, $file)
+    {
+        $broker = new \TokenReflection\Broker(new \TokenReflection\Broker\Backend\Memory);
+        $file = $broker->processString($code, $file, true);
+        $endLineClass = 0;
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->geTclasses() as $class) {
+                foreach ($class->getMethods() as $method) {
+                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
+                        return $method->getEndLine();
+                    }
+                }
+
+                $endLineClass = $class->getEndLine() - 1;
+            }
+        }
+
+        return $endLineClass;
+    }
+
+    private function isMethodStatic($code, $lastLine, $file)
+    {
+        $broker = new \TokenReflection\Broker(new \TokenReflection\Broker\Backend\Memory);
+        $file = $broker->processString($code, $file, true);
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->geTclasses() as $class) {
+                foreach ($class->getMethods() as $method) {
+                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
+                        return $method->isStatic();
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private function replaceStatementsWithMethodCall($selectedStatements, $methodCall)
@@ -110,62 +139,62 @@ class ExtractMethodCommand extends Command
         $newMethodName = $input->getArgument('newmethod');
 
         $code = file_get_contents($file);
+        $patchBuilder = new \QafooLabs\Patches\PatchBuilder($code);
+
+        $isStatic = $this->isMethodStatic($code, $range->getEnd(), $file);
 
         list ($localVariables, $assignments, $selectedStatements, $stmts) = $this->scanForVariables($code, $range);
 
-        $methodCall = $this->generateMethodCall($newMethodName, $localVariables, $assignments);
-        $this->replaceStatementsWithMethodCall($selectedStatements, $methodCall);
+        $methodCall = $this->generateMethodCall($newMethodName, $localVariables, $assignments, $isStatic);
 
-        $this->appendNewMethod($newMethodName, $selectedStatements, $localVariables, $assignments);
+        $patchBuilder->replaceLines($range->getStart(), $range->getEnd(), array($methodCall));
 
-        $output->writeln($this->generateDiff($code, $stmts));
+        $selectedCode = explode("\n", $code);
+        $numLines = count($selectedCode);
+        for ($i = 0; $i < $numLines; $i++) {
+            if ( ! $range->isInRange($i+1)) {
+                unset($selectedCode[$i]);
+            }
+        }
+        $selectedCode = array_values($selectedCode);
+
+        $methodCode = $this->appendNewMethod($newMethodName, $selectedCode , $localVariables, $assignments, $isStatic);
+
+        $methodEndLine = $this->getMethodEndLine($code, $range->getEnd(), $file);
+        $patchBuilder->appendToLine($methodEndLine, array_merge(array(''), $methodCode));
+
+        $output->writeln($patchBuilder->generateUnifiedDiff());
     }
 
-    private function generateDiff($code, $stmts)
+    private function implodeVariables($variableNames)
     {
-        $prettyPrinter = new \PHPParser_PrettyPrinter_Zend;
-        $newCode = "<?php\n" . $prettyPrinter->prettyPrint($stmts);
-
-        $diff = \Scrutinizer\Util\DiffUtils::generate($code, $newCode);
-
-        return $diff;
+        return implode(', ', array_map(function ($variableName) {
+            return '$' . $variableName;
+        }, $variableNames));
     }
 
-    private function appendNewMethod($newMethodName, $selectedStatements, $localVariables, $assignments)
+    private function appendNewMethod($newMethodName, $selectedCode, $localVariables, $assignments, $isStatic)
     {
+        $ws = str_repeat(' ', 8);
+        $wsm = str_repeat(' ', 4);
+
         if (count($assignments) == 1) {
-            $selectedStatements[] = new \PHPParser_Node_Stmt_Return(
-                new \PHPParser_Node_Expr_Variable($assignments[0])
-            );
+            $selectedCode[] = '';
+            $selectedCode[] = $ws . 'return $' . $assignments[0] . ';';
+        } else if (count($assignments) > 1) {
+            $selectedCode[] = '';
+            $selectedCode[] = $ws . 'return array(' . $this->implodeVariables($assignments) . ');';
         }
 
-        $params = array();
-        $methodNode = $selectedStatements[0]->getAttribute('parent');
-        $classNode = $methodNode->getAttribute('parent');
+        $paramLine = $this->implodeVariables($localVariables);
 
-        $classStmts = $classNode->stmts;
+        $methodCode = array_merge(
+            array($wsm . sprintf('private%sfunction %s(%s)', $isStatic ? ' static ' : ' ', $newMethodName, $paramLine), $wsm . '{'),
+            $selectedCode,
+            array($wsm . '}')
+        );
 
-        $type = \PHPParser_Node_Stmt_Class::MODIFIER_PRIVATE;
-        if ($methodNode->type & \PHPParser_Node_Stmt_Class::MODIFIER_STATIC) {
-            $type |= \PHPParser_Node_Stmt_Class::MODIFIER_STATIC;
-        }
-
-        foreach ($localVariables as $localVariable) {
-            $params[] = new \PHPParser_Node_Param(
-                $localVariable,
-                null,
-                null,
-                false
-            );
-        }
-
-        $classStmts[] = new \PHPParser_Node_Stmt_ClassMethod($newMethodName, array(
-            'type'   => $type,
-            'stmts'  => $selectedStatements,
-            'params' => $params,
-        ));
-
-        $classNode->stmts = $classStmts;
+        return $methodCode;
     }
 }
 

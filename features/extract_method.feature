@@ -22,19 +22,18 @@ Feature: Extract Method
             | newmethod | hello       |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            @@ -3,6 +3,10 @@ class Foo
-             {
+            @@ -4,5 +4,10 @@
                  public function operation()
                  {
             -        echo "Hello World";
             +        $this->hello();
-            +    }
+                 }
+            +
             +    private function hello()
             +    {
-            +        echo 'Hello World';
-                 }
+            +        echo "Hello World";
+            +    }
              }
-            \ No newline at end of file
             """
 
     Scenario: "Extract side effect free line from static method"
@@ -56,19 +55,18 @@ Feature: Extract Method
             | newmethod | hello       |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            @@ -3,6 +3,10 @@ class Foo
-             {
+            @@ -4,5 +4,10 @@
                  public static function operation()
                  {
             -        echo "Hello World";
-            +        $this->hello();
-            +    }
+            +        self::hello();
+                 }
+            +
             +    private static function hello()
             +    {
-            +        echo 'Hello World';
-                 }
+            +        echo "Hello World";
+            +    }
              }
-            \ No newline at end of file
             """
 
     Scenario: "Extract Method with instance variable"
@@ -91,18 +89,18 @@ Feature: Extract Method
             | newmethod | printHello           |
         Then the PHP File "src/WithInstance.php" should be refactored:
             """
-            @@ -4,6 +4,10 @@ class WithInstance
-                 private $hello = 'Hello World!';
+            @@ -5,5 +5,10 @@
                  public function test()
                  {
+            -        echo $this->hello;
             +        $this->printHello();
-            +    }
+                 }
+            +
             +    private function printHello()
             +    {
-                     echo $this->hello;
-                 }
+            +        echo $this->hello;
+            +    }
              }
-            \ No newline at end of file
             """
 
     Scenario: "Extract Method with local variable"
@@ -125,19 +123,18 @@ Feature: Extract Method
             | newmethod | printHello           |
         Then the PHP File "src/WithLocal.php" should be refactored:
             """
-            @@ -4,6 +4,10 @@ class WithLocal
-                 public function test()
+            @@ -5,5 +5,10 @@
                  {
                      $hello = 'Hello World!';
+            -        echo $hello;
             +        $this->printHello($hello);
-            +    }
+                 }
+            +
             +    private function printHello($hello)
             +    {
-                     echo $hello;
-                 }
+            +        echo $hello;
+            +    }
              }
-            \ No newline at end of file
-
             """
 
     Scenario: "Extract Method with formatting that requires line range correction"
@@ -157,27 +154,26 @@ Feature: Extract Method
         When I use refactoring "extract-method" with:
             | arg       | value                       |
             | file      | src/MultiLineCorrection.php |
-            | range     | 6-7                         |
+            | range     | 6-8                         |
             | newmethod | foo                         |
         Then the PHP File "src/MultiLineCorrection.php" should be refactored:
             """
-            @@ -3,8 +3,10 @@ class MultiLineCorrection
-             {
+            @@ -4,7 +4,12 @@
                  public function test()
                  {
             -        foo(
             -            "bar"
             -        );
             +        $this->foo();
-            +    }
+                 }
+            +
             +    private function foo()
             +    {
-            +        foo('bar');
-                 }
+            +        foo(
+            +            "bar"
+            +        );
+            +    }
              }
-            \ No newline at end of file
-
-
             """
 
     Scenario: "Extract Method with one assignment returns value"
@@ -199,20 +195,18 @@ Feature: Extract Method
             | newmethod | foo                         |
         Then the PHP File "src/Assignment.php" should be refactored:
             """
-            @@ -3,6 +3,11 @@ class Assignment
-             {
+            @@ -4,5 +4,12 @@
                  public function test()
                  {
             -        $var = "foo";
             +        $var = $this->foo();
-            +    }
+                 }
+            +
             +    private function foo()
             +    {
-            +        $var = 'foo';
+            +        $var = "foo";
+            +
             +        return $var;
-                 }
+            +    }
              }
-            \ No newline at end of file
-
-
             """

@@ -26,4 +26,14 @@ class LineRange
     {
         return isset($this->lines[$line]);
     }
+
+    public function getStart()
+    {
+        return (int)min($this->lines);
+    }
+
+    public function getEnd()
+    {
+        return (int)max($this->lines);
+    }
 }

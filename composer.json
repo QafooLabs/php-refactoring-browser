@@ -9,7 +9,8 @@
 
     "require": {
         "scrutinizer/php-analyzer": "dev-master",
-        "beberlei/assert": "@stable"
+        "beberlei/assert": "@stable",
+        "andrewsville/php-token-reflection": "@stable"
     },
 
     "require-dev": {
