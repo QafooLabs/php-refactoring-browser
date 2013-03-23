@@ -104,4 +104,21 @@ DIFF
         $this->setExpectedException('QafooLabs\Refactoring\Services\Diffs\UnknownLineException', 'Accessed non existing line 10 in code.');
         $builder->changeLines(10, array('foo'));
     }
+
+    public function testReplaceLines()
+    {
+        $builder = new DiffBuilder("foo\nfoo\nbar\nbar\nbar");
+        $builder->replaceLines(1, 5, array("Hello World!"));
+
+        $this->assertEquals(<<<DIFF
+@@ -1,5 +1,1 @@
+-foo
+-foo
+-bar
+-bar
+-bar
++Hello World!
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
 }

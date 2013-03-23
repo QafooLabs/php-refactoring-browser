@@ -61,7 +61,7 @@ HUNK
     public function testForLineRemove()
     {
         $hunk = Hunk::forLine(3, array("foo", "foo", "bar", "baz", "baz"));
-        $newHunk = $hunk->removeLines();
+        $newHunk = $hunk->removeLine(3);
 
         $this->assertEquals(<<<'HUNK'
 @@ -1,5 +1,4 @@

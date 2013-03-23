@@ -97,9 +97,17 @@ class Hunk
         $this->size = $size;
     }
 
-    public function removeLines()
+    public function removeLine($originalLine)
     {
-        return $this->newLines(array('-' . ltrim($this->lines[0])));
+        $relativeLine = $this->getRelativeLine($originalLine);
+        $beforeLines = array_slice($this->lines, 0, $relativeLine);
+        $afterLines = array_slice($this->lines, $relativeLine + 1);
+
+        return $this->newLines(array_merge(
+            $beforeLines,
+            array('-' . ltrim($this->lines[$relativeLine])),
+            $afterLines
+        ));
     }
 
     private function getRelativeLine($originalLine)
