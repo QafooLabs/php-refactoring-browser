@@ -6,6 +6,9 @@ use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 
+use TokenReflection\Broker;
+use TokenReflection\Broker\Backend\Memory;
+
 class StaticCodeAnalysis implements CodeAnalysis
 {
     private $broker;
@@ -17,7 +20,7 @@ class StaticCodeAnalysis implements CodeAnalysis
 
     public function isMethodStatic(File $file, LineRange $range)
     {
-        $this->broker = new \TokenReflection\Broker(new \TokenReflection\Broker\Backend\Memory);
+        $this->broker = new Broker(new Memory);
         $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
         $lastLine = $range->getEnd();
 
@@ -36,7 +39,7 @@ class StaticCodeAnalysis implements CodeAnalysis
 
     public function getMethodEndLine(File $file, LineRange $range)
     {
-        $this->broker = new \TokenReflection\Broker(new \TokenReflection\Broker\Backend\Memory);
+        $this->broker = new Broker(new Memory);
         $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
         $endLineClass = 0;
         $lastLine = $range->getEnd();
