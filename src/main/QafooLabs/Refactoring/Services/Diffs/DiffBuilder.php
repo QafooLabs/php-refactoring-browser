@@ -35,15 +35,19 @@ class DiffBuilder
      * Append new lines to an original line of the file.
      *
      * @param int $originalLine
-     * @param string $lines
+     * @param array $lines
      *
      * @return void
      */
-    public function appendToLine($originalLine, $lines)
+    public function appendToLine($originalLine, array $lines)
     {
+        if (count($lines) === 0) {
+            throw new \InvalidArgumentException("No lines were passed to the append operation. At least one required.");
+        }
+
         $this->assertValidOriginalLine($originalLine);
 
-        $this->operations[$originalLine] = new AppendOperation($originalLine, explode("\n", $lines));
+        $this->operations[$originalLine] = new AppendOperation($originalLine, $lines);
     }
 
     /**
@@ -56,6 +60,10 @@ class DiffBuilder
      */
     public function changeLines($originalLine, array $newLines)
     {
+        if (count($newLines) === 0) {
+            throw new \InvalidArgumentException("No lines were passed to the change operation. At least one required.");
+        }
+
         $this->assertValidOriginalLine($originalLine);
 
         $this->operations[$originalLine] = new ChangeOperation($originalLine, $newLines);

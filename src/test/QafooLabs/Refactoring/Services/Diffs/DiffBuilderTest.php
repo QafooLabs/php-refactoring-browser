@@ -7,7 +7,7 @@ class DiffBuilderTest extends \PHPUnit_Framework_TestCase
     public function testEmptyFileAppendLine()
     {
         $builder = new DiffBuilder('');
-        $builder->appendToLine(0, 'foo');
+        $builder->appendToLine(0, array('foo'));
 
         $this->assertEquals(<<<DIFF
 @@ -0,0 +1,1 @@
@@ -16,10 +16,18 @@ DIFF
             , $builder->generateUnifiedDiff());
     }
 
+    public function testAppendNoLines_ThrowsException()
+    {
+        $builder = new DiffBuilder('');
+
+        $this->setExpectedException('InvalidArgumentException');
+        $builder->appendToLine(0, array());
+    }
+
     public function testAppendLineInText()
     {
         $builder = new DiffBuilder("foo\nbar\nbaz");
-        $builder->appendToLine(2, 'boing');
+        $builder->appendToLine(2, array('boing'));
 
         $this->assertEquals(<<<DIFF
 @@ -1,3 +1,4 @@
@@ -34,7 +42,7 @@ DIFF
     public function testAppendLineInBiggerText()
     {
         $builder = new DiffBuilder("foo\nfoo\nbar\nbaz\nbaz");
-        $builder->appendToLine(3, 'boing');
+        $builder->appendToLine(3, array('boing'));
 
         $this->assertEquals(<<<DIFF
 @@ -1,5 +1,6 @@
@@ -61,6 +69,13 @@ DIFF
             , $builder->generateUnifiedDiff());
     }
 
+    public function testChangeLine_NoNewLines_throwsException()
+    {
+        $builder = new DiffBuilder("foo");
+
+        $this->setExpectedException("InvalidArgumentException");
+        $builder->changeLines(1, array());
+    }
 
     public function testRemoveLine()
     {
