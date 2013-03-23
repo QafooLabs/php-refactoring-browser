@@ -30,5 +30,7 @@
         }
     },
 
+    "bin": ["bin/refactor.php"],
+
     "minimum-stability": "dev"
 }
