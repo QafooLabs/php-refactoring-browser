@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Application\Commands;
+namespace QafooLabs\Refactoring\Adapters\Symfony\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
-use QafooLabs\Refactoring\Application\Service\ExtractMethod;
+use QafooLabs\Refactoring\Application\ExtractMethod;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
 use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;

@@ -34,11 +34,17 @@ class File
         $this->code = $code;
     }
 
+    /**
+     * @return string
+     */
     public function getRelativePath()
     {
         return $this->relativePath;
     }
 
+    /**
+     * @return string
+     */
     public function getCode()
     {
         return $this->code;

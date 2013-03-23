@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Application;
+namespace QafooLabs\Refactoring\Adapters\Symfony;
 
 use Symfony\Component\Console\Application;
 

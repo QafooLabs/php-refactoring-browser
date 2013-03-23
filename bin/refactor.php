@@ -1,6 +1,6 @@
 <?php
 
-use QafooLabs\Refactoring\Application\CliApplication;
+use QafooLabs\Refactoring\Adapters\Symfony\CliApplication;
 
 require_once __DIR__ . "/../vendor/autoload.php";
 

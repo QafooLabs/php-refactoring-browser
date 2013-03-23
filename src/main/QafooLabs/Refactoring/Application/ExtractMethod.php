@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Application\Service;
+namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
