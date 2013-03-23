@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 
 use QafooLabs\Refactoring\Application\Service\ExtractMethod;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
+use QafooLabs\Refactoring\Domain\Model\File;
 
 /**
  * Symfony Adapter to execute the Extract Method Refactoring
@@ -29,7 +30,7 @@ class ExtractMethodCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = $input->getArgument('file');
+        $file = File::createFromPath($input->getArgument('file'), getcwd());
         $range = LineRange::fromString($input->getArgument('range'));
         $newMethodName = $input->getArgument('newmethod');
 
