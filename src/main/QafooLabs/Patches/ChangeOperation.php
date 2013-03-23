@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Services\Diffs;
+namespace QafooLabs\Patches;
 
 class ChangeOperation implements Operation
 {

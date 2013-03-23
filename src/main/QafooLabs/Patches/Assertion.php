@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Services\Diffs;
+namespace QafooLabs\Patches;
 
 use Assert\Assertion as BaseAssertion;
 

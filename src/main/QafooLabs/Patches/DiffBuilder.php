@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Services\Diffs;
+namespace QafooLabs\Patches;
 
 /**
  * Works on the contents of a file and records changes in unified diff format.

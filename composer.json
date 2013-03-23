@@ -23,7 +23,8 @@
 
     "autoload": {
         "psr-0": {
-            "QafooLabs\\Refactoring": "src/main/"
+            "QafooLabs\\Refactoring": "src/main/",
+            "QafooLabs\\Patches": "src/main/"
         }
     },
 

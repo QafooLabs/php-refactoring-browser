@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Services\Diffs;
+namespace QafooLabs\Patches;
 
 class HunkTest extends \PHPUnit_Framework_TestCase
 {

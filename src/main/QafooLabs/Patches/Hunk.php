@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Services\Diffs;
+namespace QafooLabs\Patches;
 
 /**
  * Represents a Hunk in a Diff.

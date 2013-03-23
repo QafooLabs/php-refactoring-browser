@@ -1,6 +1,6 @@
 <?php
 
-namespace QafooLabs\Refactoring\Services\Diffs;
+namespace QafooLabs\Patches;
 
 class DiffBuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -108,7 +108,7 @@ DIFF
     {
         $builder = new DiffBuilder("foo");
 
-        $this->setExpectedException('QafooLabs\Refactoring\Services\Diffs\UnknownLineException', 'Accessed non existing line 10 in code.');
+        $this->setExpectedException('QafooLabs\Patches\UnknownLineException', 'Accessed non existing line 10 in code.');
         $builder->removeLine(10);
     }
 
@@ -116,7 +116,7 @@ DIFF
     {
         $builder = new DiffBuilder("foo");
 
-        $this->setExpectedException('QafooLabs\Refactoring\Services\Diffs\UnknownLineException', 'Accessed non existing line 10 in code.');
+        $this->setExpectedException('QafooLabs\Patches\UnknownLineException', 'Accessed non existing line 10 in code.');
         $builder->changeLines(10, array('foo'));
     }
 
