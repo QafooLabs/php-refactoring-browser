@@ -7,10 +7,6 @@ namespace QafooLabs\Refactoring\Services\Diffs;
  */
 class DiffBuilder
 {
-    const OPERATION_APPEND = 'append';
-    const OPERATION_CHANGE = 'change';
-    const OPERATION_REMOVE = 'remove';
-
     private $lines = null;
 
     private $operations = array();

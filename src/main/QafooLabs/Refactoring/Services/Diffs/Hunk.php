@@ -2,6 +2,9 @@
 
 namespace QafooLabs\Refactoring\Services\Diffs;
 
+/**
+ * Represents a Hunk in a Diff.
+ */
 class Hunk
 {
     protected $before;
@@ -20,6 +23,14 @@ class Hunk
         return new Hunk(array(), array(), array(), 0, 0);
     }
 
+    /**
+     * Create a hunk for one given line in a set of lines.
+     *
+     * @param int $line 0-indexed
+     * @param array $fromLines
+     *
+     * @return Hunk
+     */
     public static function forLine($line, array $fromLines)
     {
         $before = self::getLinesBefore($line, $fromLines);
@@ -71,11 +82,6 @@ class Hunk
         $this->size = $size;
     }
 
-    public function newLines(array $newLines)
-    {
-        return new Hunk($this->before, $this->after, $newLines, $this->start, $this->size);
-    }
-
     public function removeLines()
     {
         return $this->newLines(array('-' . ltrim($this->lines[0])));
@@ -99,6 +105,11 @@ class Hunk
             ),
             array_slice($this->lines, 1)
         ));
+    }
+
+    private function newLines(array $newLines)
+    {
+        return new Hunk($this->before, $this->after, $newLines, $this->start, $this->size);
     }
 
     public function __toString()
