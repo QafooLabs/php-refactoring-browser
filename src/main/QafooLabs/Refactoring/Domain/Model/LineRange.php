@@ -9,10 +9,22 @@ class LineRange
 {
     private $lines = array();
 
-    static public function fromString($range)
+    /**
+     * @return LineRange
+     */
+    static public function fromSingleLine($line)
     {
-        list($start, $end) = explode("-", $range);
+        $list = new self();
+        $list->lines[$line] = $line;
 
+        return $list;
+    }
+
+    /**
+     * @return LineRange
+     */
+    static public function fromLines($start, $end)
+    {
         $list = new self();
 
         for ($i = $start; $i <= $end; $i++) {
@@ -20,6 +32,16 @@ class LineRange
         }
 
         return $list;
+    }
+
+    /**
+     * @return LineRange
+     */
+    static public function fromString($range)
+    {
+        list($start, $end) = explode("-", $range);
+
+        return self::fromLines($start, $end);
     }
 
     public function isInRange($line)

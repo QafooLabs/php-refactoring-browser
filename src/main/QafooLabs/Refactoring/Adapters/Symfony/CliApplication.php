@@ -10,6 +10,7 @@ class CliApplication extends Application
     {
         $commands = parent::getDefaultCommands();
         $commands[] = new Commands\ExtractMethodCommand();
+        $commands[] = new Commands\RenameLocalVariableCommand();
 
         return $commands;
     }

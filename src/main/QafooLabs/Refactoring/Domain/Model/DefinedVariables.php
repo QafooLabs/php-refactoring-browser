@@ -28,7 +28,17 @@ class DefinedVariables extends ValueObject
 
     public function __construct(array $localVariables, array $assignments)
     {
-        $this->localVariables = array_unique($localVariables);
-        $this->assignments = array_unique($assignments);
+        $this->localVariables = $localVariables;
+        $this->assignments = $assignments;
+    }
+
+    public function getLocalVariables()
+    {
+        return array_keys($this->localVariables);
+    }
+
+    public function getAssignments()
+    {
+        return array_keys($this->assignments);
     }
 }

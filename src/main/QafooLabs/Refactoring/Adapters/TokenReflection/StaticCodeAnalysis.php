@@ -41,7 +41,6 @@ class StaticCodeAnalysis implements CodeAnalysis
     {
         $this->broker = new Broker(new Memory);
         $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
-        $endLineClass = 0;
         $lastLine = $range->getEnd();
 
         foreach ($file->getNamespaces() as $namespace) {
@@ -51,11 +50,28 @@ class StaticCodeAnalysis implements CodeAnalysis
                         return $method->getEndLine();
                     }
                 }
-
-                $endLineClass = $class->getEndLine() - 1;
             }
         }
 
-        return $endLineClass;
+        throw new \InvalidArgumentException("Could not find method end line.");
+    }
+
+    public function getMethodStartLine(File $file, LineRange $range)
+    {
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+        $lastLine = $range->getEnd();
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->geTclasses() as $class) {
+                foreach ($class->getMethods() as $method) {
+                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
+                        return $method->getStartLine();
+                    }
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException("Could not find method start line.");
     }
 }

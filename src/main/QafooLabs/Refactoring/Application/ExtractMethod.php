@@ -8,6 +8,9 @@ use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 use QafooLabs\Refactoring\Domain\Services\Editor;
 
+/**
+ * Extract Method Refactoring
+ */
 class ExtractMethod
 {
     /**
@@ -53,15 +56,15 @@ class ExtractMethod
     private function generateMethodCall($newMethodName, $definedVariables, $isStatic)
     {
         $ws = str_repeat(' ', 8);
-        $argumentLine = $this->implodeVariables($definedVariables->localVariables);
+        $argumentLine = $this->implodeVariables($definedVariables->getLocalVariables());
 
         $code = $isStatic ? 'self::%s(%s);' : '$this->%s(%s);';
         $call = sprintf($code, $newMethodName, $argumentLine);
 
-        if (count($definedVariables->assignments) == 1) {
-            $call = '$' . $definedVariables->assignments[0] . ' = ' . $call;
-        } else if (count($definedVariables->assignments) > 1) {
-            $call = 'list(' . $this->implodeVariables($definedVariables->assignments) . ') = ' . $call;
+        if (count($definedVariables->getAssignments()) == 1) {
+            $call = '$' . $definedVariables->getAssignments()[0] . ' = ' . $call;
+        } else if (count($definedVariables->getAssignments()) > 1) {
+            $call = 'list(' . $this->implodeVariables($definedVariables->getAssignments()) . ') = ' . $call;
         }
 
         return $ws . $call;
@@ -72,15 +75,15 @@ class ExtractMethod
         $ws = str_repeat(' ', 8);
         $wsm = str_repeat(' ', 4);
 
-        if (count($definedVariables->assignments) == 1) {
+        if (count($definedVariables->getAssignments()) == 1) {
             $selectedCode[] = '';
-            $selectedCode[] = $ws . 'return $' . $definedVariables->assignments[0] . ';';
-        } else if (count($definedVariables->assignments) > 1) {
+            $selectedCode[] = $ws . 'return $' . $definedVariables->getAssignments()[0] . ';';
+        } else if (count($definedVariables->getAssignments()) > 1) {
             $selectedCode[] = '';
-            $selectedCode[] = $ws . 'return array(' . $this->implodeVariables($definedVariables->assignments) . ');';
+            $selectedCode[] = $ws . 'return array(' . $this->implodeVariables($definedVariables->getAssignments()) . ');';
         }
 
-        $paramLine = $this->implodeVariables($definedVariables->localVariables);
+        $paramLine = $this->implodeVariables($definedVariables->getLocalVariables());
 
         $methodCode = array_merge(
             array('', $wsm . sprintf('private%sfunction %s(%s)', $isStatic ? ' static ' : ' ', $newMethodName, $paramLine), $wsm . '{'),

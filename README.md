@@ -19,19 +19,22 @@ The refactoring browser is used with:
 
 List of Refactorings to implement:
 
-* Extract Method
-* Rename Method
+* Extract Method (Prototype Done)
 * Rename Local Variable
+* Rename Method
+    * Private Methods Only first
 * Rename Instance Variable
+    * Private Variables Only First
 * Rename Class (PSR-0 aware)
 * Rename Namespace (PSR-0 aware)
 * Extract Interface
 
-Design Goal:
+## Design Goals
 
-* Be independent of any Type Inference Engine (PDepend, PHP Analyzer) via Ports+Adapters
+* Be independent of third-party libraries and any Type Inference Engine (PDepend, PHP Analyzer) via Ports+Adapters
+* Apply Domain-Driven-Design and find suitable Bounded Contexts
 
-Processing steps:
+## Processing steps
 
 * Update Type Database (based on filemtime or md5 hashes?)
 * Analyze Refactoring (pre conditions)

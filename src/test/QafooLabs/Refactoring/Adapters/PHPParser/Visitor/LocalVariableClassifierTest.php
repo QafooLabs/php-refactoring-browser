@@ -14,7 +14,7 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
 
         $classifier->enterNode($variable);
 
-        $this->assertEquals(array('foo'), $classifier->getLocalVariables());
+        $this->assertEquals(array('foo' => array(-1)), $classifier->getLocalVariables());
     }
 
     /**
@@ -30,7 +30,7 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
 
         $classifier->enterNode($assign);
 
-        $this->assertEquals(array('foo'), $classifier->getAssignments());
+        $this->assertEquals(array('foo' => array(-1)), $classifier->getAssignments());
     }
 
     /**
