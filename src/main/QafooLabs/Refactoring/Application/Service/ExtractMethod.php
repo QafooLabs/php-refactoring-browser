@@ -6,6 +6,7 @@ use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
+use QafooLabs\Refactoring\Domain\Services\Editor;
 
 class ExtractMethod
 {
@@ -19,32 +20,34 @@ class ExtractMethod
      */
     private $codeAnalysis;
 
-    public function __construct(VariableScanner $variableScanner, CodeAnalysis $codeAnalysis)
+    /**
+     * @var \QafooLabs\Refactoring\Domain\Services\Editor
+     */
+    private $editor;
+
+    public function __construct(VariableScanner $variableScanner, CodeAnalysis $codeAnalysis, Editor $editor)
     {
         $this->variableScanner = $variableScanner;
         $this->codeAnalysis = $codeAnalysis;
+        $this->editor = $editor;
     }
 
     public function refactor(File $file, LineRange $range, $newMethodName)
     {
-        $patchBuilder = new \QafooLabs\Patches\PatchBuilder($file->getCode());
-
         $isStatic = $this->codeAnalysis->isMethodStatic($file, $range);
+        $extractedMethodEndsOnLine = $this->codeAnalysis->getMethodEndLine($file, $range);
+        $selectedCode = $range->sliceCode($file->getCode());
 
         $definedVariables = $this->variableScanner->scanForVariables($file, $range);
 
         $methodCall = $this->generateMethodCall($newMethodName, $definedVariables, $isStatic);
+        $methodCode = $this->generateExtractedMethodCode($newMethodName, $selectedCode , $definedVariables, $isStatic);
 
-        $patchBuilder->replaceLines($range->getStart(), $range->getEnd(), array($methodCall));
+        $buffer = $this->editor->openBuffer($file);
+        $buffer->replace($range, array($methodCall));
+        $buffer->append($extractedMethodEndsOnLine, $methodCode);
 
-        $selectedCode = $range->sliceCode($file->getCode());
-
-        $methodCode = $this->appendNewMethod($newMethodName, $selectedCode , $definedVariables, $isStatic);
-
-        $methodEndLine = $this->codeAnalysis->getMethodEndLine($file, $range);
-        $patchBuilder->appendToLine($methodEndLine, array_merge(array(''), $methodCode));
-
-        return $patchBuilder->generateUnifiedDiff();
+        $this->editor->save();
     }
 
     private function generateMethodCall($newMethodName, $definedVariables, $isStatic)
@@ -64,7 +67,7 @@ class ExtractMethod
         return $ws . $call;
     }
 
-    private function appendNewMethod($newMethodName, $selectedCode, $definedVariables, $isStatic)
+    private function generateExtractedMethodCode($newMethodName, $selectedCode, $definedVariables, $isStatic)
     {
         $ws = str_repeat(' ', 8);
         $wsm = str_repeat(' ', 4);
@@ -80,7 +83,7 @@ class ExtractMethod
         $paramLine = $this->implodeVariables($definedVariables->localVariables);
 
         $methodCode = array_merge(
-            array($wsm . sprintf('private%sfunction %s(%s)', $isStatic ? ' static ' : ' ', $newMethodName, $paramLine), $wsm . '{'),
+            array('', $wsm . sprintf('private%sfunction %s(%s)', $isStatic ? ' static ' : ' ', $newMethodName, $paramLine), $wsm . '{'),
             $selectedCode,
             array($wsm . '}')
         );

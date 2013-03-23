@@ -15,7 +15,8 @@
 
     "require-dev": {
         "behat/behat": "*",
-        "mikey179/vfsStream": "*"
+        "mikey179/vfsStream": "*",
+        "phake/phake": "@stable"
     },
 
     "repositories": [

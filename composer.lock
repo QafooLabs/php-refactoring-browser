@@ -1,5 +1,5 @@
 {
-    "hash": "1a65b167c8dc65315a0b2593e05e62c1",
+    "hash": "6461fe7411ffee36b1f57edfa727a31c",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -1307,6 +1307,50 @@
             "time": "2013-02-26 22:07:16"
         },
         {
+            "name": "phake/phake",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/mlively/Phake.git",
+                "reference": "v1.0.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/mlively/Phake/zipball/v1.0.3",
+                "reference": "v1.0.3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "src"
+            ],
+            "license": [
+                "BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Mike Lively",
+                    "email": "m@digitalsandwich.com"
+                }
+            ],
+            "description": "The Phake mock testing library",
+            "homepage": "https://github.com/mlively/Phake",
+            "keywords": [
+                "mock",
+                "testing"
+            ],
+            "time": "2012-05-14 08:06:51"
+        },
+        {
             "name": "symfony/dependency-injection",
             "version": "2.2.x-dev",
             "target-dir": "Symfony/Component/DependencyInjection",
@@ -1525,7 +1569,8 @@
     "stability-flags": {
         "scrutinizer/php-analyzer": 20,
         "beberlei/assert": 0,
-        "andrewsville/php-token-reflection": 0
+        "andrewsville/php-token-reflection": 0,
+        "phake/phake": 0
     },
     "platform": [
 

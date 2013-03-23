@@ -11,6 +11,9 @@ use Symfony\Component\Console\Command\Command;
 use QafooLabs\Refactoring\Application\Service\ExtractMethod;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
+use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
+use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
+
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 
@@ -36,11 +39,12 @@ class ExtractMethodCommand extends Command
         $range = LineRange::fromString($input->getArgument('range'));
         $newMethodName = $input->getArgument('newmethod');
 
-        $codeAnalysis = new StaticCodeAnalysis();
         $scanner = new ParserVariableScanner();
-        $extractMethod = new ExtractMethod($scanner, $codeAnalysis);
+        $codeAnalysis = new StaticCodeAnalysis();
+        $editor = new PatchEditor(new OutputPatchCommand($output));
 
-        $output->writeln($extractMethod->refactor($file, $range, $newMethodName));
+        $extractMethod = new ExtractMethod($scanner, $codeAnalysis, $editor);
+        $extractMethod->refactor($file, $range, $newMethodName);
     }
 }
 

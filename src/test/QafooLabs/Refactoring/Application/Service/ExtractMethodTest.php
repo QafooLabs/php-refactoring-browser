@@ -6,6 +6,7 @@ use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
+use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
 
 class ExtractMethodTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,9 +15,13 @@ class ExtractMethodTest extends \PHPUnit_Framework_TestCase
      */
     public function testRefactorSimpleMethod()
     {
-        $codeAnalysis = new StaticCodeAnalysis();
+        $applyCommand = \Phake::mock('QafooLabs\Refactoring\Adapters\Patches\ApplyPatchCommand');
+
         $scanner = new ParserVariableScanner();
-        $refactoring = new ExtractMethod($scanner, $codeAnalysis);
+        $codeAnalysis = new StaticCodeAnalysis();
+        $editor = new PatchEditor($applyCommand);
+
+        $refactoring = new ExtractMethod($scanner, $codeAnalysis, $editor);
 
         $patch = $refactoring->refactor(new File("foo.php", <<<'PHP'
 <?php
@@ -31,7 +36,7 @@ PHP
             ), LineRange::fromString("6-6"), "helloWorld");
 
 
-        $this->assertEquals(<<<'CODE'
+        \Phake::verify($applyCommand)->apply(<<<'CODE'
 @@ -4,5 +4,10 @@
      public function main()
      {
@@ -45,6 +50,6 @@ PHP
 +    }
  }
 CODE
-            , $patch);
+        );
     }
 }
