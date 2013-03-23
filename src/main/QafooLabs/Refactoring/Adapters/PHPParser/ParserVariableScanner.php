@@ -4,6 +4,7 @@ namespace QafooLabs\Refactoring\Adapters\PHPParser;
 
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LineRangeStatementCollector;
@@ -45,6 +46,6 @@ class ParserVariableScanner implements VariableScanner
         $localVariables = $localVariableClassifier->getUsedLocalVariables();
         $assignments = $localVariableClassifier->getAssignments();
 
-        return array(array_unique($localVariables), array_unique($assignments));
+        return new DefinedVariables($localVariables, $assignments);
     }
 }

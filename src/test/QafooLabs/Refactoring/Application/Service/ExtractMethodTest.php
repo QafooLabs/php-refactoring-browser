@@ -9,11 +9,15 @@ use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
 
 class ExtractMethodTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @group integration
+     */
     public function testRefactorSimpleMethod()
     {
-        $codeanalysis = new StaticCodeAnalysis();
+        $codeAnalysis = new StaticCodeAnalysis();
         $scanner = new ParserVariableScanner();
-        $refactoring = new ExtractMethod($scanner, $codeanalysis);
+        $refactoring = new ExtractMethod($scanner, $codeAnalysis);
+
         $patch = $refactoring->refactor(new File("foo.php", <<<'PHP'
 <?php
 class Foo
