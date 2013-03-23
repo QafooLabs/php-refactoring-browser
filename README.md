@@ -20,7 +20,11 @@ The refactoring browser is used with:
 List of Refactorings to implement:
 
 * Extract Method (Prototype Done)
+    * Check code after line range if assignments are actually used, or just internal to extracted method
+    * Check how previously defined arrays work when not fully part of extracted method.
 * Rename Local Variable (Prototype Done)
+* Convert Local Variable to Instance Variable
+* Convert Magic Value to Constant
 * Rename Method
     * Private Methods Only first
 * Rename Instance Variable
