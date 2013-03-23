@@ -15,4 +15,10 @@
             <directory>src/test</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>src/main</directory>
+        </whitelist>
+    </filter>
 </phpunit>

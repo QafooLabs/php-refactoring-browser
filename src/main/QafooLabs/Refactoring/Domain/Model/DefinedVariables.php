@@ -26,7 +26,7 @@ class DefinedVariables extends ValueObject
      */
     protected $assignments;
 
-    public function __construct(array $localVariables, array $assignments)
+    public function __construct(array $localVariables = array(), array $assignments = array())
     {
         $this->localVariables = $localVariables;
         $this->assignments = $assignments;

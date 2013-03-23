@@ -3,6 +3,7 @@
 namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
 use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
@@ -14,6 +15,12 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
         $scanner = \Phake::mock('QafooLabs\Refactoring\Domain\Services\VariableScanner');
         $codeAnalysis = \Phake::mock('QafooLabs\Refactoring\Domain\Services\CodeAnalysis');
         $editor = \Phake::mock('QafooLabs\Refactoring\Domain\Services\Editor');
+        $buffer = \Phake::mock('QafooLabs\Refactoring\Domain\Model\EditorBuffer');
+
+        \Phake::when($scanner)->scanForVariables(\Phake::anyParameters())->thenReturn(
+            new DefinedVariables(array('helloWorld' => array(6)))
+        );
+        \Phake::when($editor)->openBuffer(\Phake::anyParameters())->thenReturn($buffer);
 
         $refactoring = new RenameLocalVariable($scanner, $codeAnalysis, $editor);
 
@@ -28,5 +35,7 @@ class Foo
 }
 PHP
             ), 6, '$helloWorld', '$var');
+
+        \Phake::verify($buffer)->replaceString(6, '$helloWorld', '$var');
     }
 }

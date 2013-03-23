@@ -42,31 +42,37 @@ class RenameLocalVariable
         $newName = ltrim($newName, '$');
 
         $methodRange = $this->findMethodRange($file, $line);
-        $declaredVariables = $this->variableScanner->scanForVariables($file, $methodRange);
+        $definedVariables = $this->variableScanner->scanForVariables($file, $methodRange);
 
-        if ( ! isset($declaredVariables->localVariables[$oldName]) &&
-             ! isset($declaredVariables->assignments[$oldName])) {
+        if ( ! isset($definedVariables->localVariables[$oldName]) &&
+             ! isset($definedVariables->assignments[$oldName])) {
 
             return;
         }
 
         $buffer = $this->editor->openBuffer($file);
 
-        if (isset($declaredVariables->localVariables[$oldName])) {
-            foreach ($declaredVariables->localVariables[$oldName] as $line) {
-                $buffer->replaceString($line, '$' . $oldName, '$' . $newName);
-            }
-        }
-
-        if (isset($declaredVariables->assignments[$oldName])) {
-            foreach ($declaredVariables->assignments[$oldName] as $line) {
-                $buffer->replaceString($line, '$' . $oldName, '$' . $newName);
-            }
-        }
+        $this->replaceString($buffer, $definedVariables->localVariables, $oldName, $newName);
+        $this->replaceString($buffer, $definedVariables->assignments, $oldName, $newName);
 
         $this->editor->save();
     }
 
+    private function replaceString($buffer, array $variables, $oldName, $newName)
+    {
+        if (isset($variables[$oldName])) {
+            foreach ($variables[$oldName] as $line) {
+                $buffer->replaceString($line, '$' . $oldName, '$' . $newName);
+            }
+        }
+    }
+
+    /**
+     * @param File $file
+     * @param integer $line
+     *
+     * @return LineRange
+     */
     private function findMethodRange(File $file, $line)
     {
         $range = LineRange::fromSingleLine($line);
