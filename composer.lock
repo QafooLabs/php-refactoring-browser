@@ -1,5 +1,5 @@
 {
-    "hash": "6461fe7411ffee36b1f57edfa727a31c",
+    "hash": "1991b36eaede468c65fe9f4184d384b2",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -1570,6 +1570,8 @@
         "scrutinizer/php-analyzer": 20,
         "beberlei/assert": 0,
         "andrewsville/php-token-reflection": 0,
+        "symfony/finder": 0,
+        "symfony/process": 0,
         "phake/phake": 0
     },
     "platform": [

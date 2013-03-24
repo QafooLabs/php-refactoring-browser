@@ -1,8 +1,9 @@
+#!/usr/bin/env php
 <?php
 
 use QafooLabs\Refactoring\Adapters\Symfony\CliApplication;
 
-require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 $application = new CliApplication();
 $application->run();

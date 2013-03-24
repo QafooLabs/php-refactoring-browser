@@ -10,7 +10,9 @@
     "require": {
         "scrutinizer/php-analyzer": "dev-master",
         "beberlei/assert": "@stable",
-        "andrewsville/php-token-reflection": "@stable"
+        "andrewsville/php-token-reflection": "@stable",
+        "symfony/finder": "@stable",
+        "symfony/process": "@stable"
     },
 
     "require-dev": {
