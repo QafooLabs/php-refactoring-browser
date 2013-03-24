@@ -5,7 +5,12 @@ multiple existing libraries:
 
 * AST from Nikics [PHP Parser](https://github.com/nikic/PHP-Parser) project
 * [PHP Token Reflection](https://github.com/Andrewsville/PHP-Token-Reflection) from Ondřej Nešpor
-* [PHP Analyzer](https://github.com/scrutinizer-ci/php-analyzer) by Johannes Schmitt for Type Inference 
+* [PHP Analyzer](https://github.com/scrutinizer-ci/php-analyzer) by Johannes Schmitt for Type Inference
+
+Based on this the Browser contains two distinct components:
+
+* ``PatchBuilder`` allows to build patches based on operations on a file.
+* ``Refactoring`` contains the actual Refactoring domain and adapters to third party libraries.
 
 The refactoring browser is used with:
 
