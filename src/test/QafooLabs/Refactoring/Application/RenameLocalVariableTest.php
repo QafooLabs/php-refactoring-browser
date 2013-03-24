@@ -3,6 +3,7 @@
 namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\Variable;
 use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 
@@ -28,6 +29,7 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
             new DefinedVariables(array('helloWorld' => array(6)))
         );
         \Phake::when($this->editor)->openBuffer(\Phake::anyParameters())->thenReturn($buffer);
+        \Phake::when($this->codeAnalysis)->findMethodRange(\Phake::anyParameters())->thenReturn(LineRange::fromSingleLine(1));
 
         $patch = $this->refactoring->refactor(new File("foo.php", <<<'PHP'
 <?php

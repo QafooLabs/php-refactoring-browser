@@ -60,19 +60,5 @@ class ConvertLocalToInstanceVariable
 
         $this->editor->save();
     }
-
-    /**
-     * @param File $file
-     * @param integer $line
-     *
-     * @return LineRange
-     */
-    private function findMethodRange(File $file, $line)
-    {
-        $range = LineRange::fromSingleLine($line);
-        $methodStartLine = $this->codeAnalysis->getMethodStartLine($file, $range);
-        $methodEndLine = $this->codeAnalysis->getMethodEndLine($file, $range);
-
-        return LineRange::fromLines($methodStartLine, $methodEndLine);
-    }
 }
+
