@@ -37,6 +37,8 @@ PHP
 
 
         \Phake::verify($applyCommand)->apply(<<<'CODE'
+--- a/foo.php
++++ b/foo.php
 @@ -4,5 +4,10 @@
      public function main()
      {

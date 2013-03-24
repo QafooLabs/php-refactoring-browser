@@ -23,6 +23,7 @@ List of Refactorings to implement:
     * Check code after line range if assignments are actually used, or just internal to extracted method
     * Check how previously defined arrays work when not fully part of extracted method.
 * Rename Local Variable (Prototype Done)
+* Optimize use statements
 * Convert Local Variable to Instance Variable
 * Convert Magic Value to Constant
 * Rename Method
@@ -36,11 +37,14 @@ List of Refactorings to implement:
 ## Design Goals
 
 * Be independent of third-party libraries and any Type Inference Engine (PDepend, PHP Analyzer) via Ports+Adapters
-* Apply Domain-Driven-Design and find suitable Bounded Contexts
+* Apply Domain-Driven-Design and find suitable Bounded Contexts and Ubiquitous Language within them
+* Avoid primitive obsession by introducing value objects for useful constructs in the domain
 
 ## Processing steps
 
-* Update Type Database (based on filemtime or md5 hashes?)
+When you run the Refactoring Browser the following steps happen:
+
+* Update Type Database (based on filemtime or md5 hashes?) when necessary for refactoring
 * Analyze Refactoring (pre conditions)
 * Generate Patch to perform refactoring
-* Optionally apply patch
+* Optionally apply patch (Currently just pipe to patch)

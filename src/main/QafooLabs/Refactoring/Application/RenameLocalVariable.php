@@ -3,8 +3,10 @@
 namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\Variable;
 use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
+use QafooLabs\Refactoring\Domain\Model\RefactoringException;
 
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
@@ -37,18 +39,23 @@ class RenameLocalVariable
         $this->editor = $editor;
     }
 
-    public function refactor(File $file, $line, $oldName, $newName)
+    public function refactor(File $file, $line, Variable $oldName, Variable $newName)
     {
-        $oldName = ltrim($oldName, '$');
-        $newName = ltrim($newName, '$');
+        if ( ! $oldName->isLocal()) {
+            throw RefactoringException::variableNotLocal($oldName);
+        }
 
+        if ( ! $newName->isLocal()) {
+            throw RefactoringException::variableNotLocal($newName);
+        }
+
+        $selectedMethodLineRange = $this->findMethodRange($file, $line);
         $definedVariables = $this->variableScanner->scanForVariables(
-            $file,
-            $this->findMethodRange($file, $line)
+            $file, $selectedMethodLineRange
         );
 
         if ( ! $this->isVariableInRange($definedVariables, $oldName)) {
-            return;
+            throw RefactoringException::variableNotInRange($oldName, $selectedMethodLineRange);
         }
 
         $buffer = $this->editor->openBuffer($file);
@@ -58,25 +65,25 @@ class RenameLocalVariable
         $this->editor->save();
     }
 
-    private function isVariableInRange(DefinedVariables $definedVariables, $oldName)
+    private function isVariableInRange(DefinedVariables $definedVariables, Variable $oldName)
     {
         return (
-            isset($definedVariables->localVariables[$oldName]) ||
-            isset($definedVariables->assignments[$oldName])
+            isset($definedVariables->localVariables[$oldName->getName()]) ||
+            isset($definedVariables->assignments[$oldName->getName()])
         );
     }
 
-    private function replaceString($buffer, DefinedVariables $definedVariables, $oldName, $newName)
+    private function replaceString($buffer, DefinedVariables $definedVariables, Variable $oldName, Variable $newName)
     {
         $this->replaceStringInArray($buffer, $definedVariables->localVariables, $oldName, $newName);
         $this->replaceStringInArray($buffer, $definedVariables->assignments, $oldName, $newName);
     }
 
-    private function replaceStringInArray($buffer, array $variables, $oldName, $newName)
+    private function replaceStringInArray($buffer, array $variables, Variable $oldName, Variable $newName)
     {
-        if (isset($variables[$oldName])) {
-            foreach ($variables[$oldName] as $line) {
-                $buffer->replaceString($line, '$' . $oldName, '$' . $newName);
+        if (isset($variables[$oldName->getName()])) {
+            foreach ($variables[$oldName->getName()] as $line) {
+                $buffer->replaceString($line, $oldName->getToken(), $newName->getToken());
             }
         }
     }

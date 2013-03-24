@@ -11,23 +11,22 @@ use Symfony\Component\Console\Command\Command;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\Variable;
 
-use QafooLabs\Refactoring\Application\RenameLocalVariable;
+use QafooLabs\Refactoring\Application\ConvertLocalToInstanceVariable;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
 use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
 use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
 
-class RenameLocalVariableCommand extends Command
+class ConvertLocalToInstanceVariableCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('rename-local-variable')
-            ->setDescription('Rename a local variable inside a method')
-            ->addArgument('file', InputArgument::REQUIRED, 'File that contains list of statements to extract')
-            ->addArgument('line', InputArgument::REQUIRED, 'Line where the local variable is defined.')
-            ->addArgument('name', InputArgument::REQUIRED, 'Current name of the variable, with or without the $')
-            ->addArgument('new-name', InputArgument::REQUIRED, 'New name of the variable')
+            ->setName('convert-local-to-instance-variable')
+            ->setDescription('Convert a local variable to an instance variable.')
+            ->addArgument('file', InputArgument::REQUIRED, 'File that contains the local variable.')
+            ->addArgument('line', InputArgument::REQUIRED, 'Line of one of the local variables occurances.')
+            ->addArgument('variable', InputArgument::REQUIRED, 'Name of the variable with or without $.')
         ;
     }
 
@@ -35,14 +34,13 @@ class RenameLocalVariableCommand extends Command
     {
         $file = File::createFromPath($input->getArgument('file'), getcwd());
         $line = (int)$input->getArgument('line');
-        $name = new Variable($input->getArgument('name'));
-        $newName = new Variable($input->getArgument('new-name'));
+        $variable = new Variable($input->getArgument('variable'));
 
         $scanner = new ParserVariableScanner();
         $codeAnalysis = new StaticCodeAnalysis();
         $editor = new PatchEditor(new OutputPatchCommand($output));
 
-        $renameLocalVariable = new RenameLocalVariable($scanner, $codeAnalysis, $editor);
-        $renameLocalVariable->refactor($file, $line, $name, $newName);
+        $convertRefactoring = new ConvertLocalToInstanceVariable($scanner, $codeAnalysis, $editor);
+        $convertRefactoring->refactor($file, $line, $variable);
     }
 }
