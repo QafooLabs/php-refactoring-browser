@@ -24,7 +24,7 @@ List of Refactorings to implement:
     * Check how previously defined arrays work when not fully part of extracted method.
 * Rename Local Variable (Prototype Done)
 * Optimize use statements
-* Convert Local Variable to Instance Variable
+* Convert Local Variable to Instance Variable (Prototype Done)
 * Convert Magic Value to Constant
 * Rename Method
     * Private Methods Only first
