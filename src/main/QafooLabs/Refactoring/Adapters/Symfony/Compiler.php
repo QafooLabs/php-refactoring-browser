@@ -62,7 +62,6 @@ class Compiler
         foreach ($finder as $file) {
             $this->addFile($phar, $file);
         }
-        #$this->addFile($phar, new \SplFileInfo(__DIR__ . '/Autoload/ClassLoader.php'), false);
 
         $finder = new Finder();
         $finder->files()
@@ -77,25 +76,12 @@ class Compiler
             $this->addFile($phar, $file);
         }
 
-        /*$this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/autoload.php'));
-        $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/composer/autoload_namespaces.php'));
-        $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/composer/autoload_classmap.php'));
-        $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/composer/autoload_real.php'));
-        if (file_exists(__DIR__.'/../../vendor/composer/include_paths.php')) {
-            $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/composer/include_paths.php'));
-        }
-        $this->addFile($phar, new \SplFileInfo(__DIR__.'/../../vendor/composer/ClassLoader.php'));*/
         $this->addRefactorBin($phar);
 
         // Stubs
         $phar->setStub($this->getStub());
 
         $phar->stopBuffering();
-
-        // disabled for interoperability with systems without gzip ext
-        // $phar->compressFiles(\Phar::GZ);
-
-        //$this->addFile($phar, new \SplFileInfo(__DIR__.'/../../LICENSE'), false);
 
         unset($phar);
     }
@@ -159,30 +145,11 @@ class Compiler
 
     private function getStub()
     {
-        $stub = <<<'EOF'
+        return <<<'EOF'
 #!/usr/bin/env php
 <?php
-/*
- * This file is part of Composer.
- *
- * (c) Nils Adermann <naderman@naderman.de>
- *     Jordi Boggiano <j.boggiano@seld.be>
- *
- * For the full copyright and license information, please view
- * the license that is located at the bottom of this file.
- */
-
 Phar::mapPhar('refactor.phar');
 
-EOF;
-
-        // add warning once the phar is older than 30 days
-        if (preg_match('{^[a-f0-9]+$}', $this->version)) {
-            $warningTime = time() + 30*86400;
-            $stub .= "define('COMPOSER_DEV_WARNING_TIME', $warningTime);\n";
-        }
-
-        return $stub . <<<'EOF'
 require 'phar://refactor.phar/src/bin/refactor';
 
 __HALT_COMPILER();
