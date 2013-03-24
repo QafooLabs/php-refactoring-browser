@@ -41,4 +41,17 @@ class DefinedVariables extends ValueObject
     {
         return array_keys($this->assignments);
     }
+
+    /**
+     * Does list contain the given variable?
+     *
+     * @return bool
+     */
+    public function contains(Variable $variable)
+    {
+        return (
+            isset($this->localVariables[$variable->getName()]) ||
+            isset($this->assignments[$variable->getName()])
+        );
+    }
 }

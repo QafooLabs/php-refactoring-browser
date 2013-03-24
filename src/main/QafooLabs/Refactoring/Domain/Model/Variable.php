@@ -49,5 +49,17 @@ class Variable
     {
         return strpos($this->name, 'this->') === 0;
     }
+
+    /**
+     * Create a new variable of the local variable that is an instance variable.
+     */
+    public function convertToInstance()
+    {
+        if ( ! $this->isLocal()) {
+            throw RefactoringException::variableNotLocal($this);
+        }
+
+        return new Variable('$this->' . $this->name);
+    }
 }
 

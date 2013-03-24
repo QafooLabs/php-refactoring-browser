@@ -3,7 +3,16 @@
 namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
+use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\Variable;
+
+use QafooLabs\Refactoring\Domain\Model\RefactoringException;
+use QafooLabs\Refactoring\Domain\Model\EditingSession;
+
+use QafooLabs\Refactoring\Domain\Services\VariableScanner;
+use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
+use QafooLabs\Refactoring\Domain\Services\Editor;
 
 class ConvertLocalToInstanceVariable
 {
@@ -31,10 +40,25 @@ class ConvertLocalToInstanceVariable
 
     public function refactor(File $file, $line, Variable $convertVariable)
     {
+        $instanceVariable = $convertVariable->convertToInstance();
+        $lastPropertyLine = $this->codeAnalysis->getLineOfLastPropertyDefinedInScope($file, $line);
+
+        $selectedMethodLineRange = $this->findMethodRange($file, $line);
         $definedVariables = $this->variableScanner->scanForVariables(
-            $file,
-            $this->findMethodRange($file, $line)
+            $file, $selectedMethodLineRange
         );
+
+        if ( ! $definedVariables->contains($convertVariable)) {
+            throw RefactoringException::variableNotInRange($convertVariable, $selectedMethodLineRange);
+        }
+
+        $buffer = $this->editor->openBuffer($file);
+
+        $session = new EditingSession($buffer);
+        $session->addProperty($lastPropertyLine, $convertVariable->getName());
+        $session->replaceString($definedVariables, $convertVariable, $instanceVariable);
+
+        $this->editor->save();
     }
 
     /**

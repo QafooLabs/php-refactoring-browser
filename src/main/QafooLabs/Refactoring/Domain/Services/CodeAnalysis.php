@@ -39,5 +39,11 @@ interface CodeAnalysis
      * @return int
      */
     public function getMethodEndLine(File $file, LineRange $range);
+
+    /**
+     * @param File $file
+     * @param int $line
+     */
+    public function getLineOfLastPropertyDefinedInScope(File $file, $line);
 }
 

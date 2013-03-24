@@ -37,4 +37,13 @@ class VariableTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($variable->isInstance());
         $this->assertTrue($variable->isLocal());
     }
+
+    public function testCreateInstanceFromLocal()
+    {
+        $local = new Variable('$var');
+        $instance = $local->convertToInstance();
+
+        $this->assertTrue($instance->isInstance());
+        $this->assertFalse($local->isInstance());
+    }
 }

@@ -74,4 +74,28 @@ class StaticCodeAnalysis implements CodeAnalysis
 
         throw new \InvalidArgumentException("Could not find method start line.");
     }
+
+    public function getLineOfLastPropertyDefinedInScope(File $file, $lastLine)
+    {
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getClasses() as $class) {
+                $lastPropertyDefinitionLine = $class->getStartLine() + 1;
+
+                foreach ($class->getMethods() as $method) {
+                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
+                        foreach ($class->getProperties() as $property) {
+                            $lastPropertyDefinitionLine = max($lastPropertyDefinitionLine, $property->getEndLine());
+                        }
+
+                        return $lastPropertyDefinitionLine;
+                    }
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException("Could not find method start line.");
+    }
 }

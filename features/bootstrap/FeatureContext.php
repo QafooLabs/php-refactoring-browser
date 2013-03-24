@@ -83,9 +83,13 @@ class FeatureContext extends BehatContext
      */
     public function thePhpFileShouldBeRefactored($file, PyStringNode $expectedPatch)
     {
-        $output = implode("\n", array_map('trim', explode("\n", rtrim($this->output))));
-        $expectedPatch = implode("\n", array_map('trim', explode("\n", rtrim((string)$expectedPatch))));
+        $output = array_map('trim', explode("\n", rtrim($this->output)));
+        $expectedPatch = array_map('trim', explode("\n", rtrim((string)$expectedPatch)));
 
-        assertEquals($expectedPatch, $output, "Refactored File:\n" . $output);
+        assertEquals(
+            $expectedPatch, $output,
+            "Refactored File:\n" . $this->output . "\n\n" .
+            "Diff:\n" . print_r(array_diff($expectedPatch, $output), true)
+        );
     }
 }

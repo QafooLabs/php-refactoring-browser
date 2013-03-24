@@ -7,6 +7,7 @@ use QafooLabs\Refactoring\Domain\Model\Variable;
 use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\RefactoringException;
+use QafooLabs\Refactoring\Domain\Model\EditingSession;
 
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
@@ -54,38 +55,16 @@ class RenameLocalVariable
             $file, $selectedMethodLineRange
         );
 
-        if ( ! $this->isVariableInRange($definedVariables, $oldName)) {
+        if ( ! $definedVariables->contains($oldName)) {
             throw RefactoringException::variableNotInRange($oldName, $selectedMethodLineRange);
         }
 
         $buffer = $this->editor->openBuffer($file);
 
-        $this->replaceString($buffer, $definedVariables, $oldName, $newName);
+        $session = new EditingSession($buffer);
+        $session->replaceString($definedVariables, $oldName, $newName);
 
         $this->editor->save();
-    }
-
-    private function isVariableInRange(DefinedVariables $definedVariables, Variable $oldName)
-    {
-        return (
-            isset($definedVariables->localVariables[$oldName->getName()]) ||
-            isset($definedVariables->assignments[$oldName->getName()])
-        );
-    }
-
-    private function replaceString($buffer, DefinedVariables $definedVariables, Variable $oldName, Variable $newName)
-    {
-        $this->replaceStringInArray($buffer, $definedVariables->localVariables, $oldName, $newName);
-        $this->replaceStringInArray($buffer, $definedVariables->assignments, $oldName, $newName);
-    }
-
-    private function replaceStringInArray($buffer, array $variables, Variable $oldName, Variable $newName)
-    {
-        if (isset($variables[$oldName->getName()])) {
-            foreach ($variables[$oldName->getName()] as $line) {
-                $buffer->replaceString($line, $oldName->getToken(), $newName->getToken());
-            }
-        }
     }
 
     /**

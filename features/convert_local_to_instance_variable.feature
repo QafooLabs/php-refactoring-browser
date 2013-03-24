@@ -27,12 +27,13 @@ Feature: Convert Local to Instance Variable
             """
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
-            @@ -2,10 +2,12 @@
+            @@ -1,11 +1,13 @@
+             <?php
              class Foo
              {
             +    private $service;
             +
-                 public funtion operation()
+                 public function operation()
                  {
             -        $service = new Service();
             +        $this->service = new Service();
@@ -42,5 +43,6 @@ Feature: Convert Local to Instance Variable
             -        return $service;
             +        return $this->service;
                  }
+             }
             """
 
