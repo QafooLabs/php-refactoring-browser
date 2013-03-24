@@ -9,7 +9,7 @@ use QafooLabs\Refactoring\Domain\Model\File;
 use TokenReflection\Broker;
 use TokenReflection\Broker\Backend\Memory;
 
-class StaticCodeAnalysis implements CodeAnalysis
+class StaticCodeAnalysis extends CodeAnalysis
 {
     private $broker;
 

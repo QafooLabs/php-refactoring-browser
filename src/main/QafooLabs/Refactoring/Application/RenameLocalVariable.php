@@ -50,7 +50,7 @@ class RenameLocalVariable
             throw RefactoringException::variableNotLocal($newName);
         }
 
-        $selectedMethodLineRange = $this->findMethodRange($file, $line);
+        $selectedMethodLineRange = $this->codeAnalysis->findMethodRange($file, $line);
         $definedVariables = $this->variableScanner->scanForVariables(
             $file, $selectedMethodLineRange
         );
@@ -65,21 +65,6 @@ class RenameLocalVariable
         $session->replaceString($definedVariables, $oldName, $newName);
 
         $this->editor->save();
-    }
-
-    /**
-     * @param File $file
-     * @param integer $line
-     *
-     * @return LineRange
-     */
-    private function findMethodRange(File $file, $line)
-    {
-        $range = LineRange::fromSingleLine($line);
-        $methodStartLine = $this->codeAnalysis->getMethodStartLine($file, $range);
-        $methodEndLine = $this->codeAnalysis->getMethodEndLine($file, $range);
-
-        return LineRange::fromLines($methodStartLine, $methodEndLine);
     }
 }
 
