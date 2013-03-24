@@ -42,6 +42,10 @@ class RenameLocalVariable
 
     public function refactor(File $file, $line, Variable $oldName, Variable $newName)
     {
+        if ( ! $this->codeAnalysis->isInsideMethod($file, LineRange::fromSingleLine($line))) {
+            throw RefactoringException::rangeIsNotInsideMethod(LineRange::fromSingleLine($line));
+        }
+
         if ( ! $oldName->isLocal()) {
             throw RefactoringException::variableNotLocal($oldName);
         }

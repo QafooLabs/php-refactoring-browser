@@ -25,4 +25,12 @@ class RefactoringException extends Exception
             $variable->getToken()
         ));
     }
+
+    static public function rangeIsNotInsideMethod(LineRange $range)
+    {
+        return new self(sprintf(
+            'The range %d-%d is not inside one single method.',
+            $range->getStart(), $range->getEnd()
+        ));
+    }
 }

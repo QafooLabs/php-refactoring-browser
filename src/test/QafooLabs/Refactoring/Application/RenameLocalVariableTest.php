@@ -19,6 +19,8 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
         $this->codeAnalysis = \Phake::mock('QafooLabs\Refactoring\Domain\Services\CodeAnalysis');
         $this->editor = \Phake::mock('QafooLabs\Refactoring\Domain\Services\Editor');
         $this->refactoring = new RenameLocalVariable($this->scanner, $this->codeAnalysis, $this->editor);
+
+        \Phake::when($this->codeAnalysis)->isInsideMethod(\Phake::anyParameters())->thenReturn(true);
     }
 
     public function testRenameLocalVariable()

@@ -98,4 +98,22 @@ class StaticCodeAnalysis extends CodeAnalysis
 
         throw new \InvalidArgumentException("Could not find method start line.");
     }
+
+    public function isInsideMethod(File $file, LineRange $range)
+    {
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getClasses() as $class) {
+                foreach ($class->getMethods() as $method) {
+                    if ($method->getStartLine() < $range->getStart() && $range->getEnd() < $method->getEndLine()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 }

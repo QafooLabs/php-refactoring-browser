@@ -5,6 +5,7 @@ namespace QafooLabs\Refactoring\Application;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\EditingSession;
+use QafooLabs\Refactoring\Domain\Model\RefactoringException;
 
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
@@ -39,6 +40,10 @@ class ExtractMethod
 
     public function refactor(File $file, LineRange $range, $newMethodName)
     {
+        if ( ! $this->codeAnalysis->isInsideMethod($file, $range)) {
+            throw RefactoringException::rangeIsNotInsideMethod($range);
+        }
+
         $isStatic = $this->codeAnalysis->isMethodStatic($file, $range);
         $extractedMethodEndsOnLine = $this->codeAnalysis->getMethodEndLine($file, $range);
         $selectedCode = $range->sliceCode($file->getCode());

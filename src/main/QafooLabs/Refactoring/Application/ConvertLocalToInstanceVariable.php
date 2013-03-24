@@ -40,6 +40,10 @@ class ConvertLocalToInstanceVariable
 
     public function refactor(File $file, $line, Variable $convertVariable)
     {
+        if ( ! $this->codeAnalysis->isInsideMethod($file, LineRange::fromSingleLine($line))) {
+            throw RefactoringException::rangeIsNotInsideMethod(LineRange::fromSingleLine($line));
+        }
+
         $instanceVariable = $convertVariable->convertToInstance();
         $lastPropertyLine = $this->codeAnalysis->getLineOfLastPropertyDefinedInScope($file, $line);
 

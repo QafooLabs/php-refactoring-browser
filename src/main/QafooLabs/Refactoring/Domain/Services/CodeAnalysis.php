@@ -45,6 +45,17 @@ abstract class CodeAnalysis
      * @param int $line
      */
     abstract public function getLineOfLastPropertyDefinedInScope(File $file, $line);
+
+    /**
+     * Check if the line range is inside exactly one class method.
+     *
+     * @param File $file
+     * @param LineRange $range
+     *
+     * @return bool
+     */
+    abstract public function isInsideMethod(File $file, LineRange $range);
+
     /**
      * @param File $file
      * @param integer $line
