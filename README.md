@@ -1,21 +1,42 @@
 # PHP Refactoring Browser
 
-Automatic Refactorings for PHP Code. Using the AST from Nikics PHP Parser project.
-A project is described by a ``config/refactoring.xml`` or ``refactoring.xml``
-by specifying the path to all executable code.
+Automatic Refactorings for PHP Code. The actual process is implemented using
+multiple existing libraries:
 
-The Refactoring Browser creates an sqlite database with information about
-all the classes, their incoming and outgoing dependencies, method parameters,
-return types, variable types and so on. This information is necessary
-to make fast queries about the possibility and the places for refactoring.
-
-Each refactoring is a command with do and undo operations. These operations can
-be serialized to actual a patch formatted file for example or (hopefully) to
-vim script commands to get there.
+* AST from Nikics [PHP Parser](https://github.com/nikic/PHP-Parser) project
+* [PHP Token Reflection](https://github.com/Andrewsville/PHP-Token-Reflection) from Ondřej Nešpor
+* [PHP Analyzer](https://github.com/scrutinizer-ci/php-analyzer) by Johannes Schmitt for Type Inference 
 
 The refactoring browser is used with:
 
-    php refactoring.phar <refactoring> <arg1>...<argN>
+    php refactor.phar <refactoring> <arg1>...<argN>
+
+## Refactorings
+
+### Extract Method
+
+Extract a range of lines into a new method and call this method from the original
+location:
+
+    php refactor.phar extract-method <file> <line-range> <new-method>
+
+This refactoring automatically detects all necssary inputs and ouputs from the
+function and generates the argument list and return statement accordingly.
+
+### Rename Local Variable
+
+Rename a local variable from one to another name:
+
+    php refactor.phar rename-local-variable <file> <line> <old-name> <new-name>
+
+### Convert Local to Instance Variable
+
+Converts a local variable into an instance variable, creates the property and renames
+all the occurances in the selected method to use the instance variable:
+
+    php refactor.phar convert-local-to-instance-variable <file> <line> <variable>
+
+## Roadmap
 
 List of Refactorings to implement:
 
@@ -48,3 +69,4 @@ When you run the Refactoring Browser the following steps happen:
 * Analyze Refactoring (pre conditions)
 * Generate Patch to perform refactoring
 * Optionally apply patch (Currently just pipe to patch)
+
