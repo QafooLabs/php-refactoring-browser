@@ -11,7 +11,6 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-
 namespace QafooLabs\Refactoring\Adapters\Symfony\Commands;
 
 use Symfony\Component\Console\Input\InputArgument;

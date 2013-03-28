@@ -41,6 +41,29 @@ class ExtractMethodCommand extends Command
             ->addArgument('file', InputArgument::REQUIRED, 'File that contains list of statements to extract')
             ->addArgument('range', InputArgument::REQUIRED, 'Line Range of statements that should be extracted.')
             ->addArgument('newmethod', InputArgument::REQUIRED, 'Name of the new method.')
+            ->setHelp(<<<HELP
+Extract a range of lines from one method into its own method.
+This refactoring is usally used during cleanup of code into
+single units.
+
+<comment>Operations:</comment>
+
+1. Create a new method containing the selected code.
+2. Add a return statement with all variables necessary to make caller work.
+3. Pass all arguments to make the method work.
+
+<comment>Pre-Conditions:</comment>
+
+1. Selected code is inside a single method.
+2. New Method does not exist (NOT YET CHECKED).
+
+<comment>Usage:</comment>
+
+    <info>php refactor.phar extract-method file.php 10-16 newMethodName</info>
+
+Will extract lines <info>10-16</info> from <info>file.php</info> into a new method called <info>newMethodName</info>.
+HELP
+            );
         ;
     }
 

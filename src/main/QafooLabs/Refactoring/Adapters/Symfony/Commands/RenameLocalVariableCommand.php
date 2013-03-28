@@ -40,6 +40,25 @@ class RenameLocalVariableCommand extends Command
             ->addArgument('line', InputArgument::REQUIRED, 'Line where the local variable is defined.')
             ->addArgument('name', InputArgument::REQUIRED, 'Current name of the variable, with or without the $')
             ->addArgument('new-name', InputArgument::REQUIRED, 'New name of the variable')
+            ->setHelp(<<<HELP
+Rename a local variable of a method.
+
+<comment>Operations:</comment>
+
+1. Renames a local variable by giving it a new name inside the method.
+
+<comment>Pre-Conditions:</comment>
+
+1. Check that new variable name does not exist (NOT YET CHECKED).
+
+<comment>Usage:</comment>
+
+    <info>php refactor.phar rename-local-variable file.php 17 hello newHello</info>
+
+Renames <info>\$hello</info> in line <info>17</info> of <info>file.php</info> into <info>\$newHello</info>.
+
+HELP
+            );
         ;
     }
 
