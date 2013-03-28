@@ -9,7 +9,7 @@ multiple existing libraries:
 
 Based on this the Browser contains two distinct components:
 
-* ``PatchBuilder`` allows to build patches based on operations on a file.
+* ``Patches`` allows to build patches based on change operations on a file.
 * ``Refactoring`` contains the actual Refactoring domain and adapters to third party libraries.
 
 The refactoring browser is used with:
