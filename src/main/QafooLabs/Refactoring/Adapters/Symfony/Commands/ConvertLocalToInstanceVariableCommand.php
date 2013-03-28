@@ -39,6 +39,28 @@ class ConvertLocalToInstanceVariableCommand extends Command
             ->addArgument('file', InputArgument::REQUIRED, 'File that contains the local variable.')
             ->addArgument('line', InputArgument::REQUIRED, 'Line of one of the local variables occurances.')
             ->addArgument('variable', InputArgument::REQUIRED, 'Name of the variable with or without $.')
+            ->setHelp(<<<HELP
+If you want to convert a variable that is local to a method to an instance variable of
+that same class, the "convert local to instance variable" refactoring helps you with this
+task.
+
+<comment>It will:</comment>
+
+1. Convert all occurances of the same variable within the method into an instance variable of the same name.
+2. Create the instance variable on the class.
+
+<comment>Pre-Conditions:</comment>
+
+1. Selected Variable does not exist on class (NOT CHECKED YET)
+2. Variable is a local variable
+
+<comment>Usage:</comment>
+
+    <info>php refactor.phar convert-local-to-instance-variable file.php 10 hello</info>
+
+Will convert variable \$hello into an instance variable \$this->hello.
+HELP
+            )
         ;
     }
 
