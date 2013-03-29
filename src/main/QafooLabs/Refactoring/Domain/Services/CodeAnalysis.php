@@ -57,14 +57,15 @@ abstract class CodeAnalysis
     abstract public function isInsideMethod(File $file, LineRange $range);
 
     /**
+     * From a range within a method, find the start and end range of that method.
+     *
      * @param File $file
-     * @param integer $line
+     * @param LineRange $range
      *
      * @return LineRange
      */
-    public function findMethodRange(File $file, $line)
+    public function findMethodRange(File $file, LineRange $range)
     {
-        $range = LineRange::fromSingleLine($line);
         $methodStartLine = $this->getMethodStartLine($file, $range);
         $methodEndLine = $this->getMethodEndLine($file, $range);
 

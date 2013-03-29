@@ -302,3 +302,47 @@ Feature: Extract Method
             +    }
              }
             """
+
+    Scenario: Extract method with multiple assignments and only one reused variable
+        Given a PHP File named "src/MultiAssignmentSingleReturn.php" with:
+            """
+            <?php
+            class MultiAssignment
+            {
+                public function test()
+                {
+                    $var = 'foo';
+                    $var2 = $var;
+
+                    echo $var2;
+                }
+            }
+            """
+        When I use refactoring "extract-method" with:
+            | arg       | value                       |
+            | file      | src/MultiAssignmentSingleReturn.php |
+            | range     | 6-7                         |
+            | newmethod | foo                         |
+        Then the PHP File "src/MultiAssignmentSingleReturn.php" should be refactored:
+            """
+            --- a/vfs://project/src/MultiAssignmentSingleReturn.php
+            +++ b/vfs://project/src/MultiAssignmentSingleReturn.php
+            @@ -4,8 +4,15 @@
+                 public function test()
+                 {
+            -        $var = 'foo';
+            -        $var2 = $var;
+            +        $var2 = $this->foo();
+
+                     echo $var2;
+                 }
+            +
+            +    private function foo()
+            +    {
+            +        $var = 'foo';
+            +        $var2 = $var;
+            +
+            +        return $var2;
+            +    }
+             }
+            """

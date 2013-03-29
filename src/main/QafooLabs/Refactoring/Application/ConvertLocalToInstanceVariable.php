@@ -47,7 +47,7 @@ class ConvertLocalToInstanceVariable
         $instanceVariable = $convertVariable->convertToInstance();
         $lastPropertyLine = $this->codeAnalysis->getLineOfLastPropertyDefinedInScope($file, $line);
 
-        $selectedMethodLineRange = $this->codeAnalysis->findMethodRange($file, $line);
+        $selectedMethodLineRange = $this->codeAnalysis->findMethodRange($file, LineRange::fromSingleLine($line));
         $definedVariables = $this->variableScanner->scanForVariables(
             $file, $selectedMethodLineRange
         );
