@@ -195,6 +195,7 @@ Feature: Extract Method
                 public function test()
                 {
                     $var = "foo";
+                    echo $var;
                 }
             }
             """
@@ -207,96 +208,17 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/Assignment.php
             +++ b/vfs://project/src/Assignment.php
-            @@ -4,5 +4,12 @@
+            @@ -4,6 +4,13 @@
                  public function test()
                  {
             -        $var = "foo";
             +        $var = $this->foo();
+                     echo $var;
                  }
             +
             +    private function foo()
             +    {
             +        $var = "foo";
-            +
-            +        return $var;
-            +    }
-             }
-            """
-
-    Scenario: Extract Method with multiple assignments
-        Given a PHP File named "src/MultiAssignment.php" with:
-            """
-            <?php
-            class MultiAssignment
-            {
-                public function test()
-                {
-                    $var = 'foo';
-                    $var2 = 'baz';
-                }
-            }
-            """
-        When I use refactoring "extract-method" with:
-            | arg       | value                       |
-            | file      | src/MultiAssignment.php |
-            | range     | 6-7                         |
-            | newmethod | foo                         |
-        Then the PHP File "src/MultiAssignment.php" should be refactored:
-            """
-            --- a/vfs://project/src/MultiAssignment.php
-            +++ b/vfs://project/src/MultiAssignment.php
-            @@ -4,6 +4,13 @@
-                 public function test()
-                 {
-            -        $var = 'foo';
-            -        $var2 = 'baz';
-            +        list($var, $var2) = $this->foo();
-                 }
-            +
-            +    private function foo()
-            +    {
-            +        $var = 'foo';
-            +        $var2 = 'baz';
-            +
-            +        return array($var, $var2);
-            +    }
-             }
-            """
-
-    Scenario: Extract method with multiple assignments of same variable
-        Given a PHP File named "src/MultiAssignment.php" with:
-            """
-            <?php
-            class MultiAssignment
-            {
-                public function test()
-                {
-                    $var = 'foo';
-                    $var = 'baz';
-                }
-            }
-            """
-        When I use refactoring "extract-method" with:
-            | arg       | value                       |
-            | file      | src/MultiAssignment.php |
-            | range     | 6-7                         |
-            | newmethod | foo                         |
-        Then the PHP File "src/MultiAssignment.php" should be refactored:
-            """
-            --- a/vfs://project/src/MultiAssignment.php
-            +++ b/vfs://project/src/MultiAssignment.php
-            @@ -4,6 +4,13 @@
-                 public function test()
-                 {
-            -        $var = 'foo';
-            -        $var = 'baz';
-            +        $var = $this->foo();
-                 }
-            +
-            +    private function foo()
-            +    {
-            +        $var = 'foo';
-            +        $var = 'baz';
             +
             +        return $var;
             +    }

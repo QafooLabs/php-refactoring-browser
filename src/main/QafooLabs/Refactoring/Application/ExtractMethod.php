@@ -57,13 +57,13 @@ class ExtractMethod
         $newMethod = new MethodSignature(
             $newMethodName,
             $isStatic ? MethodSignature::IS_STATIC : 0,
-            array(),
+            $methodVariables->variablesFromSelectionUsedBefore($extractVariables),
             $methodVariables->variablesFromSelectionUsedAfter($extractVariables)
         );
 
         $session = new EditingSession($buffer);
-        $session->replaceRangeWithMethodCall($extractRange, $newMethod, $extractVariables);
-        $session->addMethod($methodRange->getEnd(), $newMethod, $selectedCode, $extractVariables);
+        $session->replaceRangeWithMethodCall($extractRange, $newMethod);
+        $session->addMethod($methodRange->getEnd(), $newMethod, $selectedCode);
 
         $this->editor->save();
     }

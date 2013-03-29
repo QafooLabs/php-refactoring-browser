@@ -15,6 +15,7 @@
 namespace QafooLabs\Refactoring\Domain\Model;
 
 use QafooLabs\Refactoring\Utils\ValueObject;
+use Closure;
 
 /**
  * Defined variables that are used or assigned.
@@ -93,24 +94,51 @@ class DefinedVariables extends ValueObject
         return max(array_merge(array_map('max', $this->localVariables), array_map('max', $this->assignments)));
     }
 
+    public function getStartLine()
+    {
+        if (!$this->localVariables && !$this->assignments) {
+            return 0;
+        }
+
+        return min(array_merge(array_map('min', $this->localVariables), array_map('min', $this->assignments)));
+    }
+
     public function variablesFromSelectionUsedAfter(DefinedVariables $selection)
     {
         $selectionAssignments = $selection->changed();
-        $endLine = $selection->getEndLine();
-        $variablesUsedAfter = array();
+        return $this->filterVariablesFromSelection($selectionAssignments, $selection, function ($lastUsedLine, $endLine) {
+            return $lastUsedLine > $endLine;
+        }, 'max');
+    }
 
-        foreach ($selectionAssignments as $variable) {
-            if ( ! isset($this->localVariables[$variable])) {
+    public function variablesFromSelectionUsedBefore(DefinedVariables $selection)
+    {
+        return $this->filterVariablesFromSelection($selection->read(), $selection, function ($lastUsedLine, $endLine) {
+            return $lastUsedLine < $endLine;
+        }, 'min');
+    }
+
+    private function filterVariablesFromSelection($selectedVariables, DefinedVariables $selection, Closure $filter, $fn)
+    {
+        $variablesUsed = array();
+
+        $compareLine = $fn == 'max'
+            ? $selection->getEndLine()
+            : $selection->getStartLine();
+        $knownVariables = $this->all();
+
+        foreach ($selectedVariables as $variable) {
+            if ( ! isset($knownVariables[$variable])) {
                 continue;
             }
 
-            $lastUsedLine = max($this->localVariables[$variable]);
+            $lastUsedLine = $fn($knownVariables[$variable]);
 
-            if ($lastUsedLine > $endLine) {
-                $variablesUsedAfter[] = $variable;
+            if ($filter($lastUsedLine, $compareLine)) {
+                $variablesUsed[] = $variable;
             }
         }
 
-        return $variablesUsedAfter;
+        return $variablesUsed;
     }
 }

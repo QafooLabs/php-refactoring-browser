@@ -14,7 +14,7 @@
 namespace QafooLabs\Refactoring\Domain\Model;
 
 /**
- * Representation of a method signature and all its parts (name, visibliity, arguments, returnValues).
+ * Representation of a method signature and all its parts (name, visibliity, arguments, returnVariables).
  */
 class MethodSignature
 {
@@ -27,14 +27,14 @@ class MethodSignature
     private $name;
     private $flags;
     private $arguments;
-    private $returnValues;
+    private $returnVariables;
 
-    public function __construct($name, $flags = self::IS_PRIVATE, array $arguments = array(), $returnValues = array())
+    public function __construct($name, $flags = self::IS_PRIVATE, array $arguments = array(), $returnVariables = array())
     {
         $this->name = $name;
         $this->flags = $this->change($flags);
         $this->arguments = $arguments;
-        $this->returnValues = $returnValues;
+        $this->returnVariables = $returnVariables;
     }
 
     private function change($flags)
@@ -76,5 +76,21 @@ class MethodSignature
     public function isStatic()
     {
         return ($this->flags & self::IS_STATIC) > 0;
+    }
+
+    /**
+     * @return array
+     */
+    public function returnVariables()
+    {
+        return $this->returnVariables;
+    }
+
+    /**
+     * @return array
+     */
+    public function arguments()
+    {
+        return $this->arguments;
     }
 }
