@@ -44,12 +44,12 @@ class DefinedVariables extends ValueObject
         $this->assignments = $assignments;
     }
 
-    public function getLocalVariables()
+    public function read()
     {
         return array_keys($this->localVariables);
     }
 
-    public function getAssignments()
+    public function changed()
     {
         return array_keys($this->assignments);
     }
@@ -78,7 +78,7 @@ class DefinedVariables extends ValueObject
 
     public function variablesFromSelectionUsedAfter(DefinedVariables $selection)
     {
-        $selectionAssignments = $selection->getAssignments();
+        $selectionAssignments = $selection->changed();
         $endLine = $selection->getEndLine();
         $variablesUsedAfter = array();
 

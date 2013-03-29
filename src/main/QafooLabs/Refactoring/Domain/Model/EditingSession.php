@@ -43,15 +43,15 @@ class EditingSession
 
     public function replaceRangeWithMethodCall(LineRange $range, MethodSignature $newMethod, $definedVariables)
     {
-        $argumentLine = $this->implodeVariables($definedVariables->getLocalVariables());
+        $argumentLine = $this->implodeVariables($definedVariables->read());
 
         $code = $newMethod->isStatic() ? 'self::%s(%s);' : '$this->%s(%s);';
         $call = sprintf($code, $newMethod->getName(), $argumentLine);
 
-        if (count($definedVariables->getAssignments()) == 1) {
-            $call = '$' . $definedVariables->getAssignments()[0] . ' = ' . $call;
-        } else if (count($definedVariables->getAssignments()) > 1) {
-            $call = 'list(' . $this->implodeVariables($definedVariables->getAssignments()) . ') = ' . $call;
+        if (count($definedVariables->changed()) == 1) {
+            $call = '$' . $definedVariables->changed()[0] . ' = ' . $call;
+        } else if (count($definedVariables->changed()) > 1) {
+            $call = 'list(' . $this->implodeVariables($definedVariables->changed()) . ') = ' . $call;
         }
 
         $this->buffer->replace($range, array($this->whitespace(8) . $call));
@@ -59,12 +59,12 @@ class EditingSession
 
     public function addMethod($line, MethodSignature $newMethod, $selectedCode, $definedVariables)
     {
-        if (count($definedVariables->getAssignments()) == 1) {
+        if (count($definedVariables->changed()) == 1) {
             $selectedCode[] = '';
-            $selectedCode[] = $this->whitespace(8) . 'return $' . $definedVariables->getAssignments()[0] . ';';
-        } else if (count($definedVariables->getAssignments()) > 1) {
+            $selectedCode[] = $this->whitespace(8) . 'return $' . $definedVariables->changed()[0] . ';';
+        } else if (count($definedVariables->changed()) > 1) {
             $selectedCode[] = '';
-            $selectedCode[] = $this->whitespace(8) . 'return array(' . $this->implodeVariables($definedVariables->getAssignments()) . ');';
+            $selectedCode[] = $this->whitespace(8) . 'return array(' . $this->implodeVariables($definedVariables->changed()) . ');';
         }
 
         $methodCode = array_merge(
@@ -82,7 +82,7 @@ class EditingSession
 
     private function renderMethodSignature(MethodSignature $method, $definedVariables)
     {
-        $paramLine = $this->implodeVariables($definedVariables->getLocalVariables());
+        $paramLine = $this->implodeVariables($definedVariables->read());
 
         return sprintf('private%sfunction %s(%s)', $method->isStatic() ? ' static ' : ' ', $method->getName(), $paramLine);
     }
