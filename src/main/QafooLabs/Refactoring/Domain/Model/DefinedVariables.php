@@ -14,7 +14,6 @@
 
 namespace QafooLabs\Refactoring\Domain\Model;
 
-use QafooLabs\Refactoring\Utils\ValueObject;
 use Closure;
 
 /**
@@ -27,36 +26,36 @@ class DefinedVariables
      *
      * @var array
      */
-    protected $localVariables;
+    protected $readAccess;
 
     /**
      * Name of variables that are assigned.
      *
      * @var array
      */
-    protected $assignments;
+    protected $changeAccess;
 
-    public function __construct(array $localVariables = array(), array $assignments = array())
+    public function __construct(array $readAccess = array(), array $changeAccess = array())
     {
-        $this->localVariables = $localVariables;
-        $this->assignments = $assignments;
+        $this->readAccess = $readAccess;
+        $this->changeAccess = $changeAccess;
     }
 
     public function read()
     {
-        return array_keys($this->localVariables);
+        return array_keys($this->readAccess);
     }
 
     public function changed()
     {
-        return array_keys($this->assignments);
+        return array_keys($this->changeAccess);
     }
 
     public function all()
     {
-        $all = $this->localVariables;
+        $all = $this->readAccess;
 
-        foreach ($this->assignments as $name => $lines) {
+        foreach ($this->changeAccess as $name => $lines) {
             if ( ! isset($all[$name])) {
                 $all[$name] = array();
             }
@@ -77,33 +76,15 @@ class DefinedVariables
     public function contains(Variable $variable)
     {
         return (
-            isset($this->localVariables[$variable->getName()]) ||
-            isset($this->assignments[$variable->getName()])
+            isset($this->readAccess[$variable->getName()]) ||
+            isset($this->changeAccess[$variable->getName()])
         );
-    }
-
-    private function endLine()
-    {
-        if (!$this->localVariables && !$this->assignments) {
-            return 0;
-        }
-
-        return max(array_merge(array_map('max', $this->localVariables), array_map('max', $this->assignments)));
-    }
-
-    private function startLine()
-    {
-        if (!$this->localVariables && !$this->assignments) {
-            return 0;
-        }
-
-        return min(array_merge(array_map('min', $this->localVariables), array_map('min', $this->assignments)));
     }
 
     public function variablesFromSelectionUsedAfter(DefinedVariables $selection)
     {
-        $selectionAssignments = $selection->changed();
-        return $this->filterVariablesFromSelection($selectionAssignments, $selection, function ($lastUsedLine, $endLine) {
+        $selectionchangeAccess = $selection->changed();
+        return $this->filterVariablesFromSelection($selectionchangeAccess, $selection, function ($lastUsedLine, $endLine) {
             return $lastUsedLine > $endLine;
         }, 'max');
     }
@@ -137,5 +118,23 @@ class DefinedVariables
         }
 
         return $variablesUsed;
+    }
+
+    private function endLine()
+    {
+        if (!$this->readAccess && !$this->changeAccess) {
+            return 0;
+        }
+
+        return max(array_merge(array_map('max', $this->readAccess), array_map('max', $this->changeAccess)));
+    }
+
+    private function startLine()
+    {
+        if (!$this->readAccess && !$this->changeAccess) {
+            return 0;
+        }
+
+        return min(array_merge(array_map('min', $this->readAccess), array_map('min', $this->changeAccess)));
     }
 }
