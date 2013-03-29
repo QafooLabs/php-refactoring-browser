@@ -2,7 +2,7 @@
 
     Note: This software is under development and in alpha state. Refactorings
     do not contain all necessary pre-conditions and might mess up your code.
-    Check the diffs before applying the patches.
+    Check the diffs carefully before applying the patches.
 
 Automatic Refactorings for PHP Code by generating diffs that describe
 the refactorings steps.
@@ -37,8 +37,7 @@ such a tool in PHP natively:
   benefit from this.
 * Generating patches for refactorings before applying them allows to easily
   verify the operation yourself or sending it to a colleague.
-* PHP is native to PHP developers, hopefully allowing us to add a unique set
-  of refactorings that no IDE can match.
+* The libaries (see above) to build such a tool are available, so why not do it.
 
 ## Refactorings
 
