@@ -54,6 +54,23 @@ class DefinedVariables extends ValueObject
         return array_keys($this->assignments);
     }
 
+    public function all()
+    {
+        $all = $this->localVariables;
+
+        foreach ($this->assignments as $name => $lines) {
+            if ( ! isset($all[$name])) {
+                $all[$name] = array();
+            }
+
+            $all[$name] = array_unique(array_merge($all[$name], $lines));
+
+            sort($all[$name]);
+        }
+
+        return $all;
+    }
+
     /**
      * Does list contain the given variable?
      *

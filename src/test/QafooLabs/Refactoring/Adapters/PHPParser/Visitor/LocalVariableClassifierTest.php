@@ -36,6 +36,25 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function givenAssignmentAndReadOfSameVariable_WhenClassification_ThenFindBoth()
+    {
+        $classifier = new LocalVariableClassifier();
+        $assign = new \PHPParser_Node_Expr_Assign(
+            new \PHPParser_Node_Expr_Variable("foo"),
+            new \PHPParser_Node_Expr_Variable("foo")
+        );
+
+        $traverser     = new \PHPParser_NodeTraverser;
+        $traverser->addVisitor($classifier);
+        $traverser->traverse(array($assign));
+
+        $this->assertEquals(array('foo' => array(-1)), $classifier->getAssignments());
+        $this->assertEquals(array('foo' => array(-1)), $classifier->getLocalVariables());
+    }
+
+    /**
+     * @test
+     */
     public function givenThisVariable_WhenClassification_ThenNoLocalVariables()
     {
         $classifier = new LocalVariableClassifier();

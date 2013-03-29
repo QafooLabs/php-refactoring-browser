@@ -28,8 +28,7 @@ class EditingSession
 
     public function replaceString(DefinedVariables $definedVariables, Variable $oldName, Variable $newName)
     {
-        $this->replaceStringInArray($definedVariables->localVariables, $oldName, $newName);
-        $this->replaceStringInArray($definedVariables->assignments, $oldName, $newName);
+        $this->replaceStringInArray($definedVariables->all(), $oldName, $newName);
     }
 
     private function replaceStringInArray(array $variables, Variable $oldName, Variable $newName)

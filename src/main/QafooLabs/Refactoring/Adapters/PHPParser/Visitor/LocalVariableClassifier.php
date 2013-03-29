@@ -18,6 +18,7 @@ use PHPParser_Node;
 use PHPParser_NodeVisitorAbstract;
 use PHPParser_Node_Expr_Variable;
 use PHPParser_Node_Expr_Assign;
+use SplObjectStorage;
 
 /**
  * Classify local variables into assignments and usages,
@@ -27,6 +28,12 @@ class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
 {
     private $localVariables = array();
     private $assignments = array();
+    private $seenAssignmentVariables;
+
+    public function __construct()
+    {
+        $this->seenAssignmentVariables = new SplObjectStorage();
+    }
 
     public function enterNode(PHPParser_Node $node)
     {
@@ -43,12 +50,13 @@ class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
     {
         if ($node->var instanceof PHPParser_Node_Expr_Variable) {
             $this->assignments[$node->var->name][] = $node->getLine();
+            $this->seenAssignmentVariables->attach($node->var);
         }
     }
 
     private function enterVariableNode($node)
     {
-        if ($node->name === "this") {
+        if ($node->name === "this" || $this->seenAssignmentVariables->contains($node)) {
             return;
         }
 
@@ -62,27 +70,11 @@ class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
 
     public function getUsedLocalVariables()
     {
-        $usedLocalVariables = $this->localVariables;
-
-        foreach ($this->assignments as $assignmentName => $_) {
-            if (min($usedLocalVariables[$assignmentName]) >= min($this->assignments[$assignmentName])) {
-                unset($usedLocalVariables[$assignmentName]);
-            }
-        }
-
-        return $usedLocalVariables;
+        return $this->localVariables;
     }
 
     public function getAssignments()
     {
-        $assignments = $this->assignments;
-
-        foreach ($this->localVariables as $localVariable => $lines) {
-            if (isset($assignments[$localVariable])) {
-                $assignments[$localVariable] = array_unique($lines);
-            }
-        }
-
-        return $assignments;
+        return $this->assignments;
     }
 }
