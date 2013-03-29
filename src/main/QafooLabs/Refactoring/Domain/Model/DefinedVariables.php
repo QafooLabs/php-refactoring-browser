@@ -66,4 +66,34 @@ class DefinedVariables extends ValueObject
             isset($this->assignments[$variable->getName()])
         );
     }
+
+    public function getEndLine()
+    {
+        if (!$this->localVariables && !$this->assignments) {
+            return 0;
+        }
+
+        return max(array_merge(array_map('max', $this->localVariables), array_map('max', $this->assignments)));
+    }
+
+    public function variablesFromSelectionUsedAfter(DefinedVariables $selection)
+    {
+        $selectionAssignments = $selection->getAssignments();
+        $endLine = $selection->getEndLine();
+        $variablesUsedAfter = array();
+
+        foreach ($selectionAssignments as $variable) {
+            if ( ! isset($this->localVariables[$variable])) {
+                continue;
+            }
+
+            $lastUsedLine = max($this->localVariables[$variable]);
+
+            if ($lastUsedLine > $endLine) {
+                $variablesUsedAfter[] = $variable;
+            }
+        }
+
+        return $variablesUsedAfter;
+    }
 }

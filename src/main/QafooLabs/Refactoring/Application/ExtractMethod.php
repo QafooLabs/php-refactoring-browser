@@ -54,7 +54,13 @@ class ExtractMethod
 
         $buffer = $this->editor->openBuffer($file);
 
-        $newMethod = new MethodSignature($newMethodName, $isStatic ? MethodSignature::IS_STATIC : 0);
+        $newMethod = new MethodSignature(
+            $newMethodName,
+            $isStatic ? MethodSignature::IS_STATIC : 0,
+            array(),
+            $methodVariables->variablesFromSelectionUsedAfter($extractVariables)
+        );
+        var_dump($newMethod);
 
         $session = new EditingSession($buffer);
         $session->replaceRangeWithMethodCall($extractRange, $newMethod, $extractVariables);
