@@ -60,7 +60,6 @@ class ExtractMethod
             array(),
             $methodVariables->variablesFromSelectionUsedAfter($extractVariables)
         );
-        var_dump($newMethod);
 
         $session = new EditingSession($buffer);
         $session->replaceRangeWithMethodCall($extractRange, $newMethod, $extractVariables);
