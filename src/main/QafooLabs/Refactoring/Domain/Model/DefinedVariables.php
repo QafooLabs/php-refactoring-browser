@@ -19,11 +19,8 @@ use Closure;
 
 /**
  * Defined variables that are used or assigned.
- *
- * @property-read $localVariables
- * @property-read $assignments
  */
-class DefinedVariables extends ValueObject
+class DefinedVariables
 {
     /**
      * Name of variables that are "used" locally.
@@ -85,7 +82,7 @@ class DefinedVariables extends ValueObject
         );
     }
 
-    public function getEndLine()
+    private function endLine()
     {
         if (!$this->localVariables && !$this->assignments) {
             return 0;
@@ -94,7 +91,7 @@ class DefinedVariables extends ValueObject
         return max(array_merge(array_map('max', $this->localVariables), array_map('max', $this->assignments)));
     }
 
-    public function getStartLine()
+    private function startLine()
     {
         if (!$this->localVariables && !$this->assignments) {
             return 0;
@@ -118,13 +115,13 @@ class DefinedVariables extends ValueObject
         }, 'min');
     }
 
-    private function filterVariablesFromSelection($selectedVariables, DefinedVariables $selection, Closure $filter, $fn)
+    private function filterVariablesFromSelection($selectedVariables, DefinedVariables $selection, Closure $filter, $reducer)
     {
         $variablesUsed = array();
 
-        $compareLine = $fn == 'max'
-            ? $selection->getEndLine()
-            : $selection->getStartLine();
+        $compareLine = $reducer == 'max'
+            ? $selection->endLine()
+            : $selection->startLine();
         $knownVariables = $this->all();
 
         foreach ($selectedVariables as $variable) {
@@ -132,7 +129,7 @@ class DefinedVariables extends ValueObject
                 continue;
             }
 
-            $lastUsedLine = $fn($knownVariables[$variable]);
+            $lastUsedLine = $reducer($knownVariables[$variable]);
 
             if ($filter($lastUsedLine, $compareLine)) {
                 $variablesUsed[] = $variable;
