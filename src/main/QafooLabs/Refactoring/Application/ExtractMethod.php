@@ -4,6 +4,7 @@ namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\MethodSignature;
 use QafooLabs\Refactoring\Domain\Model\EditingSession;
 use QafooLabs\Refactoring\Domain\Model\RefactoringException;
 
@@ -38,23 +39,26 @@ class ExtractMethod
         $this->editor = $editor;
     }
 
-    public function refactor(File $file, LineRange $range, $newMethodName)
+    public function refactor(File $file, LineRange $extractRange, $newMethodName)
     {
-        if ( ! $this->codeAnalysis->isInsideMethod($file, $range)) {
-            throw RefactoringException::rangeIsNotInsideMethod($range);
+        if ( ! $this->codeAnalysis->isInsideMethod($file, $extractRange)) {
+            throw RefactoringException::rangeIsNotInsideMethod($extractRange);
         }
 
-        $isStatic = $this->codeAnalysis->isMethodStatic($file, $range);
-        $extractedMethodEndsOnLine = $this->codeAnalysis->getMethodEndLine($file, $range);
-        $selectedCode = $range->sliceCode($file->getCode());
+        $isStatic = $this->codeAnalysis->isMethodStatic($file, $extractRange);
+        $methodRange = $this->codeAnalysis->findMethodRange($file, $extractRange);
+        $selectedCode = $extractRange->sliceCode($file->getCode());
 
-        $definedVariables = $this->variableScanner->scanForVariables($file, $range);
+        $extractVariables = $this->variableScanner->scanForVariables($file, $extractRange);
+        $methodVariables = $this->variableScanner->scanForVariables($file, $methodRange);
 
         $buffer = $this->editor->openBuffer($file);
 
+        $newMethod = new MethodSignature($newMethodName, $isStatic ? MethodSignature::IS_STATIC : 0);
+
         $session = new EditingSession($buffer);
-        $session->replaceRangeWithMethodCall($range, $newMethodName, $definedVariables, $isStatic);
-        $session->addMethod($extractedMethodEndsOnLine, $newMethodName, $selectedCode , $definedVariables, $isStatic);
+        $session->replaceRangeWithMethodCall($extractRange, $newMethod, $extractVariables);
+        $session->addMethod($methodRange->getEnd(), $newMethod, $selectedCode, $extractVariables);
 
         $this->editor->save();
     }
