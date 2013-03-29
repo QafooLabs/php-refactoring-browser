@@ -83,17 +83,22 @@ class DefinedVariables
 
     public function variablesFromSelectionUsedAfter(DefinedVariables $selection)
     {
-        $selectionchangeAccess = $selection->changed();
-        return $this->filterVariablesFromSelection($selectionchangeAccess, $selection, function ($lastUsedLine, $endLine) {
-            return $lastUsedLine > $endLine;
-        }, 'max');
+        return $this->filterVariablesFromSelection(
+            $selection->changed(),
+            $selection,
+            function ($lastUsedLine, $endLine) {
+                return $lastUsedLine > $endLine;
+            }, 'max');
     }
 
     public function variablesFromSelectionUsedBefore(DefinedVariables $selection)
     {
-        return $this->filterVariablesFromSelection($selection->read(), $selection, function ($lastUsedLine, $endLine) {
-            return $lastUsedLine < $endLine;
-        }, 'min');
+        return $this->filterVariablesFromSelection(
+            $selection->read(),
+            $selection,
+            function ($lastUsedLine, $endLine) {
+                return $lastUsedLine < $endLine;
+            }, 'min');
     }
 
     private function filterVariablesFromSelection($selectedVariables, DefinedVariables $selection, Closure $filter, $reducer)
