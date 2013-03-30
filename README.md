@@ -42,6 +42,9 @@ such a tool in PHP natively:
 * Generating patches for refactorings before applying them allows to easily
   verify the operation yourself or sending it to a colleague.
 * The libaries (see above) to build such a tool are available, so why not do it.
+* The project is an academic of sorts as well, as you can see in the Design Goals
+  we try to be very strict about the Ports and Adapters architecture and a Domain
+  Driven Design.
 
 ## Refactorings
 
