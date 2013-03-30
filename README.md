@@ -5,7 +5,8 @@
     Check the diffs carefully before applying the patches.
 
 Automatic Refactorings for PHP Code by generating diffs that describe
-the refactorings steps.
+the refactorings steps. To prevent simple mistakes during refactorings, an automated tool
+is a great.
 
 The library is standing on the shoulder of giants, using multiple existing libraries:
 
@@ -34,7 +35,10 @@ such a tool in PHP natively:
 
 * We are VIM users and don't want to use an IDE for refactorings. Also we
   are independent of an IDE and users of any (non PHP Storm) editor can now
-  benefit from this.
+  benefit from the practice of automated refactorings.
+* The non-existance of a simple refactoring tool leads to programmers not
+  refactoring "just to be safe". This hurts long time maintainability of code.
+  Refactoring is one of the most important steps during development and just come easy.
 * Generating patches for refactorings before applying them allows to easily
   verify the operation yourself or sending it to a colleague.
 * The libaries (see above) to build such a tool are available, so why not do it.
