@@ -8,6 +8,8 @@ Automatic Refactorings for PHP Code by generating diffs that describe
 the refactorings steps. To prevent simple mistakes during refactorings, an automated tool
 is a great.
 
+See a [screenshot of extract-method in action](docs/extract_method.png).
+
 The library is standing on the shoulder of giants, using multiple existing libraries:
 
 * [PHP Parser](https://github.com/nikic/PHP-Parser) by Nikic
