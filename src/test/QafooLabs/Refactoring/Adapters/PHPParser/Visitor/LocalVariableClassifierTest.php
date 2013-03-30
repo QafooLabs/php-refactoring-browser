@@ -64,4 +64,17 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(), $classifier->getLocalVariables());
     }
+
+    /**
+     * @test
+     */
+    public function givenParam_WhenClassification_FindAsAssignment()
+    {
+        $classifier = new LocalVariableClassifier();
+        $variable = new \PHPParser_Node_Param("foo");
+
+        $classifier->enterNode($variable);
+
+        $this->assertEquals(array('foo' => array(-1)), $classifier->getAssignments());
+    }
 }

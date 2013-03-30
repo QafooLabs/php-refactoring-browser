@@ -18,6 +18,7 @@ use PHPParser_Node;
 use PHPParser_NodeVisitorAbstract;
 use PHPParser_Node_Expr_Variable;
 use PHPParser_Node_Expr_Assign;
+use PHPParser_Node_Param;
 use SplObjectStorage;
 
 /**
@@ -44,6 +45,15 @@ class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
         if ($node instanceof PHPParser_Node_Expr_Assign) {
             $this->enterAssignment($node);
         }
+
+        if ($node instanceof PHPParser_Node_Param) {
+            $this->enterParam($node);
+        }
+    }
+
+    private function enterParam($node)
+    {
+        $this->assignments[$node->name][] = $node->getLine();
     }
 
     private function enterAssignment($node)
