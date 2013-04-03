@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>PHP Refactoring Browser by QafooLabs</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>PHP Refactoring Browser</h1>
+        <p>A command line refactoring tool for PHP</p>
+
+        <p class="view"><a href="https://github.com/QafooLabs/php-refactoring-browser">View the Project on GitHub <small>QafooLabs/php-refactoring-browser</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/QafooLabs/php-refactoring-browser/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/QafooLabs/php-refactoring-browser/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/QafooLabs/php-refactoring-browser">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>PHP Refactoring Browser</h1>
+
+<pre><code>Note: This software is under development and in alpha state. Refactorings
+do not contain all necessary pre-conditions and might mess up your code.
+Check the diffs carefully before applying the patches.
+</code></pre>
+
+<p>Automatic Refactorings for PHP Code by generating diffs that describe
+the refactorings steps. To prevent simple mistakes during refactorings, an automated tool
+is a great.</p>
+
+<p>See a <a href="docs/extract_method.png">screenshot of extract-method in action</a>.</p>
+
+<p>The library is standing on the shoulder of giants, using multiple existing libraries:</p>
+
+<ul>
+<li>
+<a href="https://github.com/nikic/PHP-Parser">PHP Parser</a> by Nikic</li>
+<li>
+<a href="https://github.com/Andrewsville/PHP-Token-Reflection">PHP Token Reflection</a> from Ondřej Nešpor</li>
+<li>
+<a href="https://github.com/scrutinizer-ci/php-analyzer">PHP Analyzer</a> by Johannes Schmitt</li>
+</ul><p>Based on data from these sources the Refactoring Browser consists of two distinct components:</p>
+
+<ul>
+<li>
+<code>Patches</code> allows to build patches based on change operations on a file.</li>
+<li>
+<code>Refactoring</code> contains the actual Refactoring domain and adapters to third party libraries.</li>
+</ul><p>The refactoring browser is used with:</p>
+
+<pre><code>php refactor.phar &lt;refactoring&gt; &lt;arg1&gt;...&lt;argN&gt;
+</code></pre>
+
+<p>It outputs a diff to the screen and you can apply it to your code by piping it to <code>patch -p1</code>:</p>
+
+<pre><code>php refactor.phar &lt;refactoring&gt; &lt;arg1&gt;...&lt;argN&gt; | patch -p1
+</code></pre>
+
+<h2>Why?</h2>
+
+<p>Users of PHPStorm (or Netbeans) might wonder why this project exists, all the
+refactorings are available in this IDE. We feel there are several reasons to have
+such a tool in PHP natively:</p>
+
+<ul>
+<li>We are VIM users and don't want to use an IDE for refactorings. Also we
+are independent of an IDE and users of any (non PHP Storm) editor can now
+benefit from the practice of automated refactorings.</li>
+<li>The non-existance of a simple refactoring tool leads to programmers not
+refactoring "just to be safe". This hurts long time maintainability of code.
+Refactoring is one of the most important steps during development and just come easy.</li>
+<li>Generating patches for refactorings before applying them allows to easily
+verify the operation yourself or sending it to a colleague.</li>
+<li>The libaries (see above) to build such a tool are available, so why not do it.</li>
+<li>The project is an academic of sorts as well, as you can see in the Design Goals
+we try to be very strict about the Ports and Adapters architecture and a Domain
+Driven Design.</li>
+</ul><h2>Refactorings</h2>
+
+<h3>Extract Method</h3>
+
+<p>Extract a range of lines into a new method and call this method from the original
+location:</p>
+
+<pre><code>php refactor.phar extract-method &lt;file&gt; &lt;line-range&gt; &lt;new-method&gt;
+</code></pre>
+
+<p>This refactoring automatically detects all necssary inputs and ouputs from the
+function and generates the argument list and return statement accordingly.</p>
+
+<h3>Rename Local Variable</h3>
+
+<p>Rename a local variable from one to another name:</p>
+
+<pre><code>php refactor.phar rename-local-variable &lt;file&gt; &lt;line&gt; &lt;old-name&gt; &lt;new-name&gt;
+</code></pre>
+
+<h3>Convert Local to Instance Variable</h3>
+
+<p>Converts a local variable into an instance variable, creates the property and renames
+all the occurances in the selected method to use the instance variable:</p>
+
+<pre><code>php refactor.phar convert-local-to-instance-variable &lt;file&gt; &lt;line&gt; &lt;variable&gt;
+</code></pre>
+
+<h2>Roadmap</h2>
+
+<p>Integration:</p>
+
+<ul>
+<li>Vim Plugin to apply refactorings from within Vim.</li>
+</ul><p>List of Refactorings to implement:</p>
+
+<ul>
+<li>Extract Method (Prototype Done)
+
+<ul>
+<li>Check code after line range if assignments are actually used, or just internal to extracted method</li>
+<li>Check how previously defined arrays work when not fully part of extracted method.</li>
+</ul>
+</li>
+<li>Rename Local Variable (Prototype Done)</li>
+<li>Optimize use statements</li>
+<li>Convert Local Variable to Instance Variable (Prototype Done)</li>
+<li>Convert Magic Value to Constant</li>
+<li>Rename Method
+
+<ul>
+<li>Private Methods Only first</li>
+</ul>
+</li>
+<li>Rename Instance Variable
+
+<ul>
+<li>Private Variables Only First</li>
+</ul>
+</li>
+<li>Rename Class (PSR-0 aware)</li>
+<li>Rename Namespace (PSR-0 aware)</li>
+<li>Extract Interface</li>
+</ul><h2>Internals</h2>
+
+<h3>Design Goals</h3>
+
+<ul>
+<li>Be independent of third-party libraries and any Type Inference Engine (PDepend, PHP Analyzer) via Ports+Adapters</li>
+<li>Apply Domain-Driven-Design and find suitable Bounded Contexts and Ubiquitous Language within them</li>
+<li>Avoid primitive obsession by introducing value objects for useful constructs in the domain</li>
+</ul><h3>Processing steps</h3>
+
+<p>When you run the Refactoring Browser the following steps happen:</p>
+
+<ul>
+<li>Update Type Database (based on filemtime or md5 hashes?) when necessary for refactoring</li>
+<li>Analyze Refactoring (pre conditions)</li>
+<li>Generate Patch to perform refactoring</li>
+<li>Optionally apply patch (Currently just pipe to patch)</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/QafooLabs">QafooLabs</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
