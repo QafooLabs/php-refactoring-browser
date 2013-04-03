@@ -21,6 +21,10 @@ Based on data from these sources the Refactoring Browser consists of two distinc
 * ``Patches`` allows to build patches based on change operations on a file.
 * ``Refactoring`` contains the actual Refactoring domain and adapters to third party libraries.
 
+## Install & Basic Usage
+
+[Download PHAR](http://qafoolabs.github.com/php-refactoring-browser/assets/refactor.phar)
+
 The refactoring browser is used with:
 
     php refactor.phar <refactoring> <arg1>...<argN>
