@@ -1,2 +1,6 @@
 vendor
 refactor.phar
+.abc
+.pear
+build/
+composer.phar

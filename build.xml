@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="myProject" default="verify" basedir=".">
+    <!-- Import project specific settings -->
+    <property file="build.properties" />
+
+    <!-- Import the build commons framework -->
+    <import file="setup/src/main/xml/base.xml" />
+
+    <target name="-composer:dependencies-install"
+            depends="-composer:dependencies-lock-up2date"
+            unless="-composer:dependencies.lock.up2date">
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${composer.executable}" />
+            <arg value="install" />
+            <arg value="--dev" />
+        </exec>
+
+        <touch file="${composer.up2date.file}" />
+    </target>
+
+    <target name="composer:dependencies-update"
+            depends="composer:dependencies-lock-exists"
+            unless="composer:dependencies.lock.exists">
+
+        <exec executable="${commons.executable.php}" failonerror="true">
+            <arg value="${composer.executable}" />
+            <arg value="update" />
+            <arg value="--dev" />
+        </exec>
+    </target>
+
+    <target name="behat"
+        extensionOf="-test:after~hook">
+        <exec executable="${commons.executable.php}" failonerror="true" dir="${basedir}">
+            <arg value="vendor/bin/behat" />
+
+            <arg value="--format" />
+            <arg value="junit,progress" />
+            <arg value="--out" />
+            <arg value="${commons:logsdir}," />
+        </exec>
+    </target>
+</project>
