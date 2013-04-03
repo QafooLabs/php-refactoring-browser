@@ -41,4 +41,10 @@
             <arg value="${commons:logsdir}," />
         </exec>
     </target>
+
+    <target name="compile-phar" extensionOf="-archive:after~hook">
+        <exec executable="${commons.executable.php}" failonerror="true" dir="${basedir}/build/dist">
+            <arg value="../../src/bin/compile" />
+        </exec>
+    </target>
 </project>
