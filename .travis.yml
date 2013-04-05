@@ -1,5 +1,5 @@
 language: php
-script: ant
+script: ant -logger org.apache.tools.ant.NoBannerLogger
 php:
   - 5.4
   - 5.5
