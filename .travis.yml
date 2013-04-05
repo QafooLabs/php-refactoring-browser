@@ -1,4 +1,5 @@
 language: php
+script: ant
 php:
   - 5.4
   - 5.5
