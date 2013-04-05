@@ -1,4 +1,6 @@
 language: php
+before_script:
+  - composer install --dev
 script: ant -logger org.apache.tools.ant.NoBannerLogger
 php:
   - 5.4
