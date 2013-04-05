@@ -1,5 +1,5 @@
 {
-    "hash": "965770fda6f898c42ee6189378b05674",
+    "hash": "2cfbd7e08cd2af4056267d9fa7fc16d0",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -1057,17 +1057,17 @@
         },
         {
             "name": "symfony/finder",
-            "version": "2.2.x-dev",
+            "version": "v2.2.0",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Finder.git",
-                "reference": "c67f01a50fea3c2897a74ebbb64e3f7d83728d0f"
+                "reference": "v2.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/c67f01a50fea3c2897a74ebbb64e3f7d83728d0f",
-                "reference": "c67f01a50fea3c2897a74ebbb64e3f7d83728d0f",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/v2.2.0",
+                "reference": "v2.2.0",
                 "shasum": ""
             },
             "require": {
@@ -1100,21 +1100,21 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-12 11:39:20"
+            "time": "2013-02-28 14:06:36"
         },
         {
             "name": "symfony/process",
-            "version": "dev-master",
+            "version": "v2.2.0",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "46b24c5905096914d467b769027e36433c7b5421"
+                "reference": "v2.2.0-RC3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/46b24c5905096914d467b769027e36433c7b5421",
-                "reference": "46b24c5905096914d467b769027e36433c7b5421",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/v2.2.0-RC3",
+                "reference": "v2.2.0-RC3",
                 "shasum": ""
             },
             "require": {
@@ -1123,7 +1123,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.2-dev"
                 }
             },
             "autoload": {
@@ -1147,22 +1147,22 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-23 08:06:49"
+            "time": "2013-02-18 21:28:10"
         }
     ],
     "packages-dev": [
         {
             "name": "behat/behat",
-            "version": "dev-master",
+            "version": "v2.4.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Behat/Behat.git",
-                "reference": "84b008725c0ca1027c65a01bf8aa0c2573d13579"
+                "url": "git://github.com/Behat/Behat.git",
+                "reference": "v2.4.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Behat/zipball/84b008725c0ca1027c65a01bf8aa0c2573d13579",
-                "reference": "84b008725c0ca1027c65a01bf8aa0c2573d13579",
+                "url": "https://github.com/Behat/Behat/archive/v2.4.5.zip",
+                "reference": "v2.4.5",
                 "shasum": ""
             },
             "require": {
@@ -1213,7 +1213,7 @@
                 "Behat",
                 "Symfony2"
             ],
-            "time": "2013-02-13 18:15:25"
+            "time": "2013-01-27 14:45:41"
         },
         {
             "name": "behat/gherkin",
@@ -1278,7 +1278,7 @@
         },
         {
             "name": "mikey179/vfsStream",
-            "version": "dev-master",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikey179/vfsStream.git",
@@ -1572,6 +1572,8 @@
         "andrewsville/php-token-reflection": 0,
         "symfony/finder": 0,
         "symfony/process": 0,
+        "behat/behat": 0,
+        "mikey179/vfsstream": 0,
         "phake/phake": 0
     },
     "platform": [

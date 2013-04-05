@@ -17,8 +17,8 @@
 
     "require-dev": {
         "php": ">=5.4",
-        "behat/behat": "*",
-        "mikey179/vfsStream": "*",
+        "behat/behat": "@stable",
+        "mikey179/vfsStream": "@stable",
         "phake/phake": "@stable"
     },
 
