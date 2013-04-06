@@ -72,11 +72,50 @@ class EditingSession
                 $this->whitespace(4) . $this->renderMethodSignature($newMethod),
                 $this->whitespace(4) . '{'
             ),
-            $selectedCode,
+            $this->realign($selectedCode, 8),
             array($this->whitespace(4) . '}')
         );
 
         $this->buffer->append($line, $methodCode);
+    }
+
+    private function alignedAtWhitespaces(array $lines)
+    {
+        return array_reduce($lines, function ($minWhitespace, $line) {
+            if ($this->isEmptyLine($line)) {
+                return $minWhitespace;
+            }
+
+            return min($minWhitespace, $this->leftWhitespacesOf($line));
+        }, 100);
+    }
+
+    private function realign(array $lines, $atWhitespaces)
+    {
+        $minWhitespaces = $this->alignedAtWhitespaces($lines);
+        $whitespaceCorrection = $atWhitespaces - $minWhitespaces;
+
+        if ($whitespaceCorrection === 0) {
+            return $lines;
+        }
+
+        return array_map(function ($line) use($whitespaceCorrection) {
+            if ($whitespaceCorrection > 0) {
+                return $this->whitespace($whitespaceCorrection) . $line;
+            }
+
+            return substr($line, $whitespaceCorrection - 2); // Why -2?
+        }, $lines);
+    }
+
+    private function isEmptyLine($line)
+    {
+        return trim($line) === "";
+    }
+
+    private function leftWhitespacesOf($line)
+    {
+        return strlen($line) - strlen(ltrim($line));
     }
 
     private function renderMethodSignature(MethodSignature $method)
