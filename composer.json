@@ -33,7 +33,7 @@
         }
     },
 
-    "bin": ["bin/refactor.php"],
+    "bin": ["src/bin/refactor"],
 
     "minimum-stability": "dev"
 }
