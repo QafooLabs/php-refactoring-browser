@@ -63,7 +63,7 @@ location:
 
     php refactor.phar extract-method <file> <line-range> <new-method>
 
-This refactoring automatically detects all necssary inputs and ouputs from the
+This refactoring automatically detects all necessary inputs and ouputs from the
 function and generates the argument list and return statement accordingly.
 
 ### Rename Local Variable
@@ -75,7 +75,7 @@ Rename a local variable from one to another name:
 ### Convert Local to Instance Variable
 
 Converts a local variable into an instance variable, creates the property and renames
-all the occurances in the selected method to use the instance variable:
+all the occurences in the selected method to use the instance variable:
 
     php refactor.phar convert-local-to-instance-variable <file> <line> <variable>
 
