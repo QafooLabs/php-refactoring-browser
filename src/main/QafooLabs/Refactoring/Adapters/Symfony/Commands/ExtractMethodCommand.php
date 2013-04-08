@@ -43,7 +43,7 @@ class ExtractMethodCommand extends Command
             ->addArgument('newmethod', InputArgument::REQUIRED, 'Name of the new method.')
             ->setHelp(<<<HELP
 Extract a range of lines from one method into its own method.
-This refactoring is usally used during cleanup of code into
+This refactoring is usually used during cleanup of code into
 single units.
 
 <comment>Operations:</comment>
