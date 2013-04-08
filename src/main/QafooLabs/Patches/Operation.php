@@ -16,7 +16,7 @@ namespace QafooLabs\Patches;
 interface Operation
 {
     /**
-     * Perform opertaion on the hunk and return a new modified hunk.
+     * Perform operation on the hunk and return a new modified hunk.
      *
      * @param Hunk $hunk
      *

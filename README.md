@@ -44,12 +44,12 @@ such a tool in PHP natively:
 * We are VIM users and don't want to use an IDE for refactorings. Also we
   are independent of an IDE and users of any (non PHP Storm) editor can now
   benefit from the practice of automated refactorings.
-* The non-existance of a simple refactoring tool leads to programmers not
+* The non-existence of a simple refactoring tool leads to programmers not
   refactoring "just to be safe". This hurts long time maintainability of code.
   Refactoring is one of the most important steps during development and just come easy.
 * Generating patches for refactorings before applying them allows to easily
   verify the operation yourself or sending it to a colleague.
-* The libaries (see above) to build such a tool are available, so why not do it.
+* The libraries (see above) to build such a tool are available, so why not do it.
 * The project is an academic of sorts as well, as you can see in the Design Goals
   we try to be very strict about the Ports and Adapters architecture and a Domain
   Driven Design.
@@ -63,7 +63,7 @@ location:
 
     php refactor.phar extract-method <file> <line-range> <new-method>
 
-This refactoring automatically detects all necessary inputs and ouputs from the
+This refactoring automatically detects all necessary inputs and outputs from the
 function and generates the argument list and return statement accordingly.
 
 ### Rename Local Variable
@@ -75,7 +75,7 @@ Rename a local variable from one to another name:
 ### Convert Local to Instance Variable
 
 Converts a local variable into an instance variable, creates the property and renames
-all the occurences in the selected method to use the instance variable:
+all the occurrences in the selected method to use the instance variable:
 
     php refactor.phar convert-local-to-instance-variable <file> <line> <variable>
 
