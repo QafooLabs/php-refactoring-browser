@@ -18,7 +18,7 @@ class MethodSignatureTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function whenCreateMethodSignatureWithInvalidVisiblity_ThenThrowException()
+    public function whenCreateMethodSignatureWithInvalidVisibility_ThenThrowException()
     {
         $this->setExpectedException("InvalidArgumentException");
 

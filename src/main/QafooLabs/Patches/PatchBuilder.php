@@ -130,22 +130,22 @@ class PatchBuilder
      * Replace a range of lines with a set of new lines.
      *
      * @param int $startOriginalLine
-     * @param int $endOrignalLine
+     * @param int $endOriginalLine
      * @param array $newLines
      *
      * @return void
      */
-    public function replaceLines($startOriginalLine, $endOrignalLine, array $newLines)
+    public function replaceLines($startOriginalLine, $endOriginalLine, array $newLines)
     {
         $this->assertValidOriginalLine($startOriginalLine);
-        $this->assertValidOriginalLine($endOrignalLine);
+        $this->assertValidOriginalLine($endOriginalLine);
 
-        if ($startOriginalLine > $endOrignalLine) {
+        if ($startOriginalLine > $endOriginalLine) {
             throw new \InvalidArgumentException("Start line number has to be smaller than end original line.");
         }
 
-        for ($i = $startOriginalLine; $i <= $endOrignalLine; $i++) {
-            if ($i === $endOrignalLine) {
+        for ($i = $startOriginalLine; $i <= $endOriginalLine; $i++) {
+            if ($i === $endOriginalLine) {
                 $this->changeLines($i, $newLines);
             } else {
                 $this->removeLine($i);

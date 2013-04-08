@@ -89,7 +89,7 @@ DIFF
             , $builder->generateUnifiedDiff());
     }
 
-    public function testRemoveLineInbetween()
+    public function testRemoveLineInBetween()
     {
         $builder = new PatchBuilder("foo\nfoo\nbar\nbar\nbar");
         $builder->removeLine(4);

@@ -14,7 +14,7 @@
 namespace QafooLabs\Refactoring\Domain\Model;
 
 /**
- * Representation of a method signature and all its parts (name, visibliity, arguments, returnVariables).
+ * Representation of a method signature and all its parts (name, visibility, arguments, returnVariables).
  */
 class MethodSignature
 {
@@ -47,7 +47,7 @@ class MethodSignature
         }
 
         if ( ! in_array(($flags & $visibility), $allowedVisibilities)) {
-            throw new \InvalidArgumentException("Mix of visilibities is not allowed.");
+            throw new \InvalidArgumentException("Mix of visibilities is not allowed.");
         }
 
         return $flags;

@@ -116,7 +116,7 @@ class Hunk
     private function getRelativeLine($originalLine)
     {
         // Additions to the original lines have to be taken into account.
-        // Deletions replace the orignal line so are not relevant.
+        // Deletions replace the original line so are not relevant.
         $additions = count(array_filter($this->lines, function ($line) { return substr($line, 0, 1) === '+'; }));
 
         if ($originalLine === $this->start) {

@@ -36,7 +36,7 @@ class ConvertLocalToInstanceVariableCommand extends Command
             ->setName('convert-local-to-instance-variable')
             ->setDescription('Convert a local variable to an instance variable.')
             ->addArgument('file', InputArgument::REQUIRED, 'File that contains the local variable.')
-            ->addArgument('line', InputArgument::REQUIRED, 'Line of one of the local variables occurances.')
+            ->addArgument('line', InputArgument::REQUIRED, 'Line of one of the local variables occurrences.')
             ->addArgument('variable', InputArgument::REQUIRED, 'Name of the variable with or without $.')
             ->setHelp(<<<HELP
 If you want to convert a variable that is local to a method to an instance variable of
@@ -45,7 +45,7 @@ task.
 
 <comment>It will:</comment>
 
-1. Convert all occurances of the same variable within the method into an instance variable of the same name.
+1. Convert all occurrences of the same variable within the method into an instance variable of the same name.
 2. Create the instance variable on the class.
 
 <comment>Pre-Conditions:</comment>
