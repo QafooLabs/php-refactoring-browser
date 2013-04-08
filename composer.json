@@ -19,12 +19,9 @@
         "php": ">=5.4",
         "behat/behat": "@stable",
         "mikey179/vfsStream": "@stable",
-        "phake/phake": "@stable"
+        "phake/phake": "@stable",
+        "nikic/php-parser": "@stable"
     },
-
-    "repositories": [
-        {"type": "vcs", "url": "https://github.com/schmittjoh/PHP-Parser"}
-    ],
 
     "autoload": {
         "psr-0": {
