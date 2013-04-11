@@ -18,6 +18,7 @@ use PHPParser_Node;
 use PHPParser_NodeVisitorAbstract;
 use PHPParser_Node_Expr_Variable;
 use PHPParser_Node_Expr_Assign;
+use PHPParser_Node_Expr_ArrayDimFetch;
 use PHPParser_Node_Param;
 use SplObjectStorage;
 
@@ -61,6 +62,11 @@ class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
         if ($node->var instanceof PHPParser_Node_Expr_Variable) {
             $this->assignments[$node->var->name][] = $node->getLine();
             $this->seenAssignmentVariables->attach($node->var);
+        } else if ($node->var instanceof PHPParser_Node_Expr_ArrayDimFetch) {
+            // $foo[] = "baz" is both a read and a write access to $foo
+            $this->localVariables[$node->var->var->name][] = $node->getLine();
+            $this->assignments[$node->var->var->name][] = $node->getLine();
+            $this->seenAssignmentVariables->attach($node->var->var);
         }
     }
 

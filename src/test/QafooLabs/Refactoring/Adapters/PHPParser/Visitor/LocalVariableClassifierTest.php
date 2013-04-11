@@ -77,4 +77,25 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('foo' => array(-1)), $classifier->getAssignments());
     }
+
+    /**
+     * @test
+     * @group GH-4
+     */
+    public function givenArrayDimFetchASsignment_WhenClassification_FindAsAssignmentAndRead()
+    {
+        $classifier = new LocalVariableClassifier();
+
+        $assign = new \PHPParser_Node_Expr_Assign(
+            new \PHPParser_Node_Expr_ArrayDimFetch(
+                new \PHPParser_Node_Expr_Variable("foo")
+            ),
+            new \PHPParser_Node_Expr_Variable("bar")
+        );
+
+        $classifier->enterNode($assign);
+
+        $this->assertEquals(array('foo' => array(-1)), $classifier->getLocalVariables());
+        $this->assertEquals(array('foo' => array(-1)), $classifier->getAssignments());
+    }
 }
