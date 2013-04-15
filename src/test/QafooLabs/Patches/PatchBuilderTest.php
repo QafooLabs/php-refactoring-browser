@@ -136,4 +136,34 @@ DIFF
 DIFF
             , $builder->generateUnifiedDiff());
     }
+
+    public function testAppendLineAtEndWithoutSingleBlankLine()
+    {
+        $builder = new PatchBuilder("foo\nfoo\nbar\nbaz\nbaz");
+        $builder->appendToLine(5, array("boing"));
+
+        $this->assertEquals(<<<DIFF
+@@ -3,3 +3,4 @@
+ bar
+ baz
+ baz
++boing
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
+
+    public function testAppendLineAtEndWithSingleBlankLine()
+    {
+        $builder = new PatchBuilder("foo\nfoo\nbar\nbaz\nbaz\n");
+        $builder->appendToLine(5, array("boing"));
+
+        $this->assertEquals(<<<DIFF
+@@ -3,3 +3,4 @@
+ bar
+ baz
+ baz
++boing
+DIFF
+            , $builder->generateUnifiedDiff());
+    }
 }

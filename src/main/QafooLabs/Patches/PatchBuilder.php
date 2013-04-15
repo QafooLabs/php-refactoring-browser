@@ -53,7 +53,7 @@ class PatchBuilder
     public function __construct($contents, $path = null)
     {
         if ( ! empty($contents)) {
-            $this->lines = explode("\n", $contents);
+            $this->lines = explode("\n", rtrim($contents));
         }
         $this->path = $path;
     }
