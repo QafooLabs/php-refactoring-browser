@@ -2,6 +2,9 @@
 
 namespace QafooLabs\Refactoring\Domain\Model;
 
+/**
+ * Abstraction fo php class names based on a file.
+ */
 class PhpClassName
 {
     private $file;
@@ -13,17 +16,7 @@ class PhpClassName
 
     public function getNamespace()
     {
-        return $this->expectedClassNamespace($this->file);
-    }
-
-    public function getShortname()
-    {
-        return $this->expectedClassShortNameIn($this->file);
-    }
-
-    private function expectedClassNamespace(File $phpFile)
-    {
-        $parts = explode("/", $phpFile->getRelativePath());
+        $parts = explode("/", $this->file->getRelativePath());
         $namespace = array();
 
         foreach ($parts as $part) {
@@ -40,13 +33,13 @@ class PhpClassName
         return str_replace(".php", "", implode("\\", $namespace));
     }
 
+    public function getShortname()
+    {
+        return str_replace(".php", "", $this->file->getBasename());
+    }
+
     private function startsWithLowerCase($string)
     {
         return strtolower($string[0]) === $string[0];
-    }
-
-    private function expectedClassShortNameIn(File $phpFile)
-    {
-        return str_replace(".php", "", $phpFile->getBasename());
     }
 }
