@@ -13,6 +13,12 @@
 
 namespace QafooLabs\Refactoring\Domain\Model;
 
+use QafooLabs\Refactoring\Utils\CallbackFilterIterator;
+use QafooLabs\Refactoring\Utils\CallbackTransformIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
+
 /**
  * A directory in a project.
  */
@@ -33,12 +39,24 @@ class Directory
      */
     public function findAllPhpFilesRecursivly()
     {
-        return new 
-            new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($this->path),
-                RecursiveIteratorIterator::CHILD_ONLY
-            )
+        $workingPath = $this->path;
 
+        return
+            new CallbackTransformIterator(
+                new CallbackFilterIterator(
+                    new RecursiveIteratorIterator(
+                        new RecursiveDirectoryIterator($this->path),
+                        RecursiveIteratorIterator::LEAVES_ONLY
+                    ),
+                    function (SplFileInfo $file) {
+                        return substr($file->getFilename(), -4) === ".php";
+                    }
+                ),
+                function ($file) use ($workingPath) {
+                    return File::createFromPath($file->getRealPath(), $workingPath);
+                }
+            )
+        ;
     }
 }
 
