@@ -33,6 +33,12 @@ class Directory
      */
     public function findAllPhpFilesRecursivly()
     {
+        return new 
+            new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($this->path),
+                RecursiveIteratorIterator::CHILD_ONLY
+            )
+
     }
 }
 

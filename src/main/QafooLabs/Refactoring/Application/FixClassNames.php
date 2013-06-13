@@ -13,6 +13,8 @@
 
 namespace QafooLabs\Refactoring\Application;
 
+use QafooLabs\Refactoring\Domain\Model\Directory;
+
 class FixClassNames
 {
     private $codeAnalysis;
@@ -24,7 +26,39 @@ class FixClassNames
         $this->editor = $editor;
     }
 
-    public function refactor($directory)
+    public function refactor(Directory $directory)
     {
+        $phpFiles = $directory->findAllPhpFilesRecursivly();
+
+        $renamedNamespaces = array();
+        $renamedClasses = array();
+
+        foreach ($phpFiles as $phpFile) {
+            $classes = $this->codeAnalysis->findClasses($phpFile);
+
+            if (count($classes) !== 1) {
+                continue;
+            }
+
+            $class = $classes[0];
+            $phpFileShortname = 
+            $classShortname = 
+
+            if ($phpFileShortname !== $classShortname) {
+                $line = $class->getDeclarationLine();
+
+                $this->editor->replaceString($phpFile, $line, $classShortname, $phpFileShortname);
+            }
+
+            $phpFileNamespace = ;
+            $classNamespace = ;
+
+            if ($phpFileNamespace !== $classNamespace) {
+                $namespaceDeclarationLine = ...
+
+                $this->editor->replaceString($phpFile, $namespaceDeclarationLine, $classNamespace, $phpFileNamespace);
+            }
+        }
     }
 }
+
