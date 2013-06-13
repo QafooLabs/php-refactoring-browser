@@ -41,6 +41,7 @@ ______      __           _             _              ______
         $commands[] = new Commands\ExtractMethodCommand();
         $commands[] = new Commands\RenameLocalVariableCommand();
         $commands[] = new Commands\ConvertLocalToInstanceVariableCommand();
+        $commands[] = new Commands\FixClassNamesCommand();
 
         return $commands;
     }
