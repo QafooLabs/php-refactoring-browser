@@ -8,7 +8,7 @@
     ],
 
     "require": {
-        "scrutinizer/php-analyzer": "dev-master",
+        "nikic/php-parser": "@stable",
         "beberlei/assert": "@stable",
         "andrewsville/php-token-reflection": "@stable",
         "symfony/finder": "@stable",
@@ -21,10 +21,6 @@
         "mikey179/vfsStream": "@stable",
         "phake/phake": "@stable"
     },
-
-    "repositories": [
-        {"type": "vcs", "url": "https://github.com/schmittjoh/PHP-Parser"}
-    ],
 
     "autoload": {
         "psr-0": {

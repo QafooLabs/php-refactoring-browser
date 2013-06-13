@@ -21,6 +21,7 @@ use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LineRangeStatementCollector;
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LocalVariableClassifier;
+use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\NodeConnector;
 
 use PHPParser_Parser;
 use PHPParser_Lexer;
@@ -33,13 +34,13 @@ class ParserVariableScanner implements VariableScanner
 {
     public function scanForVariables(File $file, LineRange $range)
     {
-        $parser = new PHPParser_Parser();
-        $stmts = $parser->parse(new PHPParser_Lexer($file->getCode()));
+        $parser = new PHPParser_Parser(new PHPParser_Lexer());
+        $stmts = $parser->parse($file->getCode());
 
         $collector = new LineRangeStatementCollector($range);
 
         $traverser     = new PHPParser_NodeTraverser;
-        $traverser->addVisitor(new \PHPParser_NodeVisitor_NodeConnector);
+        $traverser->addVisitor(new NodeConnector);
         $traverser->addVisitor($collector);
 
         $traverser->traverse($stmts);
