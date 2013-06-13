@@ -39,6 +39,13 @@ class PhpClass
         return $this->name;
     }
 
+    public function getNamespace()
+    {
+        $parts = explode("\\", $this->name);
+        array_pop($parts);
+        return implode("\\", $parts);
+    }
+
     public function getShortName()
     {
         $parts = explode("\\", $this->name);

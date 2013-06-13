@@ -15,6 +15,7 @@ namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\Directory;
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\PhpClassName;
 
 class FixClassNames
 {
@@ -43,32 +44,26 @@ class FixClassNames
 
             $class = $classes[0];
             $classShortname = $class->getShortName();
-            $phpFileShortname = $this->expectedClassShortNameIn($phpFile);
+            $phpClassName = new PhpClassName($phpFile);
 
             $buffer = $this->editor->openBuffer($phpFile);
 
-            if ($phpFileShortname !== $classShortname) {
+            if ($phpClassName->getShortname() !== $classShortname) {
                 $line = $class->getDeclarationLine();
 
-                $buffer->replaceString($line, $classShortname, $phpFileShortname);
+                $buffer->replaceString($line, $classShortname, $phpClassName->getShortname());
             }
 
-            /*$phpFileNamespace = ;
-            $classNamespace = ;
+            $classNamespace = $class->getNamespace();
 
-            if ($phpFileNamespace !== $classNamespace) {
-                $namespaceDeclarationLine = ...
+            if ($phpClassName->getNamespace() !== $classNamespace) {
+                $namespaceDeclarationLine = 2;
 
-                $buffer->replaceString($phpFile, $namespaceDeclarationLine, $classNamespace, $phpFileNamespace);
-            }*/
+                $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->getNamespace());
+            }
         }
 
         $this->editor->save();
-    }
-
-    private function expectedClassShortNameIn(File $phpFile)
-    {
-        return str_replace(".php", "", $phpFile->getBasename());
     }
 }
 

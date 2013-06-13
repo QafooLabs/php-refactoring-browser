@@ -4,6 +4,12 @@ namespace QafooLabs\Patches;
 
 class PatchBuilderTest extends \PHPUnit_Framework_TestCase
 {
+    public function testNoChanges()
+    {
+        $builder = new PatchBuilder('');
+        $this->assertEquals('', $builder->generateUnifiedDiff());
+    }
+
     public function testEmptyFileAppendLine()
     {
         $builder = new PatchBuilder('');

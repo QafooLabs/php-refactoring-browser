@@ -173,6 +173,10 @@ class PatchBuilder
      */
     public function generateUnifiedDiff()
     {
+        if ( ! $this->operations) {
+            return "";
+        }
+
         if ($this->lines === null) {
             $hunk = Hunk::forEmptyFile();
             return (string)$this->operations[0]->perform($hunk);
