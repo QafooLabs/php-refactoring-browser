@@ -57,6 +57,14 @@ abstract class CodeAnalysis
     abstract public function isInsideMethod(File $file, LineRange $range);
 
     /**
+     * Find all classes in the file.
+     *
+     * @param File $file
+     * @return PhpClass[]
+     */
+    abstract public function findClasses(File $file);
+
+    /**
      * From a range within a method, find the start and end range of that method.
      *
      * @param File $file

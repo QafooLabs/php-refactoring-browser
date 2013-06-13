@@ -16,12 +16,11 @@ Feature: Fix Class Names
         When I use refactoring "fix-class-names" with:
             | arg   | value |
             | dir   | src/  |
-        Then the PHP File "foo" should be refactored:
+        Then the PHP File "src/Foo/Bar.php" should be refactored:
             """
-            --- a/vfs://project/src/Foo/Bar.php
-            +++ a/vfs://project/src/Foo/Bar.php
-            @@ -1,6 +1,6 @@
-             <?php
+            --- a/Foo/Bar.php
+            +++ b/Foo/Bar.php
+            @@ -2,5 +2,5 @@
              namespace Foo;
              
             -class Foo

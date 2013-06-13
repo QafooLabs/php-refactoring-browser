@@ -64,6 +64,10 @@ class FeatureContext extends BehatContext
         if (isset($data['file'])) {
             $data['file'] = vfsStream::url('project/' . $data['file']);
         }
+        if (isset($data['dir'])) {
+            $data['dir'] = vfsStream::url('project/' . $data['dir']);
+        }
+
         $data['--verbose'] = true;
 
         $fh = fopen("php://memory", "rw");

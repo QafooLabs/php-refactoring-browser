@@ -53,7 +53,7 @@ class Directory
                     }
                 ),
                 function ($file) use ($workingPath) {
-                    return File::createFromPath($file->getRealPath(), $workingPath);
+                    return File::createFromPath($file->getPathname(), $workingPath);
                 }
             )
         ;

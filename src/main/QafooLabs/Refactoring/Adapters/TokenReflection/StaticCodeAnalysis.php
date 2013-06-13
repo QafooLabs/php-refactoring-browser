@@ -17,6 +17,7 @@ namespace QafooLabs\Refactoring\Adapters\TokenReflection;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\PhpClass;
 
 use TokenReflection\Broker;
 use TokenReflection\Broker\Backend\Memory;
@@ -127,5 +128,25 @@ class StaticCodeAnalysis extends CodeAnalysis
         }
 
         return false;
+    }
+
+    /**
+     * @param File $file
+     * @return PhpClass[]
+     */
+    public function findClasses(File $file)
+    {
+        $classes = array();
+
+        $this->broker = new Broker(new Memory);
+
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getClasses() as $class) {
+                $classes[] = new PhpClass($class->getName(), $class->getStartLine());
+            }
+        }
+
+        return $classes;
     }
 }

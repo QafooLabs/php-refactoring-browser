@@ -61,4 +61,12 @@ class File
     {
         return $this->code;
     }
+
+    /**
+     * @return string
+     */
+    public function getBaseName()
+    {
+        return basename($this->relativePath);
+    }
 }

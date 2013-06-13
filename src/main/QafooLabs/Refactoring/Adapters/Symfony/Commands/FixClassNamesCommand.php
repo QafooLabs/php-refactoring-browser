@@ -23,6 +23,7 @@ use QafooLabs\Refactoring\Application\FixClassNames;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
 use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
 use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
+use QafooLabs\Refactoring\Domain\Model\Directory;
 
 class FixClassNamesCommand extends Command
 {
@@ -58,7 +59,7 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $directory = $input->getArgument('dir');
+        $directory = new Directory($input->getArgument('dir'));
 
         $codeAnalysis = new StaticCodeAnalysis();
         $editor = new PatchEditor(new OutputPatchCommand($output));
