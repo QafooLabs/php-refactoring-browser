@@ -19,6 +19,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
+use QafooLabs\Refactoring\Application\FixClassNames;
+use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
+use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
+use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
+
 class FixClassNamesCommand extends Command
 {
     protected function configure()
@@ -53,5 +58,13 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $directory = $input->getArgument('dir');
+
+        $codeAnalysis = new StaticCodeAnalysis();
+        $editor = new PatchEditor(new OutputPatchCommand($output));
+
+        $fixClassNames = new FixClassNames($codeAnalysis, $editor);
+        $fixClassNames->refactor($directory);
     }
 }
+
