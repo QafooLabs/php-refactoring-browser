@@ -28,10 +28,16 @@ class PhpClass
      */
     private $declarationLine;
 
-    public function __construct($name, $declarationLine)
+    /**
+     * @var int
+     */
+    private $namespaceDeclarationLine;
+
+    public function __construct($name, $declarationLine, $namespaceDeclarationLine)
     {
         $this->name = $name;
         $this->declarationLine = $declarationLine;
+        $this->namespaceDeclarationLine = $namespaceDeclarationLine;
     }
 
     public function getName()
@@ -55,6 +61,11 @@ class PhpClass
     public function getDeclarationLine()
     {
         return $this->declarationLine;
+    }
+
+    public function getNamespaceDeclarationLine()
+    {
+        return $this->namespaceDeclarationLine;
     }
 }
 

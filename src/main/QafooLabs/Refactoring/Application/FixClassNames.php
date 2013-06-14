@@ -63,7 +63,7 @@ class FixClassNames
             $classNamespace = $class->getNamespace();
 
             if ($phpClassName->getNamespace() !== $classNamespace) {
-                $namespaceDeclarationLine = 2; // @Todo
+                $namespaceDeclarationLine = $class->getNamespaceDeclarationLine();
 
                 $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->getNamespace());
 
@@ -76,6 +76,7 @@ class FixClassNames
                 if ($useStatement->isForClass($originalClassName)) {
                     $buffer = $this->editor->openBuffer($useStatement->file());
                     $buffer->replaceString($useStatement->line(), $originalClassName, $newClassName);
+                    continue 2;
                 }
             }
 
@@ -83,6 +84,7 @@ class FixClassNames
                 if ($useStatement->startsWithNamespace($originalNamespace)) {
                     $buffer = $this->editor->openBuffer($useStatement->file());
                     $buffer->replaceString($useStatement->line(), ' ' . $originalNamespace, ' ' . $newNamespace);
+                    continue 2;
                 }
             }
         }

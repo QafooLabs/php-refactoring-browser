@@ -143,7 +143,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
         foreach ($file->getNamespaces() as $namespace) {
             foreach ($namespace->getClasses() as $class) {
-                $classes[] = new PhpClass($class->getName(), $class->getStartLine());
+                $classes[] = new PhpClass($class->getName(), $class->getStartLine(), $namespace->getStartLine());
             }
         }
 
