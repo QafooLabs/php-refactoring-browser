@@ -89,3 +89,38 @@ Feature: Fix Class Names
             -use Foo\Foo;
             +use Foo\Bar;
             """
+    Scenario: "Namespace moved changes use statements"
+        Given a PHP File named "src/Foo/Bar.php" with:
+            """
+            <?php
+            namespace Bar;
+
+            class Bar
+            {
+            }
+            """
+        Given a PHP File named "src/Foo.php" with:
+            """
+            <?php
+            use Bar\Bar;
+            """
+        When I use refactoring "fix-class-names" with:
+            | arg   | value |
+            | dir   | src/  |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/src/Foo/Bar.php
+            +++ b/src/Foo/Bar.php
+            @@ -1,4 +1,4 @@
+             <?php
+            -namespace Bar;
+            +namespace Foo;
+
+             class Bar
+            --- a/Foo.php
+            +++ b/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -use Bar\Bar;
+            +use Foo\Bar;
+            """

@@ -78,6 +78,13 @@ class FixClassNames
                     $buffer->replaceString($useStatement->line(), $originalClassName, $newClassName);
                 }
             }
+
+            foreach ($renamedNamespaces as $originalNamespace => $newNamespace) {
+                if ($useStatement->startsWithNamespace($originalNamespace)) {
+                    $buffer = $this->editor->openBuffer($useStatement->file());
+                    $buffer->replaceString($useStatement->line(), ' ' . $originalNamespace, ' ' . $newNamespace);
+                }
+            }
         }
 
         $this->editor->save();

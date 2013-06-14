@@ -35,6 +35,11 @@ class PhpUseStatement
         return ltrim($name, '\\') === ltrim($this->declaration, '\\');
     }
 
+    public function startsWithNamespace($namespace)
+    {
+        return strpos(ltrim($this->declaration, '\\'), ltrim($namespace, '\\')) === 0;
+    }
+
     /**
      * @return File
      */
