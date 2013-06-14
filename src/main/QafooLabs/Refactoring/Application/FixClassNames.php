@@ -21,11 +21,13 @@ class FixClassNames
 {
     private $codeAnalysis;
     private $editor;
+    private $useStatementScanner;
 
-    public function __construct($codeAnalysis, $editor)
+    public function __construct($codeAnalysis, $editor, $useStatementScanner)
     {
         $this->codeAnalysis = $codeAnalysis;
         $this->editor = $editor;
+        $this->useStatementScanner = $useStatementScanner;
     }
 
     public function refactor(Directory $directory)
@@ -38,7 +40,7 @@ class FixClassNames
 
         foreach ($phpFiles as $phpFile) {
             $classes = $this->codeAnalysis->findClasses($phpFile);
-            $useStatements = array_merge($this->codeAnalysis->findUseStatements($phpFile), $useStatements);
+            $useStatements = array_merge($this->useStatementScanner->findUseStatements($phpFile), $useStatements);
 
             if (count($classes) !== 1) {
                 continue;

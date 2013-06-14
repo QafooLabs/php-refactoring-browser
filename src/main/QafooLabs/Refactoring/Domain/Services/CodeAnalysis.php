@@ -65,14 +65,6 @@ abstract class CodeAnalysis
     abstract public function findClasses(File $file);
 
     /**
-     * Find all use statements in the file.
-     *
-     * @param File $file
-     * @return PhpUseStatement[]
-     */
-    abstract public function findUseStatements(File $file);
-
-    /**
      * From a range within a method, find the start and end range of that method.
      *
      * @param File $file

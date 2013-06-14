@@ -20,6 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
 use QafooLabs\Refactoring\Application\FixClassNames;
+use QafooLabs\Refactoring\Adapters\PHPParser\ParserUseStatementScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
 use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
 use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
@@ -62,9 +63,10 @@ HELP
         $directory = new Directory($input->getArgument('dir'));
 
         $codeAnalysis = new StaticCodeAnalysis();
+        $useStatementScanner = new ParserUseStatementScanner();
         $editor = new PatchEditor(new OutputPatchCommand($output));
 
-        $fixClassNames = new FixClassNames($codeAnalysis, $editor);
+        $fixClassNames = new FixClassNames($codeAnalysis, $editor, $useStatementScanner);
         $fixClassNames->refactor($directory);
     }
 }
