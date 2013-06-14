@@ -19,7 +19,10 @@ use PHPParser_Node_Stmt_UseUse;
 
 class UseStatementCollector extends \PHPParser_NodeVisitorAbstract
 {
-    private $useDeclarations;
+    /**
+     * @var array
+     */
+    private $useDeclarations = array();
 
     public function enterNode(PHPParser_Node $node)
     {
