@@ -37,6 +37,10 @@ class OutputPatchCommand implements ApplyPatchCommand
      */
     public function apply($patch)
     {
+        if (empty($patch)) {
+            return;
+        }
+
         $this->output->writeln($patch);
     }
 }
