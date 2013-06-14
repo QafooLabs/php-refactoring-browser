@@ -73,6 +73,15 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/src/Foo/Bar.php
+            +++ b/src/Foo/Bar.php
+            @@ -2,5 +2,5 @@
+             namespace Foo;
+
+            -class Foo
+            +class Bar
+             {
+             }
             --- a/Foo.php
             +++ b/Foo.php
             @@ -1,2 +1,2 @@

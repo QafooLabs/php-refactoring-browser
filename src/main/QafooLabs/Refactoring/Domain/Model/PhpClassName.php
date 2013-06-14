@@ -45,6 +45,6 @@ class PhpClassName
 
     public function getName()
     {
-        return ltrim('\\', $this->getNamespace() . '\\' . $this->getShortname());
+        return ltrim($this->getNamespace() . '\\' . $this->getShortname(), '\\');
     }
 }

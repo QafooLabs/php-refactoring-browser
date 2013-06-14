@@ -32,6 +32,7 @@ class FeatureContext extends BehatContext
     public function __construct(array $parameters)
     {
         $this->root = vfsStream::setup('project');
+        $this->structure = array();
     }
 
     /**
@@ -39,16 +40,24 @@ class FeatureContext extends BehatContext
      */
     public function aPhpFileNamedWith($file, PyStringNode $code)
     {
-        $parts = explode("/", $file);
-        $structure = array();
-        $root = &$structure;
+        $this->structure = $this->appendToTree($this->structure, $file, (string)$code);
+    }
 
-        while ($part = array_shift($parts)) {
-            $structure = array($part => (string)$code);
-            $structure = &$structure[$part];
+    private function appendToTree($tree, $path, $code)
+    {
+        @list($head, $rest) = explode("/", $path, 2); // Muting notice that happens when there are no 2 elements left.
+
+        if (!isset($tree[$head])) {
+            $tree[$head] = array();
         }
 
-        vfsStream::create($root, $this->root);
+        if (empty($rest)) {
+            $tree[$head] = $code;
+        } else {
+            $tree[$head] = $this->appendToTree($tree, $rest, $code);
+        }
+
+        return $tree;
     }
 
     /**
@@ -56,6 +65,8 @@ class FeatureContext extends BehatContext
      */
     public function iUseRefactoringWith($refactoringName, TableNode $table)
     {
+        vfsStream::create($this->structure, $this->root);
+
         $data = array('command' => $refactoringName);
         foreach ($table->getHash() as $line) {
             $data[$line['arg']] = $line['value'];
