@@ -22,7 +22,7 @@ Feature: Fix Class Names
             +++ b/Foo/Bar.php
             @@ -2,5 +2,5 @@
              namespace Foo;
-             
+
             -class Foo
             +class Bar
              {
@@ -50,7 +50,33 @@ Feature: Fix Class Names
              <?php
             -namespace Baz;
             +namespace Foo;
-             
+
              class Bar
             """
+    Scenario: "Class renamed changes use statements"
+        Given a PHP File named "src/Foo/Bar.php" with:
+            """
+            <?php
+            namespace Foo;
 
+            class Foo
+            {
+            }
+            """
+        Given a PHP File named "src/Foo.php" with:
+            """
+            <?php
+            use Foo\Foo;
+            """
+        When I use refactoring "fix-class-names" with:
+            | arg   | value |
+            | dir   | src/  |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/Foo.php
+            +++ b/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -use Foo\Foo;
+            +use Foo\Bar;
+            """

@@ -149,4 +149,9 @@ class StaticCodeAnalysis extends CodeAnalysis
 
         return $classes;
     }
+
+    public function findUseStatements(File $file)
+    {
+        return array();
+    }
 }

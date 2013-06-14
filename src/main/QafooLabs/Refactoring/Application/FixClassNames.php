@@ -34,9 +34,11 @@ class FixClassNames
 
         $renamedNamespaces = array();
         $renamedClasses = array();
+        $useStatements = array();
 
         foreach ($phpFiles as $phpFile) {
             $classes = $this->codeAnalysis->findClasses($phpFile);
+            $useStatements = array_merge($this->codeAnalysis->findUseStatements($phpFile), $useStatements);
 
             if (count($classes) !== 1) {
                 continue;
@@ -52,14 +54,27 @@ class FixClassNames
                 $line = $class->getDeclarationLine();
 
                 $buffer->replaceString($line, $classShortname, $phpClassName->getShortname());
+
+                $renamedClasses[$class->getName()] = $phpClassName->getName();
             }
 
             $classNamespace = $class->getNamespace();
 
             if ($phpClassName->getNamespace() !== $classNamespace) {
-                $namespaceDeclarationLine = 2;
+                $namespaceDeclarationLine = 2; // @Todo
 
                 $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->getNamespace());
+
+                $renamedNamespaces[$classNamespace] = $phpClassName->getNamespace();
+            }
+        }
+
+        foreach ($useStatements as $useStatement) {
+            foreach ($renamedClasses as $originalClassName => $newClassName) {
+                if ($useStatement->isForClass($originalClassName)) {
+                    $buffer = $this->editor->openBuffer($useStatement->file());
+                    $buffer->replaceString($useStatement->line(), $originalClassName, $newClassName);
+                }
             }
         }
 

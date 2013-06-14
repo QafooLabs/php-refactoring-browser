@@ -42,4 +42,9 @@ class PhpClassName
     {
         return strtolower($string[0]) === $string[0];
     }
+
+    public function getName()
+    {
+        return ltrim('\\', $this->getNamespace() . '\\' . $this->getShortname());
+    }
 }
