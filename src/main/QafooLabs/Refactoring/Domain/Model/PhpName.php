@@ -17,11 +17,15 @@ class PhpName
 {
     private $fullyQualifiedName;
     private $relativeName;
+    private $file;
+    private $declaredLine;
 
-    public function __construct($fullyQualifiedName, $relativeName)
+    public function __construct($fullyQualifiedName, $relativeName, File $file = null, $declaredLine = null)
     {
         $this->fullyQualifiedName = $fullyQualifiedName;
         $this->relativeName = $relativeName;
+        $this->file = $file;
+        $this->declaredLine = $declaredLine;
     }
 
     /**
@@ -46,7 +50,7 @@ class PhpName
         $prefix = array();
         foreach ($otherParts as $otherPart) {
             if ($otherPart === $thisParts[0]) {
-                return implode("\\", $prefix) . "\\" . $this->relativeName === $this->fullyQualifiedName;
+                return ltrim(implode("\\", $prefix) . "\\" . $this->relativeName, '\\') === $this->fullyQualifiedName;
             }
 
             $prefix[] = $otherPart;
@@ -61,23 +65,30 @@ class PhpName
             return $this;
         }
 
-        $fromParts = explode("\\", $from->relativeName);
-        $toParts = explode("\\",   $to->relativeName);
-        @list($thisHead, $thisRest) = explode("\\", $this->relativeName, 2);
+        $toParts = explode("\\",   $to->fullyQualifiedName);
+        $thisParts = explode("\\", $this->fullyQualifiedName);
 
-        $prefix = array();
-        foreach ($fromParts as $fromPart) {
-            $prefix[] = array_shift($toParts);
-
-            if ($fromPart === $thisHead) {
-                $newParts = array_merge($prefix, explode('\\', $thisRest));
-                $relativeNewParts = array_slice($newParts, count($newParts)-count($thisRest)-1);
-
-                return new PhpName(implode('\\', $newParts), implode('\\', $relativeNewParts));
+        $newParts = array();
+        for ($i = 0; $i < count($thisParts); $i++) {
+            if ( ! isset($toParts[$i])) {
+                $newParts[] = $thisParts[$i];
+            } else {
+                $newParts[] = $toParts[$i];
             }
         }
 
-        return $this;
+        $relativeNewParts = array_slice($newParts, -1 * count(explode('\\', $this->relativeName)));
+        return new PhpName(implode('\\', $newParts), implode('\\', $relativeNewParts), $this->file, $this->declaredLine);
+    }
+
+    public function file()
+    {
+        return $this->file;
+    }
+
+    public function declaredLine()
+    {
+        return $this->declaredLine;
     }
 
     public function fullyQualifiedName()

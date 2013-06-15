@@ -16,31 +16,31 @@ namespace QafooLabs\Refactoring\Application;
 use QafooLabs\Refactoring\Domain\Model\Directory;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\PhpClassName;
+use QafooLabs\Refactoring\Domain\Model\PhpName;
 
 class FixClassNames
 {
     private $codeAnalysis;
     private $editor;
-    private $useStatementScanner;
+    private $nameScanner;
 
-    public function __construct($codeAnalysis, $editor, $useStatementScanner)
+    public function __construct($codeAnalysis, $editor, $nameScanner)
     {
         $this->codeAnalysis = $codeAnalysis;
         $this->editor = $editor;
-        $this->useStatementScanner = $useStatementScanner;
+        $this->nameScanner = $nameScanner;
     }
 
     public function refactor(Directory $directory)
     {
         $phpFiles = $directory->findAllPhpFilesRecursivly();
 
-        $renamedNamespaces = array();
-        $renamedClasses = array();
-        $useStatements = array();
+        $renames = array();
+        $names = array();
 
         foreach ($phpFiles as $phpFile) {
             $classes = $this->codeAnalysis->findClasses($phpFile);
-            $useStatements = array_merge($this->useStatementScanner->findUseStatements($phpFile), $useStatements);
+            $names = array_merge($this->nameScanner->findNames($phpFile), $names);
 
             if (count($classes) !== 1) {
                 continue;
@@ -57,7 +57,10 @@ class FixClassNames
 
                 $buffer->replaceString($line, $classShortname, $phpClassName->getShortname());
 
-                $renamedClasses[$class->getName()] = $phpClassName->getName();
+                $renames[] = array(
+                    'old' => new PhpName($class->getName(), $class->getShortname(), $phpFile, $line),
+                    'new' => new PhpName($phpClassName->getName(), $phpClassName->getShortname(), $phpFile, $line)
+                );
             }
 
             $classNamespace = $class->getNamespace();
@@ -67,23 +70,21 @@ class FixClassNames
 
                 $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->getNamespace());
 
-                $renamedNamespaces[$classNamespace] = $phpClassName->getNamespace();
+                $renames[] = array(
+                    'old' => new PhpName($classNamespace, $classNamespace, $phpFile, $namespaceDeclarationLine),
+                    'new' => new PhpName($phpClassName->getNamespace(), $phpClassName->getNamespace(), $phpFile, $namespaceDeclarationLine)
+                );
             }
         }
 
-        foreach ($useStatements as $useStatement) {
-            foreach ($renamedClasses as $originalClassName => $newClassName) {
-                if ($useStatement->isForClass($originalClassName)) {
-                    $buffer = $this->editor->openBuffer($useStatement->file());
-                    $buffer->replaceString($useStatement->line(), $originalClassName, $newClassName);
-                    continue 2;
-                }
-            }
-
-            foreach ($renamedNamespaces as $originalNamespace => $newNamespace) {
-                if ($useStatement->startsWithNamespace($originalNamespace)) {
-                    $buffer = $this->editor->openBuffer($useStatement->file());
-                    $buffer->replaceString($useStatement->line(), ' ' . $originalNamespace, ' ' . $newNamespace);
+        var_dump($names);
+        var_dump($renames);
+        foreach ($names as $name) {
+            foreach ($renames as $rename) {
+                if ($name->isAffectedByChangesTo($rename['old'])) {
+                    var_dump("OLOL");
+                    $buffer = $this->editor->openBuffer($name->file());
+                    $buffer->replaceString($name->declaredLine(), $name->relativeName(), $name->change($rename['old'], $rename['new'])->relativeName());
                     continue 2;
                 }
             }
