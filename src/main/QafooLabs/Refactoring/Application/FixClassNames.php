@@ -77,12 +77,9 @@ class FixClassNames
             }
         }
 
-        var_dump($names);
-        var_dump($renames);
         foreach ($names as $name) {
             foreach ($renames as $rename) {
                 if ($name->isAffectedByChangesTo($rename['old'])) {
-                    var_dump("OLOL");
                     $buffer = $this->editor->openBuffer($name->file());
                     $buffer->replaceString($name->declaredLine(), $name->relativeName(), $name->change($rename['old'], $rename['new'])->relativeName());
                     continue 2;
