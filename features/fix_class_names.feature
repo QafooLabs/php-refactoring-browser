@@ -124,3 +124,76 @@ Feature: Fix Class Names
             -use Bar\Bar;
             +use Foo\Bar;
             """
+
+    Scenario: "Rename class changes static occurances"
+        Given a PHP File named "src/Foo/Bar.php" with:
+            """
+            <?php
+            namespace Foo;
+
+            class Foo
+            {
+            }
+            """
+        Given a PHP File named "src/Foo.php" with:
+            """
+            <?php
+            Foo\Foo::bar();
+            """
+        When I use refactoring "fix-class-names" with:
+            | arg   | value |
+            | dir   | src/  |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/src/Foo/Bar.php
+            +++ b/src/Foo/Bar.php
+            @@ -2,5 +2,5 @@
+             namespace Foo;
+
+            -class Foo
+            +class Bar
+             {
+             }
+            --- a/Foo.php
+            +++ b/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -Foo\Foo::bar();
+            +Foo\Bar::bar();
+            """
+    Scenario: "Rename class changes new instantiations"
+        Given a PHP File named "src/Foo/Bar.php" with:
+            """
+            <?php
+            namespace Foo;
+
+            class Foo
+            {
+            }
+            """
+        Given a PHP File named "src/Foo.php" with:
+            """
+            <?php
+            new Foo\Foo();
+            """
+        When I use refactoring "fix-class-names" with:
+            | arg   | value |
+            | dir   | src/  |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/src/Foo/Bar.php
+            +++ b/src/Foo/Bar.php
+            @@ -2,5 +2,5 @@
+             namespace Foo;
+
+            -class Foo
+            +class Bar
+             {
+             }
+            --- a/Foo.php
+            +++ b/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -new Foo\Foo();
+            +new Foo\Bar();
+            """

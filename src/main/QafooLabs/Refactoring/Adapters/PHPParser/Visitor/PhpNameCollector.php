@@ -78,7 +78,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
         } else if (isset($this->useStatements[$alias])) {
             $class = $this->useStatements[$alias];
         } else {
-            $class = $this->currentNamespace . '\\' . $alias;
+            $class = ltrim($this->currentNamespace . '\\' . $alias, '\\');
         }
 
         return $class;
