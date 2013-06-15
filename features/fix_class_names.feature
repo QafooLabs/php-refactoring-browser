@@ -197,3 +197,55 @@ Feature: Fix Class Names
             -new Foo\Foo();
             +new Foo\Bar();
             """
+    Scenario: "Rename class changes that is extended"
+        Given a PHP File named "src/Foo/Bar.php" with:
+            """
+            <?php
+            namespace Foo;
+
+            class Foo
+            {
+            }
+            """
+        Given a PHP File named "src/Foo/Baz.php" with:
+            """
+            <?php
+            namespace Foo;
+
+            class Baz extends Foo
+            {
+            }
+            """
+        When I use refactoring "fix-class-names" with:
+            | arg   | value |
+            | dir   | src/  |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/src/Foo/Bar.php
+            +++ b/src/Foo/Bar.php
+            @@ -2,5 +2,5 @@
+            namespace Foo;
+
+            -class Foo
+            +class Bar
+             {
+             }
+            --- a/Foo/src/Foo/Bar.php
+            +++ b/Foo/src/Foo/Bar.php
+            @@ -2,5 +2,5 @@
+             namespace Foo;
+
+            -class Foo
+            +class Bar
+             {
+             }
+            --- a/Foo/Baz.php
+            +++ b/Foo/Baz.php
+            @@ -2,5 +2,5 @@
+             namespace Foo;
+
+            -class Baz extends Foo
+            +class Baz extends Bar
+             {
+             }
+            """

@@ -17,6 +17,7 @@ use PHPParser_Node;
 use PHPParser_Node_Name;
 use PHPParser_Node_Stmt_Namespace;
 use PHPParser_Node_Stmt_Use;
+use PHPParser_Node_Stmt_Class;
 use PHPParser_Node_Stmt_UseUse;
 use PHPParser_Node_Expr_New;
 use PHPParser_Node_Expr_StaticCall;
@@ -61,6 +62,28 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
                 'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
                 'line' => $node->getLine(),
             );
+        }
+
+        if ($node instanceof PHPParser_Node_Stmt_Class) {
+            if ($node->extends) {
+                $usedAlias = implode('\\', $node->extends->parts);
+
+                $this->nameDeclarations[] = array(
+                    'alias' => $usedAlias,
+                    'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
+                    'line' => $node->extends->getLine(),
+                );
+            }
+
+            foreach ($node->implements as $implement) {
+                $usedAlias = implode('\\', $implement->parts);
+
+                $this->nameDeclarations[] = array(
+                    'alias' => $usedAlias,
+                    'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
+                    'line' => $implement->getLine(),
+                );
+            }
         }
 
         if ($node instanceof PHPParser_Node_Stmt_Namespace) {
