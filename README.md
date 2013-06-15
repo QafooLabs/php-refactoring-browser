@@ -16,7 +16,6 @@ The library is standing on the shoulder of giants, using multiple existing libra
 
 * [PHP Parser](https://github.com/nikic/PHP-Parser) by Nikic
 * [PHP Token Reflection](https://github.com/Andrewsville/PHP-Token-Reflection) from Ondřej Nešpor
-* [PHP Analyzer](https://github.com/scrutinizer-ci/php-analyzer) by Johannes Schmitt
 
 Based on data from these sources the Refactoring Browser consists of two distinct components:
 
