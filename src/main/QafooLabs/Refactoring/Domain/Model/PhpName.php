@@ -55,8 +55,38 @@ class PhpName
         return false;
     }
 
-    public function isFullyQualified()
+    public function change(PhpName $from, PhpName $to)
     {
-        return $this->fullyQualifiedName === $this->relativeName;
+        if ( ! $this->isAffectedByChangesTo($from)) {
+            return $this;
+        }
+
+        $fromParts = explode("\\", $from->relativeName);
+        $toParts = explode("\\",   $to->relativeName);
+        @list($thisHead, $thisRest) = explode("\\", $this->relativeName, 2);
+
+        $prefix = array();
+        foreach ($fromParts as $fromPart) {
+            $prefix[] = array_shift($toParts);
+
+            if ($fromPart === $thisHead) {
+                $newParts = array_merge($prefix, explode('\\', $thisRest));
+                $relativeNewParts = array_slice($newParts, count($newParts)-count($thisRest)-1);
+
+                return new PhpName(implode('\\', $newParts), implode('\\', $relativeNewParts));
+            }
+        }
+
+        return $this;
+    }
+
+    public function fullyQualifiedName()
+    {
+        return $this->fullyQualifiedName;
+    }
+
+    public function relativeName()
+    {
+        return $this->relativeName;
     }
 }

@@ -41,7 +41,12 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
     public function testRelativeChanges()
     {
         $name = new PhpName("Foo\Bar\Baz", "Bar\Baz");
-        $changing = new PhpName("Foo\Bar", "Foo\Bar");
-        $changed = new PhpName("Foo\Baz", "Foo\Baz");
+        $from = new PhpName("Foo\Bar", "Foo\Bar");
+        $to = new PhpName("Foo\Baz", "Foo\Baz");
+
+        $newName = $name->change($from, $to);
+
+        $this->assertEquals('Foo\Baz\Baz', $newName->fullyQualifiedName());
+        $this->assertEquals('Baz\Baz', $newName->relativeName());
     }
 }
