@@ -46,5 +46,12 @@
         <exec executable="${commons.executable.php}" failonerror="true" dir="${basedir}/build/dist">
             <arg value="../../src/bin/compile" />
         </exec>
+        <exec executable="tar" failonerror="true" dir="${basedir}/build/dist">
+            <arg value="czvf" />
+            <arg value="refactor.tar.gz" />
+            <arg value="refactor.phar" />
+            <arg value="../../README.md" />
+            <arg value="../../LICENSE" />
+        </exec>
     </target>
 </project>

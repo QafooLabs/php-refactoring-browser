@@ -24,7 +24,7 @@ Based on data from these sources the Refactoring Browser consists of two distinc
 
 ## Install & Basic Usage
 
-[Download PHAR](http://qafoolabs.github.com/php-refactoring-browser/assets/refactor.phar)
+[Download PHAR](http://qafoo.com/downloads/refactor.tar.gz)
 
 The refactoring browser is used with:
 
