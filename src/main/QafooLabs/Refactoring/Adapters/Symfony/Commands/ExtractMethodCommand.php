@@ -46,6 +46,9 @@ Extract a range of lines from one method into its own method.
 This refactoring is usually used during cleanup of code into
 single units.
 
+This refactoring automatically detects all necessary inputs and outputs from the
+function and generates the argument list and return statement accordingly.
+
 <comment>Operations:</comment>
 
 1. Create a new method containing the selected code.
