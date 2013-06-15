@@ -81,6 +81,8 @@ all the occurrences in the selected method to use the instance variable:
 
 ## Roadmap
 
+Not prioritized.
+
 Integration:
 
 * Vim Plugin to apply refactorings from within Vim.
@@ -98,8 +100,8 @@ List of Refactorings to implement:
     * Private Methods Only first
 * Rename Instance Variable
     * Private Variables Only First
-* Rename Class (PSR-0 aware)
-* Rename Namespace (PSR-0 aware)
+* Rename Class PSR-0 aware (Done)
+* Rename Namespace PSR-0 aware (done)
 * Extract Interface
 
 ## Internals
@@ -109,13 +111,4 @@ List of Refactorings to implement:
 * Be independent of third-party libraries and any Type Inference Engine (PDepend, PHP Analyzer) via Ports+Adapters
 * Apply Domain-Driven-Design and find suitable Bounded Contexts and Ubiquitous Language within them
 * Avoid primitive obsession by introducing value objects for useful constructs in the domain
-
-### Processing steps
-
-When you run the Refactoring Browser the following steps happen:
-
-* Update Type Database (based on filemtime or md5 hashes?) when necessary for refactoring
-* Analyze Refactoring (pre conditions)
-* Generate Patch to perform refactoring
-* Optionally apply patch (Currently just pipe to patch)
 
