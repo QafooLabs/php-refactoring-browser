@@ -65,6 +65,10 @@ class PhpName
             return $this;
         }
 
+        if ($this->equals($from)) {
+            return $to;
+        }
+
         $toParts = explode("\\",   $to->fullyQualifiedName);
         $thisParts = explode("\\", $this->fullyQualifiedName);
 
@@ -99,5 +103,11 @@ class PhpName
     public function relativeName()
     {
         return $this->relativeName;
+    }
+
+    public function equals(PhpName $other)
+    {
+        return $this->fullyQualifiedName === $other->fullyQualifiedName &&
+               $this->relativeName === $other->relativeName;
     }
 }
