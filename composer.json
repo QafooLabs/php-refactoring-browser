@@ -12,14 +12,15 @@
         "beberlei/assert": "@stable",
         "andrewsville/php-token-reflection": "@stable",
         "symfony/finder": "@stable",
-        "symfony/process": "@stable"
+        "symfony/console": "@stable"
     },
 
     "require-dev": {
         "php": ">=5.4",
         "behat/behat": "@stable",
         "mikey179/vfsStream": "@stable",
-        "phake/phake": "@stable"
+        "phake/phake": "@stable",
+        "symfony/process": "@stable"
     },
 
     "autoload": {
