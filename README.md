@@ -4,7 +4,7 @@
     do not contain all necessary pre-conditions and might mess up your code.
     Check the diffs carefully before applying the patches.
 
-[![Build Status](https://travis-ci.org/QafooLabs/php-refactoring-browser.png)](https://travis-ci.org/QafooLabs/php-refactoring-browser.png)
+[![Build Status](https://travis-ci.org/QafooLabs/php-refactoring-browser.png)](https://travis-ci.org/QafooLabs/php-refactoring-browser)
 
 Automatic Refactorings for PHP Code by generating diffs that describe
 the refactorings steps. To prevent simple mistakes during refactorings, an automated tool
