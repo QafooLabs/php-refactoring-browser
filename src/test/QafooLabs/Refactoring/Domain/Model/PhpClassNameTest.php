@@ -10,5 +10,6 @@ class PhpClassNameTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("PhpClassNameTest", $className->getShortname());
         $this->assertEquals("QafooLabs\Refactoring\Domain\Model", $className->getNamespace());
+        $this->assertEquals("QafooLabs\Refactoring\Domain\Model\PhpClassNameTest", $className->getName());
     }
 }

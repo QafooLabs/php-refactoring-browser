@@ -38,7 +38,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $lastLine = $range->getEnd();
 
         foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->geTclasses() as $class) {
+            foreach ($namespace->getClasses() as $class) {
                 foreach ($class->getMethods() as $method) {
                     if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
                         return $method->isStatic();
@@ -57,7 +57,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $lastLine = $range->getEnd();
 
         foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->geTclasses() as $class) {
+            foreach ($namespace->getClasses() as $class) {
                 foreach ($class->getMethods() as $method) {
                     if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
                         return $method->getEndLine();
@@ -76,7 +76,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $lastLine = $range->getEnd();
 
         foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->geTclasses() as $class) {
+            foreach ($namespace->getClasses() as $class) {
                 foreach ($class->getMethods() as $method) {
                     if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
                         return $method->getStartLine();
