@@ -90,6 +90,15 @@ the command to fix class and namespaces.
 
     php refactor.phar fix-class-names <dir>
 
+### Optimize use statements
+
+Optimizes the use of Fully qualified names in a file so that FQN is imported with 
+"use" at the top of the file and the FQN is replaced with its classname.
+
+All other use statements will be untouched, only new ones will be added.
+
+    php refactor.phar optimize-use <file>
+
 ## Roadmap
 
 Not prioritized.
