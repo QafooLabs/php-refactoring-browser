@@ -35,7 +35,8 @@ class File
         }
 
         $code = file_get_contents($path);
-        $relativePath = ltrim(str_replace($workingDirectory, "", $path), "/");
+        $workingDirectory = rtrim($workingDirectory, '/\\');
+        $relativePath = ltrim(str_replace($workingDirectory, "", $path), "/\\");
 
         return new self($relativePath, $code);
     }
