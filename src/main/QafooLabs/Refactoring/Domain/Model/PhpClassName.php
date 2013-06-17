@@ -3,7 +3,7 @@
 namespace QafooLabs\Refactoring\Domain\Model;
 
 /**
- * Abstraction fo php class names based on a file.
+ * Abstraction for php class names based on a file.
  */
 class PhpClassName
 {
@@ -16,7 +16,7 @@ class PhpClassName
 
     public function getNamespace()
     {
-        $parts = explode("/", $this->file->getRelativePath());
+        $parts = explode(DIRECTORY_SEPARATOR, ltrim($this->file->getRelativePath(), DIRECTORY_SEPARATOR));
         $namespace = array();
 
         foreach ($parts as $part) {
