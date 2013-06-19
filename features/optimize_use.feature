@@ -8,9 +8,9 @@ Feature: Optimize use
             """
             <?php
 
-            namespace ACME;
+            namespace Bar;
 
-            use ACME\Baz\Service;
+            use Bar\Baz\Service;
 
             class Foo
             {
@@ -19,7 +19,7 @@ Feature: Optimize use
                     $flag = Qux\Adapter::CONSTANT_ARG;
 
                     $service = new Service();
-                    $service->operation(new \ACME\Qux\Adapter($flag));
+                    $service->operation(new \Bar\Qux\Adapter($flag));
 
                     return $service;
                 }
@@ -36,10 +36,10 @@ Feature: Optimize use
              <?php
              class Foo
 
-             namespace ACME;
+             namespace Bar;
 
-             use ACME\Baz\Service;
-            +use ACME\Qux\Adapter;
+             use Bar\Baz\Service;
+            +use Bar\Qux\Adapter;
 
              {
                  public function operation()
@@ -48,7 +48,7 @@ Feature: Optimize use
 
                      $service = new Service();
 
-            -        $service->operation(new \ACME\Qux\Adapter($flag));
+            -        $service->operation(new \Bar\Qux\Adapter($flag));
             +        $service->operation(new Adapter($flag));
 
                      return $service;
