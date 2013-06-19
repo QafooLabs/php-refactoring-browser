@@ -123,4 +123,13 @@ class PhpName
     {
         return $this->fullyQualifiedName === $this->relativeName;
     }
+
+    /**
+     * @return string
+     */
+    public function shortName()
+    {
+        $parts = explode("\\", $this->fullyQualifiedName);
+        return end($parts);
+    }
 }

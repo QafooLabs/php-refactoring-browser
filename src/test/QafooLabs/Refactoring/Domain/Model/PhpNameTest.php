@@ -103,4 +103,12 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
     
         return $tests;
     }
+
+    public function testGetShortNameReturnsLastPartForFQCN() {
+        $name = new PHPName('Foo\\Bar', "Foo\\Bar", null, null);
+        $short = new PhpName("Foo", "Foo", null, null);
+
+        $this->assertEquals('Bar', $name->shortName());
+        $this->assertEquals('Foo', $short->shortName());
+    }
 }
