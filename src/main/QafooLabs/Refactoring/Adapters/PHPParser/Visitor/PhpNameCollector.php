@@ -49,7 +49,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
 
             $this->nameDeclarations[] = array(
                 'alias' => $usedAlias,
-                'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
+                'fqcn' => $this->fullyQualifiedNameFor($usedAlias, $node->class->isFullyQualified()),
                 'line' => $node->getLine(),
             );
         }
@@ -59,7 +59,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
 
             $this->nameDeclarations[] = array(
                 'alias' => $usedAlias,
-                'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
+                'fqcn' => $this->fullyQualifiedNameFor($usedAlias, $node->class->isFullyQualified()),
                 'line' => $node->getLine(),
             );
         }
@@ -70,7 +70,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
 
                 $this->nameDeclarations[] = array(
                     'alias' => $usedAlias,
-                    'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
+                    'fqcn' => $this->fullyQualifiedNameFor($usedAlias, $node->extends->isFullyQualified()),
                     'line' => $node->extends->getLine(),
                 );
             }
@@ -80,7 +80,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
 
                 $this->nameDeclarations[] = array(
                     'alias' => $usedAlias,
-                    'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
+                    'fqcn' => $this->fullyQualifiedNameFor($usedAlias, $implement->isFullyQualified()),
                     'line' => $implement->getLine(),
                 );
             }
@@ -92,11 +92,11 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
         }
     }
 
-    private function fullyQualifiedNameFor($alias)
+    private function fullyQualifiedNameFor($alias, $isFullyQualified)
     {
         $isAbsolute = $alias[0] === "\\";
 
-        if ($isAbsolute) {
+        if ($isAbsolute || $isFullyQualified) {
             $class = $alias;
         } else if (isset($this->useStatements[$alias])) {
             $class = $this->useStatements[$alias];
