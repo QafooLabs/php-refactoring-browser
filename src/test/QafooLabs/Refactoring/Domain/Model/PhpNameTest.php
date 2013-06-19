@@ -81,4 +81,26 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo\\Bar\\Foo', $changed->fullyQualifiedName());
         $this->assertEquals('Foo\\Bar\\Foo', $changed->relativeName());
     }
+
+    /**
+     * @dataProvider provideIsFullyQualified
+     */
+    public function testIsFullyQualified($fqcn, $relativeName, $expected = TRUE) 
+    {
+        $name = new PHPName($fqcn, $relativeName);
+
+        $this->assertEquals($expected, $name->isFullyQualified());
+    }
+    
+    public static function provideIsFullyQualified() {
+        $tests = array();
+    
+        $tests[] = array('Foo', 'Foo', TRUE);
+        $tests[] = array('Foo\\Bar\\Foo', 'Foo\\Bar\\Foo', TRUE);
+
+        $tests[] = array('Foo\\Bar\\Foo', 'Foo', FALSE);
+        $tests[] = array('Foo\\Bar\\Foo', 'Bar\\Foo', FALSE);
+    
+        return $tests;
+    }
 }

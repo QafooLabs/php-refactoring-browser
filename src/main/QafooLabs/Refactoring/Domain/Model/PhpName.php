@@ -105,9 +105,22 @@ class PhpName
         return $this->relativeName;
     }
 
+    /**
+     * @return bool
+     */
     public function equals(PhpName $other)
     {
         return $this->fullyQualifiedName === $other->fullyQualifiedName &&
                $this->relativeName === $other->relativeName;
+    }
+
+    /**
+     * Is the relative name fully qualified ?
+     *
+     * @return bool
+     */
+    public function isFullyQualified()
+    {
+        return $this->fullyQualifiedName === $this->relativeName;
     }
 }
