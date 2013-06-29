@@ -32,27 +32,19 @@ Feature: Optimize use
             """
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
-            @@ -1,11 +1,13 @@
-             <?php
-             class Foo
-
+            @@ -3,5 +3,6 @@
              namespace Bar;
 
              use Bar\Baz\Service;
             +use Bar\Qux\Adapter;
 
-             {
-                 public function operation()
-                 {
-                     $flag = Qux\Adapter::CONSTANT_ARG;
+             class Foo
+            @@ -12,5 +12,5 @@
 
                      $service = new Service();
-
             -        $service->operation(new \Bar\Qux\Adapter($flag));
             +        $service->operation(new Adapter($flag));
 
                      return $service;
-                 }
-             }
             """
 
