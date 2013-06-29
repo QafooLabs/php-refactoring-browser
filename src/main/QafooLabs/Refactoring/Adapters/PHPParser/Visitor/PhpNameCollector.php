@@ -33,16 +33,28 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
 
     public function enterNode(PHPParser_Node $node)
     {
-        if ($node instanceof PHPParser_Node_Stmt_UseUse) {
-            $name = implode('\\', $node->name->parts);
 
-            $this->useStatements[$node->alias] = $name;
-            $this->nameDeclarations[] = array(
-                'alias' => $name,
-                'fqcn' => $name,
-                'line' => $node->getLine()
+        if ($node instanceof PHPParser_Node_Stmt_Use) {
+            $parent = array(
+                'type' => 'use',
+                'lines' => array($node->getAttribute('startLine'), $node->getAttribute('endLine'))
             );
+
+            foreach ($node->uses as $use) {
+                if ($use instanceof PHPParser_Node_Stmt_UseUse) {
+                    $name = implode('\\', $use->name->parts);
+
+                    $this->useStatements[$use->alias] = $name;
+                    $this->nameDeclarations[] = array(
+                        'alias' => $name,
+                        'fqcn' => $name,
+                        'line' => $use->getLine(),
+                        'parent' => $parent
+                    );
+                }
+            }
         }
+
 
         if ($node instanceof PHPParser_Node_Expr_New && $node->class instanceof PHPParser_Node_Name) {
             $usedAlias = implode('\\', $node->class->parts);

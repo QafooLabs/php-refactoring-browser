@@ -5,6 +5,8 @@ namespace QafooLabs\Refactoring\Adapters\PHPParser;
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\PhpNameCollector;
 use QafooLabs\Refactoring\Domain\Services\PhpNameScanner;
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\LineRange;
+use QafooLabs\Refactoring\Domain\Model\UseStatement;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
 
 use PHPParser_Parser;
@@ -24,8 +26,25 @@ class ParserPhpNameScanner implements PhpNameScanner
         $traverser->addVisitor($collector);
         $traverser->traverse($stmts);
 
-        return array_map(function ($use) use ($file) {
-            return new PhpName($use['fqcn'], $use['alias'], $file, $use['line']);
+        return array_map(function ($name) use ($file) {
+            return new PhpName(
+                $name['fqcn'], 
+                $name['alias'], 
+                $file, 
+                $name['line'], 
+                isset($name['parent']) 
+                    ? $this->createParent($name['parent'], $file) 
+                    : null
+            );
+
         }, $collector->collectedNameDeclarations());
+    }
+
+    private function createParent(Array $parent, File $file) 
+    {
+        switch ($parent['type']) {
+            case 'use':
+                return new UseStatement($file, LineRange::fromLines($parent['lines'][0], $parent['lines'][1]));
+        }
     }
 }
