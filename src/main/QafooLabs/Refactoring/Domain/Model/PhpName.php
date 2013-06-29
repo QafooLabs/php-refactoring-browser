@@ -15,17 +15,20 @@ namespace QafooLabs\Refactoring\Domain\Model;
 
 class PhpName
 {
+
     private $fullyQualifiedName;
     private $relativeName;
     private $file;
     private $declaredLine;
+    private $parent;
 
-    public function __construct($fullyQualifiedName, $relativeName, File $file = null, $declaredLine = null)
+    public function __construct($fullyQualifiedName, $relativeName, File $file = null, $declaredLine = null, $parent = null)
     {
         $this->fullyQualifiedName = $fullyQualifiedName;
         $this->relativeName = $relativeName;
         $this->file = $file;
         $this->declaredLine = $declaredLine;
+        $this->parent = $parent;
     }
 
     /**
@@ -122,6 +125,16 @@ class PhpName
     public function isFullyQualified()
     {
         return $this->fullyQualifiedName === $this->relativeName;
+    }
+
+    /**
+     * Is the php name found in a use statement?
+     *
+     * @return bool
+     */
+    public function isUse()
+    {
+        return $this->parent instanceof UseStatement;
     }
 
     /**
