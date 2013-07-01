@@ -61,7 +61,8 @@ PHP
     }
 
 
-    public function testFindNamesFindsParentForPhpNameInSingleLineUseStatement() {
+    public function testFindNamesFindsParentForPhpNameInSingleLineUseStatement()
+    {
         $file = new File("Fqcn.php", <<<'PHP'
 <?php
 
@@ -89,7 +90,8 @@ PHP
        );
     }
 
-    public function testFindNamesFindsParentForPhpNameInMultiLineUseStatement() {
+    public function testFindNamesFindsParentForPhpNameInMultiLineUseStatement()
+    {
         $file = new File("Fqcn.php", <<<'PHP'
 <?php
 

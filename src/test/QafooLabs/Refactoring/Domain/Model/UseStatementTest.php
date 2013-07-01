@@ -14,7 +14,8 @@ class UseStatementTest extends \PHPUnit_Framework_TestCase
         $this->useStatement = new UseStatement($file, LineRange::fromLines(3,5));
     }
 
-    public function testReturnsEndLineFromLineRange() {
+    public function testReturnsEndLineFromLineRange()
+    {
         $this->assertEquals(5, $this->useStatement->getEndLine());
     }
 }

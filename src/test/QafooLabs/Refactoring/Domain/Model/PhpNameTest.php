@@ -92,7 +92,8 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $name->isFullyQualified());
     }
     
-    public static function provideIsFullyQualified() {
+    public static function provideIsFullyQualified()
+    {
         $tests = array();
     
         $tests[] = array('Foo', 'Foo', TRUE);
@@ -104,7 +105,8 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         return $tests;
     }
 
-    public function testGetShortNameReturnsLastPartForFQCN() {
+    public function testGetShortNameReturnsLastPartForFQCN()
+    {
         $name = new PhpName('Foo\\Bar', "Foo\\Bar", null, null);
         $short = new PhpName("Foo", "Foo", null, null);
 
@@ -112,7 +114,8 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo', $short->shortName());
     }
 
-    public function testIsUseStatementWhenParentIsAUseStatement() {
+    public function testIsUseStatementWhenParentIsAUseStatement()
+    {
         $name = new PhpName('Foo\\Bar', 'Foo\\Bar', null, null, new UseStatement());
 
         $this->assertTrue($name->isUse());

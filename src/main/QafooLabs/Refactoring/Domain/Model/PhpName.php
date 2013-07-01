@@ -108,7 +108,8 @@ class PhpName
         return $this->relativeName;
     }
 
-    public function parent() {
+    public function parent() 
+    {
         return $this->parent;
     }
 
