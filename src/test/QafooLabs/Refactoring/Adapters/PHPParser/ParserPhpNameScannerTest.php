@@ -33,7 +33,8 @@ class ParserPhpNameScannerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testRegressionFindNamesDetectsFQCNCorrectly() {
+    public function testRegressionFindNamesDetectsFQCNCorrectly() 
+    {
         $file = new File("Fqcn.php", <<<'PHP'
 <?php
 
