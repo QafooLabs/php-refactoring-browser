@@ -47,36 +47,17 @@ class PhpClass
      */
     public function declarationName()
     {
-        return new PhpName(
-            ltrim($this->getNamespace() . '\\' . $this->getShortName(), '\\'),
-            $this->getShortName()
-        );
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getNamespace()
-    {
         $parts = explode("\\", $this->name);
-        array_pop($parts);
-        return implode("\\", $parts);
+
+        return new PhpName($this->name, array_pop($parts));
     }
 
-    public function getShortName()
-    {
-        $parts = explode("\\", $this->name);
-        return end($parts);
-    }
-
-    public function getDeclarationLine()
+    public function declarationLine()
     {
         return $this->declarationLine;
     }
 
-    public function getNamespaceDeclarationLine()
+    public function namespaceDeclarationLine()
     {
         return $this->namespaceDeclarationLine;
     }

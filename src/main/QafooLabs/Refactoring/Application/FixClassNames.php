@@ -54,7 +54,7 @@ class FixClassNames
             $buffer = $this->editor->openBuffer($phpFile);
 
             if ($phpClassName->shortName() !== $currentClassName->shortName()) {
-                $line = $class->getDeclarationLine();
+                $line = $class->declarationLine();
 
                 $buffer->replaceString($line, $currentClassName->shortName(), $phpClassName->shortName());
 
@@ -62,7 +62,7 @@ class FixClassNames
             }
 
             if ($phpClassName->namespaceName() !== $currentClassName->namespaceName()) {
-                $namespaceDeclarationLine = $class->getNamespaceDeclarationLine();
+                $namespaceDeclarationLine = $class->namespaceDeclarationLine();
 
                 $buffer->replaceString($namespaceDeclarationLine, $currentClassName->namespaceName(), $phpClassName->namespaceName());
 
