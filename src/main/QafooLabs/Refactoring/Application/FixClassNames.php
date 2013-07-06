@@ -15,8 +15,8 @@ namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\Directory;
 use QafooLabs\Refactoring\Domain\Model\File;
-use QafooLabs\Refactoring\Domain\Model\PhpClassName;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
+use QafooLabs\Refactoring\Domain\Model\PhpNameChange;
 
 class FixClassNames
 {
@@ -47,21 +47,17 @@ class FixClassNames
             }
 
             $class = $classes[0];
-            $classShortname = $class->getShortName();
+            $currentClassName = $class->declarationName();
             $phpClassName = $phpFile->extractPsr0ClassName();
 
             $buffer = $this->editor->openBuffer($phpFile);
 
-            if ($phpClassName->shortName() !== $classShortname) {
+            if ($phpClassName->shortName() !== $currentClassName->shortName()) {
                 $line = $class->getDeclarationLine();
 
-                $buffer->replaceString($line, $classShortname, $phpClassName->shortName());
+                $buffer->replaceString($line, $currentClassName->shortName(), $phpClassName->shortName());
 
-                $renames[] = array(
-                    'old' => new PhpName($class->getName(), $class->getShortname(), $phpFile, $line),
-                    'new' => new PhpName($phpClassName->fullyQualifiedName(), $phpClassName->shortName(), $phpFile, $line) // TODO: remove create name from name
-
-                );
+                $renames[] = new PhpNameChange($currentClassName, $phpClassName);
             }
 
             $classNamespace = $class->getNamespace();
@@ -71,18 +67,18 @@ class FixClassNames
 
                 $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->namespaceName());
 
-                $renames[] = array(
-                    'old' => new PhpName($classNamespace, $classNamespace, $phpFile, $namespaceDeclarationLine),
-                    'new' => new PhpName($phpClassName->namespaceName(), $phpClassName->namespaceName(), $phpFile, $namespaceDeclarationLine)
+                $renames[] = new PhpNameChange(
+                    new PhpName($classNamespace, $classNamespace),
+                    $phpClassName
                 );
             }
         }
 
         foreach ($names as $name) {
             foreach ($renames as $rename) {
-                if ($name->isAffectedByChangesTo($rename['old'])) {
+                if ($rename->affects($name)) {
                     $buffer = $this->editor->openBuffer($name->file());
-                    $buffer->replaceString($name->declaredLine(), $name->relativeName(), $name->change($rename['old'], $rename['new'])->relativeName());
+                    $buffer->replaceString($name->declaredLine(), $name->relativeName(), $rename->change($name)->relativeName());
                     continue 2;
                 }
             }

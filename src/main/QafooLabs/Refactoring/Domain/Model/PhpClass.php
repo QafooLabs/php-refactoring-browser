@@ -40,6 +40,29 @@ class PhpClass
         $this->namespaceDeclarationLine = $namespaceDeclarationLine;
     }
 
+    /**
+     * PhpName for the declaration of this class.
+     *
+     * @return PhpName
+     */
+    public function declarationName()
+    {
+        return new PhpName(
+            ltrim($this->getNamespace() . '\\' . $this->getShortName(), '\\'),
+            $this->getShortName()
+        );
+    }
+
+    /**
+     * PhpName for the namespace declaration of this class.
+     *
+     * @return PhpName
+     */
+    public function namespaceDeclarationName()
+    {
+        return new PhpName($this->getNamespace(), $this->getNamespace());
+    }
+
     public function getName()
     {
         return $this->name;

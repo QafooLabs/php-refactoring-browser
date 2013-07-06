@@ -70,14 +70,27 @@ class File
         return basename($this->relativePath);
     }
 
+    /**
+     * Extract the PhpName for the class contained in this file assuming PSR-0 naming.
+     *
+     * @return PhpName
+     */
     public function extractPsr0ClassName()
     {
-        $className = $this->parseFileForPsr0Name();
+        $shortName = $this->parseFileForPsr0ClassShortName();
 
-        return new PhpName($className, $className);
+        return new PhpName(
+            ltrim($this->parseFileForPsr0NamespaceName() . '\\' . $shortName, '\\'),
+            $shortName
+        );
     }
 
-    private function parseFileForPsr0Name()
+    private function parseFileForPsr0ClassShortName()
+    {
+        return str_replace(".php", "", $this->getBaseName());
+    }
+
+    private function parseFileForPsr0NamespaceName()
     {
         $parts = explode(DIRECTORY_SEPARATOR, ltrim($this->getRelativePath(), DIRECTORY_SEPARATOR));
         $namespace = array();
@@ -90,6 +103,8 @@ class File
 
             $namespace[] = $part;
         }
+
+        array_pop($namespace);
 
         return str_replace(".php", "", implode("\\", $namespace));
     }

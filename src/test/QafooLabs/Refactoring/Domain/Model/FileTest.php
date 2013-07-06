@@ -40,7 +40,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array(new PhpName('Foo', 'Foo'), 'src/Foo.php'),
-            array(new PhpName('Foo\Bar', 'Foo\Bar'), 'src/Foo/Bar.php'),
+            array(new PhpName('Foo\Bar', 'Bar'), 'src/Foo/Bar.php'),
         );
     }
 
