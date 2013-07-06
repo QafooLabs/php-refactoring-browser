@@ -46,6 +46,7 @@ class FixClassNames
                 continue;
             }
 
+            $rename = false;
             $class = $classes[0];
             $currentClassName = $class->declarationName();
             $phpClassName = $phpFile->extractPsr0ClassName();
@@ -57,7 +58,7 @@ class FixClassNames
 
                 $buffer->replaceString($line, $currentClassName->shortName(), $phpClassName->shortName());
 
-                $renames[] = new PhpNameChange($currentClassName, $phpClassName);
+                $rename = true;
             }
 
             if ($phpClassName->namespaceName() !== $currentClassName->namespaceName()) {
@@ -65,6 +66,10 @@ class FixClassNames
 
                 $buffer->replaceString($namespaceDeclarationLine, $currentClassName->namespaceName(), $phpClassName->namespaceName());
 
+                $rename = true;
+            }
+
+            if ($rename) {
                 $renames[] = new PhpNameChange($currentClassName, $phpClassName);
             }
         }
