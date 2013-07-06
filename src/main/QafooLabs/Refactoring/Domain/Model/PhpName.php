@@ -100,6 +100,21 @@ class PhpName
         return $this->fullyQualifiedName;
     }
 
+    public function namespaceName()
+    {
+        $parts = explode("\\", $this->fullyQualifiedName);
+        array_pop($parts);
+
+        return implode("\\", $parts);
+    }
+
+    public function shortName()
+    {
+        $parts = explode("\\", $this->fullyQualifiedName);
+
+        return array_pop($parts);
+    }
+
     public function relativeName()
     {
         return $this->relativeName;
@@ -109,5 +124,10 @@ class PhpName
     {
         return $this->fullyQualifiedName === $other->fullyQualifiedName &&
                $this->relativeName === $other->relativeName;
+    }
+
+    public function __toString()
+    {
+        return sprintf('%s[%s]', $this->fullyQualifiedName, $this->relativeName);
     }
 }

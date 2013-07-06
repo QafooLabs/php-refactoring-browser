@@ -6,12 +6,11 @@ use org\bovigo\vfs\vfsStream;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-
     protected $root;
 
-    public function setUp() 
+    private function createFileSystem()
     {
-        $this->root = vfsStream::setup('project', 0644, 
+        return vfsStream::setup('project', 0644,
             array(
                 'src'=>
                 array(
@@ -26,13 +25,33 @@ class FileTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRelativePathRespectsMixedWindowsPathsAndWorkingDirectoryTrailingSlashs()
     {
-        $workingDir = $this->root->getChild('src')->url().'/';
+        $root = $this->createFileSystem();
+        $workingDir = $root->getChild('src')->url().'/';
 
         $file = File::createFromPath(
-            $this->root->getChild('src')->url().'\Foo\Bar.php', 
+            $root->getChild('src')->url().'\Foo\Bar.php',
             $workingDir
         );
 
         $this->assertEquals("Foo\Bar.php", $file->getRelativePath());
+    }
+
+    static public function dataExtractPsr0ClassName()
+    {
+        return array(
+            array(new PhpName('Foo', 'Foo'), 'src/Foo.php'),
+            array(new PhpName('Foo\Bar', 'Foo\Bar'), 'src/Foo/Bar.php'),
+        );
+    }
+
+    /**
+     * @dataProvider dataExtractPsr0ClassName
+     */
+    public function testExtractPsr0ClassName($expectedClassName, $fileName)
+    {
+        $file = new File($fileName, '<?php');
+        $actualClassName = $file->extractPsr0ClassName();
+
+        $this->assertTrue($expectedClassName->equals($actualClassName), "- $expectedClassName\n+ $actualClassName");
     }
 }

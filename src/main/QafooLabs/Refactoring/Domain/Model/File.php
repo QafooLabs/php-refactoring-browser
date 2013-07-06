@@ -11,7 +11,6 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-
 namespace QafooLabs\Refactoring\Domain\Model;
 
 /**
@@ -70,4 +69,34 @@ class File
     {
         return basename($this->relativePath);
     }
+
+    public function extractPsr0ClassName()
+    {
+        $className = $this->parseFileForPsr0Name();
+
+        return new PhpName($className, $className);
+    }
+
+    private function parseFileForPsr0Name()
+    {
+        $parts = explode(DIRECTORY_SEPARATOR, ltrim($this->getRelativePath(), DIRECTORY_SEPARATOR));
+        $namespace = array();
+
+        foreach ($parts as $part) {
+            if ($this->startsWithLowerCase($part)) {
+                $namespace = array();
+                continue;
+            }
+
+            $namespace[] = $part;
+        }
+
+        return str_replace(".php", "", implode("\\", $namespace));
+    }
+
+    private function startsWithLowerCase($string)
+    {
+        return strtolower($string[0]) === $string[0];
+    }
 }
+

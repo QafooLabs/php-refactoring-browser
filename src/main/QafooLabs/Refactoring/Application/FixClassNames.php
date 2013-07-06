@@ -48,31 +48,32 @@ class FixClassNames
 
             $class = $classes[0];
             $classShortname = $class->getShortName();
-            $phpClassName = new PhpClassName($phpFile);
+            $phpClassName = $phpFile->extractPsr0ClassName();
 
             $buffer = $this->editor->openBuffer($phpFile);
 
-            if ($phpClassName->getShortname() !== $classShortname) {
+            if ($phpClassName->shortName() !== $classShortname) {
                 $line = $class->getDeclarationLine();
 
-                $buffer->replaceString($line, $classShortname, $phpClassName->getShortname());
+                $buffer->replaceString($line, $classShortname, $phpClassName->shortName());
 
                 $renames[] = array(
                     'old' => new PhpName($class->getName(), $class->getShortname(), $phpFile, $line),
-                    'new' => new PhpName($phpClassName->getName(), $phpClassName->getShortname(), $phpFile, $line)
+                    'new' => new PhpName($phpClassName->fullyQualifiedName(), $phpClassName->shortName(), $phpFile, $line) // TODO: remove create name from name
+
                 );
             }
 
             $classNamespace = $class->getNamespace();
 
-            if ($phpClassName->getNamespace() !== $classNamespace) {
+            if ($phpClassName->namespaceName() !== $classNamespace) {
                 $namespaceDeclarationLine = $class->getNamespaceDeclarationLine();
 
-                $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->getNamespace());
+                $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->namespaceName());
 
                 $renames[] = array(
                     'old' => new PhpName($classNamespace, $classNamespace, $phpFile, $namespaceDeclarationLine),
-                    'new' => new PhpName($phpClassName->getNamespace(), $phpClassName->getNamespace(), $phpFile, $namespaceDeclarationLine)
+                    'new' => new PhpName($phpClassName->namespaceName(), $phpClassName->namespaceName(), $phpFile, $namespaceDeclarationLine)
                 );
             }
         }
