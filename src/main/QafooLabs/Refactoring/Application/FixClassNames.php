@@ -54,19 +54,11 @@ class FixClassNames
             $buffer = $this->editor->openBuffer($phpFile);
 
             if ($expectedClassName->shortName() !== $currentClassName->shortName()) {
-                $line = $class->declarationLine();
-
-                #$buffer->replaceString($line, $currentClassName->shortName(), $expectedClassName->shortName());
-
                 $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
             }
 
             if ($expectedClassName->namespaceName() !== $currentClassName->namespaceName()) {
-                $namespaceLine = $class->namespaceDeclarationLine();
-
-                #$buffer->replaceString($namespaceLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
-
-                $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
+                $renames->add(new PhpNameChange($currentClassName->fullyQualified(), $expectedClassName->fullyQualified()));
             }
         }
 

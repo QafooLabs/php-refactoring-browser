@@ -143,4 +143,9 @@ class PhpName implements Hashable
     {
         return "1373136332" . $this->fullyQualifiedName . $this->relativeName;
     }
+
+    public function fullyQualified()
+    {
+        return new PhpName($this->fullyQualifiedName, $this->fullyQualifiedName);
+    }
 }
