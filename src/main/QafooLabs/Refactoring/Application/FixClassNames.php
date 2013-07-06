@@ -60,17 +60,12 @@ class FixClassNames
                 $renames[] = new PhpNameChange($currentClassName, $phpClassName);
             }
 
-            $classNamespace = $class->getNamespace();
-
-            if ($phpClassName->namespaceName() !== $classNamespace) {
+            if ($phpClassName->namespaceName() !== $currentClassName->namespaceName()) {
                 $namespaceDeclarationLine = $class->getNamespaceDeclarationLine();
 
-                $buffer->replaceString($namespaceDeclarationLine, $classNamespace, $phpClassName->namespaceName());
+                $buffer->replaceString($namespaceDeclarationLine, $currentClassName->namespaceName(), $phpClassName->namespaceName());
 
-                $renames[] = new PhpNameChange(
-                    new PhpName($classNamespace, $classNamespace),
-                    $phpClassName
-                );
+                $renames[] = new PhpNameChange($currentClassName, $phpClassName);
             }
         }
 

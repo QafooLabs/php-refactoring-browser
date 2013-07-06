@@ -53,16 +53,6 @@ class PhpClass
         );
     }
 
-    /**
-     * PhpName for the namespace declaration of this class.
-     *
-     * @return PhpName
-     */
-    public function namespaceDeclarationName()
-    {
-        return new PhpName($this->getNamespace(), $this->getNamespace());
-    }
-
     public function getName()
     {
         return $this->name;
