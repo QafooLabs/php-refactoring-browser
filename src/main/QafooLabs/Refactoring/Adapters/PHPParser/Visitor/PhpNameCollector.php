@@ -65,6 +65,14 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
         }
 
         if ($node instanceof PHPParser_Node_Stmt_Class) {
+            $className = $node->name;
+
+            $this->nameDeclarations[] = array(
+                'alias' => $className,
+                'fqcn' => $this->fullyQualifiedNameFor($className),
+                'line' => $node->getLine()
+            );
+
             if ($node->extends) {
                 $usedAlias = implode('\\', $node->extends->parts);
 
@@ -89,6 +97,12 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
         if ($node instanceof PHPParser_Node_Stmt_Namespace) {
             $this->currentNamespace = implode('\\', $node->name->parts);
             $this->useStatements = array();
+
+            $this->nameDeclarations[] = array(
+                'alias' => $this->currentNamespace,
+                'fqcn' => $this->currentNamespace,
+                'line' => $node->name->getLine()
+            );
         }
     }
 

@@ -23,13 +23,13 @@ class FixClassNames
 {
     private $codeAnalysis;
     private $editor;
-    private $occurancescanner;
+    private $nameScanner;
 
-    public function __construct($codeAnalysis, $editor, $occurancescanner)
+    public function __construct($codeAnalysis, $editor, $nameScanner)
     {
         $this->codeAnalysis = $codeAnalysis;
         $this->editor = $editor;
-        $this->nameScanner = $occurancescanner;
+        $this->nameScanner = $nameScanner;
     }
 
     public function refactor(Directory $directory)
@@ -47,18 +47,16 @@ class FixClassNames
                 continue;
             }
 
-            $rename = false;
             $class = $classes[0];
             $currentClassName = $class->declarationName();
             $expectedClassName = $phpFile->extractPsr0ClassName();
 
             $buffer = $this->editor->openBuffer($phpFile);
 
-            // TODO: Introduce Set datastructure with addIf($data, $condition)
             if ($expectedClassName->shortName() !== $currentClassName->shortName()) {
                 $line = $class->declarationLine();
 
-                $buffer->replaceString($line, $currentClassName->shortName(), $expectedClassName->shortName());
+                #$buffer->replaceString($line, $currentClassName->shortName(), $expectedClassName->shortName());
 
                 $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
             }
@@ -66,7 +64,7 @@ class FixClassNames
             if ($expectedClassName->namespaceName() !== $currentClassName->namespaceName()) {
                 $namespaceLine = $class->namespaceDeclarationLine();
 
-                $buffer->replaceString($namespaceLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
+                #$buffer->replaceString($namespaceLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
 
                 $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
             }
