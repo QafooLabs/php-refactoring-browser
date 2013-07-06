@@ -55,16 +55,23 @@ class PhpName implements Hashable
 
     private function overlaps(PhpName $other)
     {
-        $otherParts = explode("\\", $other->relativeName);
-        $thisParts = explode("\\", $this->relativeName);
+        $otherParts = explode("\\", $other->fullyQualifiedName);
+        $thisParts = explode("\\", $this->fullyQualifiedName);
 
-        $prefix = array();
-        foreach ($otherParts as $otherPart) {
-            if ($otherPart === $thisParts[0]) {
-                return ltrim(implode("\\", $prefix) . "\\" . $this->relativeName, '\\') === $this->fullyQualifiedName;
+        $otherLength = count($otherParts) - 1;
+        $otherRelativeLength = count(explode("\\", $other->relativeName));
+        $thisRelativeStart = count($thisParts) - count(explode("\\", $this->relativeName)) - 1;
+
+        $matches = array();
+
+        for ($i = $otherLength; $i > ($otherLength - $otherRelativeLength) && $i > $thisRelativeStart; $i--) {
+            if (isset($thisParts[$i])) {
+                $matches[] = $thisParts[$i] === $otherParts[$i];
             }
+        }
 
-            $prefix[] = $otherPart;
+        if ($matches) {
+            return count($matches) === count(array_filter($matches));
         }
 
         return false;

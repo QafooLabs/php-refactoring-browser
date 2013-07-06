@@ -89,4 +89,13 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo\Bar\Baz', $name->fullyQualifiedName());
         $this->assertEquals('Baz', $name->relativeName());
     }
+
+    public function testRegression4()
+    {
+        $name = new PhpName('Foo', 'Foo');
+        $from = new PhpName('Foo\\Foo', 'Foo');
+        $to = new PhpName('Foo\\Bar', 'Bar');
+
+        $this->assertFalse($name->isAffectedByChangesTo($from), "Namespace should not be affected by changes to Class in namespace.");
+    }
 }

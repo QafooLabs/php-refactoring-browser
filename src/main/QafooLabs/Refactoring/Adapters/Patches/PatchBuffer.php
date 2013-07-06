@@ -42,6 +42,10 @@ class PatchBuffer implements EditorBuffer
 
     public function replaceString($line, $oldToken, $newToken)
     {
+        if ($oldToken === $newToken) {
+            return;
+        }
+
         $this->builder->changeToken($line, $oldToken, $newToken);
     }
 }
