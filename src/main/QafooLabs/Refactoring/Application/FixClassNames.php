@@ -53,6 +53,7 @@ class FixClassNames
 
             $buffer = $this->editor->openBuffer($phpFile);
 
+            // TODO: Introduce Set datastructure with addIf($data, $condition)
             if ($expectedClassName->shortName() !== $currentClassName->shortName()) {
                 $line = $class->declarationLine();
 
