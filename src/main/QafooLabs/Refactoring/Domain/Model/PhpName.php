@@ -13,10 +13,12 @@
 
 namespace QafooLabs\Refactoring\Domain\Model;
 
+use QafooLabs\Collections\Hashable;
+
 /**
  * Representation of a Name in PHP
  */
-class PhpName
+class PhpName implements Hashable
 {
     private $fullyQualifiedName;
     private $relativeName;
@@ -128,5 +130,10 @@ class PhpName
     public function __toString()
     {
         return sprintf('%s[%s]', $this->fullyQualifiedName, $this->relativeName);
+    }
+
+    public function hashCode()
+    {
+        return "1373136332" . $this->fullyQualifiedName . $this->relativeName;
     }
 }

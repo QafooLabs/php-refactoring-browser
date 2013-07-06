@@ -13,6 +13,7 @@
 
 namespace QafooLabs\Refactoring\Application;
 
+use QafooLabs\Collections\Set;
 use QafooLabs\Refactoring\Domain\Model\Directory;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
@@ -35,7 +36,7 @@ class FixClassNames
     {
         $phpFiles = $directory->findAllPhpFilesRecursivly();
 
-        $renames = array();
+        $renames = new Set();
         $occurances = array();
 
         foreach ($phpFiles as $phpFile) {
@@ -59,7 +60,7 @@ class FixClassNames
 
                 $buffer->replaceString($line, $currentClassName->shortName(), $expectedClassName->shortName());
 
-                $rename = true;
+                $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
             }
 
             if ($expectedClassName->namespaceName() !== $currentClassName->namespaceName()) {
@@ -67,11 +68,7 @@ class FixClassNames
 
                 $buffer->replaceString($namespaceLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
 
-                $rename = true;
-            }
-
-            if ($rename) {
-                $renames[] = new PhpNameChange($currentClassName, $expectedClassName);
+                $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
             }
         }
 
