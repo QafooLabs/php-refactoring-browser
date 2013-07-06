@@ -62,9 +62,9 @@ class FixClassNames
             }
 
             if ($expectedClassName->namespaceName() !== $currentClassName->namespaceName()) {
-                $occurancespaceDeclarationLine = $class->namespaceDeclarationLine();
+                $namespaceLine = $class->namespaceDeclarationLine();
 
-                $buffer->replaceString($occurancespaceDeclarationLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
+                $buffer->replaceString($namespaceLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
 
                 $rename = true;
             }
