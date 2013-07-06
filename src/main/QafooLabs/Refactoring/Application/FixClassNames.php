@@ -22,13 +22,13 @@ class FixClassNames
 {
     private $codeAnalysis;
     private $editor;
-    private $nameScanner;
+    private $occurancescanner;
 
-    public function __construct($codeAnalysis, $editor, $nameScanner)
+    public function __construct($codeAnalysis, $editor, $occurancescanner)
     {
         $this->codeAnalysis = $codeAnalysis;
         $this->editor = $editor;
-        $this->nameScanner = $nameScanner;
+        $this->nameScanner = $occurancescanner;
     }
 
     public function refactor(Directory $directory)
@@ -36,11 +36,11 @@ class FixClassNames
         $phpFiles = $directory->findAllPhpFilesRecursivly();
 
         $renames = array();
-        $names = array();
+        $occurances = array();
 
         foreach ($phpFiles as $phpFile) {
             $classes = $this->codeAnalysis->findClasses($phpFile);
-            $names = array_merge($this->nameScanner->findNames($phpFile), $names);
+            $occurances = array_merge($this->nameScanner->findNames($phpFile), $occurances);
 
             if (count($classes) !== 1) {
                 continue;
@@ -62,9 +62,9 @@ class FixClassNames
             }
 
             if ($expectedClassName->namespaceName() !== $currentClassName->namespaceName()) {
-                $namespaceDeclarationLine = $class->namespaceDeclarationLine();
+                $occurancespaceDeclarationLine = $class->namespaceDeclarationLine();
 
-                $buffer->replaceString($namespaceDeclarationLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
+                $buffer->replaceString($occurancespaceDeclarationLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
 
                 $rename = true;
             }
@@ -74,11 +74,13 @@ class FixClassNames
             }
         }
 
-        foreach ($names as $name) {
+        foreach ($occurances as $occurance) {
+            $name = $occurance->name();
+
             foreach ($renames as $rename) {
                 if ($rename->affects($name)) {
-                    $buffer = $this->editor->openBuffer($name->file());
-                    $buffer->replaceString($name->declaredLine(), $name->relativeName(), $rename->change($name)->relativeName());
+                    $buffer = $this->editor->openBuffer($occurance->file());
+                    $buffer->replaceString($occurance->declarationLine(), $name->relativeName(), $rename->change($name)->relativeName());
                     continue 2;
                 }
             }

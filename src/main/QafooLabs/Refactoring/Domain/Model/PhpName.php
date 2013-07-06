@@ -13,6 +13,9 @@
 
 namespace QafooLabs\Refactoring\Domain\Model;
 
+/**
+ * Representation of a Name in PHP
+ */
 class PhpName
 {
     private $fullyQualifiedName;
