@@ -49,28 +49,28 @@ class FixClassNames
             $rename = false;
             $class = $classes[0];
             $currentClassName = $class->declarationName();
-            $phpClassName = $phpFile->extractPsr0ClassName();
+            $expectedClassName = $phpFile->extractPsr0ClassName();
 
             $buffer = $this->editor->openBuffer($phpFile);
 
-            if ($phpClassName->shortName() !== $currentClassName->shortName()) {
+            if ($expectedClassName->shortName() !== $currentClassName->shortName()) {
                 $line = $class->declarationLine();
 
-                $buffer->replaceString($line, $currentClassName->shortName(), $phpClassName->shortName());
+                $buffer->replaceString($line, $currentClassName->shortName(), $expectedClassName->shortName());
 
                 $rename = true;
             }
 
-            if ($phpClassName->namespaceName() !== $currentClassName->namespaceName()) {
+            if ($expectedClassName->namespaceName() !== $currentClassName->namespaceName()) {
                 $namespaceDeclarationLine = $class->namespaceDeclarationLine();
 
-                $buffer->replaceString($namespaceDeclarationLine, $currentClassName->namespaceName(), $phpClassName->namespaceName());
+                $buffer->replaceString($namespaceDeclarationLine, $currentClassName->namespaceName(), $expectedClassName->namespaceName());
 
                 $rename = true;
             }
 
             if ($rename) {
-                $renames[] = new PhpNameChange($currentClassName, $phpClassName);
+                $renames[] = new PhpNameChange($currentClassName, $expectedClassName);
             }
         }
 
