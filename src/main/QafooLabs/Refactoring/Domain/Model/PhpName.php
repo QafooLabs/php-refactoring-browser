@@ -20,8 +20,6 @@ class PhpName
 {
     private $fullyQualifiedName;
     private $relativeName;
-    private $file;
-    private $declaredLine;
 
     static public function createDeclarationName($fullyQualifiedName)
     {
@@ -33,12 +31,10 @@ class PhpName
         );
     }
 
-    public function __construct($fullyQualifiedName, $relativeName, File $file = null, $declaredLine = null)
+    public function __construct($fullyQualifiedName, $relativeName)
     {
         $this->fullyQualifiedName = $fullyQualifiedName;
         $this->relativeName = $relativeName;
-        $this->file = $file;
-        $this->declaredLine = $declaredLine;
     }
 
     /**
@@ -95,17 +91,7 @@ class PhpName
         }
 
         $relativeNewParts = array_slice($newParts, -1 * count(explode('\\', $this->relativeName)));
-        return new PhpName(implode('\\', $newParts), implode('\\', $relativeNewParts), $this->file, $this->declaredLine);
-    }
-
-    public function file()
-    {
-        return $this->file;
-    }
-
-    public function declaredLine()
-    {
-        return $this->declaredLine;
+        return new PhpName(implode('\\', $newParts), implode('\\', $relativeNewParts));
     }
 
     public function fullyQualifiedName()
