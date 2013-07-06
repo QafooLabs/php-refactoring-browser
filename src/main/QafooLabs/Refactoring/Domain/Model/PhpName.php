@@ -20,6 +20,16 @@ class PhpName
     private $file;
     private $declaredLine;
 
+    static public function createDeclarationName($fullyQualifiedName)
+    {
+        $parts = explode("\\", $fullyQualifiedName);
+
+        return new PhpName(
+            $fullyQualifiedName,
+            end($parts)
+        );
+    }
+
     public function __construct($fullyQualifiedName, $relativeName, File $file = null, $declaredLine = null)
     {
         $this->fullyQualifiedName = $fullyQualifiedName;

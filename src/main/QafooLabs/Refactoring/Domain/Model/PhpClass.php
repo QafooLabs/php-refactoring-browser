@@ -19,9 +19,9 @@ namespace QafooLabs\Refactoring\Domain\Model;
 class PhpClass
 {
     /**
-     * @var string
+     * @var PhpName
      */
-    private $name;
+    private $declarationName;
 
     /**
      * @var int
@@ -33,9 +33,9 @@ class PhpClass
      */
     private $namespaceDeclarationLine;
 
-    public function __construct($name, $declarationLine, $namespaceDeclarationLine)
+    public function __construct(PhpName $declarationName, $declarationLine, $namespaceDeclarationLine)
     {
-        $this->name = $name;
+        $this->declarationName = $declarationName;
         $this->declarationLine = $declarationLine;
         $this->namespaceDeclarationLine = $namespaceDeclarationLine;
     }
@@ -47,9 +47,7 @@ class PhpClass
      */
     public function declarationName()
     {
-        $parts = explode("\\", $this->name);
-
-        return new PhpName($this->name, array_pop($parts));
+        return $this->declarationName;
     }
 
     public function declarationLine()

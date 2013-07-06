@@ -81,4 +81,12 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo\\Bar\\Foo', $changed->fullyQualifiedName());
         $this->assertEquals('Foo\\Bar\\Foo', $changed->relativeName());
     }
+
+    public function testCreateDeclarationName()
+    {
+        $name = PhpName::createDeclarationName('Foo\Bar\Baz');
+
+        $this->assertEquals('Foo\Bar\Baz', $name->fullyQualifiedName());
+        $this->assertEquals('Baz', $name->relativeName());
+    }
 }
