@@ -162,7 +162,7 @@ class PatchBuilder
         }
 
         if (isset($this->operations[$originalLine])) {
-            throw new \RuntimeException(sprintf("Adding more than one operation to line %d is not allowed.", $originalLine));
+            throw new \RuntimeException(sprintf("Adding more than one operation to line %d is not allowed in path %s.", $originalLine, $this->path));
         }
     }
 
