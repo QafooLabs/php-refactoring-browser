@@ -98,4 +98,16 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($name->isAffectedByChangesTo($from), "Namespace should not be affected by changes to Class in namespace.");
     }
+
+    public function testRegression5()
+    {
+        $from = new PhpName("Qafoo\ChangeTrack\ChangeFeed", "Qafoo\ChangeTrack\ChangeFeed");
+        $to = new PhpName("Qafoo\ChangeTrack\Analyzer\ChangeFeed", "Qafoo\ChangeTrack\Analyzer\ChangeFeed");
+        $name = new PhpName("Qafoo\ChangeTrack\ChangeFeed", "ChangeFeed");
+
+        $changed = $name->change($from, $to);
+
+        $this->assertEquals('Qafoo\ChangeTrack\Analyzer\ChangeFeed', $changed->fullyQualifiedName());
+        $this->assertEQuals('ChangeFeed', $changed->relativeName());
+    }
 }

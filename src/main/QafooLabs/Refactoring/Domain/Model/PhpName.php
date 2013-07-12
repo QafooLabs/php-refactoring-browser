@@ -89,9 +89,10 @@ class PhpName implements Hashable
 
         $toParts = explode("\\",   $to->fullyQualifiedName);
         $thisParts = explode("\\", $this->fullyQualifiedName);
+        $count = max(count($thisParts), count($toParts));
 
         $newParts = array();
-        for ($i = 0; $i < count($thisParts); $i++) {
+        for ($i = 0; $i < $count; $i++) {
             if ( ! isset($toParts[$i])) {
                 $newParts[] = $thisParts[$i];
             } else {
