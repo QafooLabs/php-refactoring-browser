@@ -40,7 +40,8 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
             $this->nameDeclarations[] = array(
                 'alias' => $name,
                 'fqcn' => $name,
-                'line' => $node->getLine()
+                'line' => $node->getLine(),
+                'type' => 'use',
             );
         }
 
@@ -51,6 +52,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
                 'alias' => $usedAlias,
                 'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
                 'line' => $node->getLine(),
+                'type' => 'usage',
             );
         }
 
@@ -61,6 +63,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
                 'alias' => $usedAlias,
                 'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
                 'line' => $node->getLine(),
+                'type' => 'usage',
             );
         }
 
@@ -70,7 +73,8 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
             $this->nameDeclarations[] = array(
                 'alias' => $className,
                 'fqcn' => $this->fullyQualifiedNameFor($className),
-                'line' => $node->getLine()
+                'line' => $node->getLine(),
+                'type' => 'class',
             );
 
             if ($node->extends) {
@@ -80,6 +84,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
                     'alias' => $usedAlias,
                     'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
                     'line' => $node->extends->getLine(),
+                    'type' => 'usage',
                 );
             }
 
@@ -90,6 +95,7 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
                     'alias' => $usedAlias,
                     'fqcn' => $this->fullyQualifiedNameFor($usedAlias),
                     'line' => $implement->getLine(),
+                    'type' => 'usage',
                 );
             }
         }
@@ -101,7 +107,8 @@ class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
             $this->nameDeclarations[] = array(
                 'alias' => $this->currentNamespace,
                 'fqcn' => $this->currentNamespace,
-                'line' => $node->name->getLine()
+                'line' => $node->name->getLine(),
+                'type' => 'namespace',
             );
         }
     }
