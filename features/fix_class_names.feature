@@ -287,3 +287,43 @@ Feature: Fix Class Names
             -$foo = new \Foo\Foo\Foo();
             +$foo = new \Foo\Bar\Baz\Boing();
             """
+
+    Scenario: "Removing a slice of a namespace"
+        Given a PHP File named "src/Foo/Boing.php" with:
+            """
+            <?php
+            namespace Foo\Foo;
+
+            class Foo
+            {
+            }
+            """
+        Given a PHP File named "src/index.php" with:
+            """
+            <?php
+            $foo = new \Foo\Foo\Foo();
+            """
+        When I use refactoring "fix-class-names" with:
+            | arg   | value |
+            | dir   | src/  |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/src/Foo/Boing.php
+            +++ b/src/Foo/Boing.php
+            @@ -1,6 +1,6 @@
+             <?php
+            -namespace Foo\Foo;
+            +namespace Foo;
+
+            -class Foo
+            +class Boing
+             {
+             }
+            --- a/index.php
+            +++ b/index.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -$foo = new \Foo\Foo\Foo();
+            +$foo = new \Foo\Boing();
+            """
+

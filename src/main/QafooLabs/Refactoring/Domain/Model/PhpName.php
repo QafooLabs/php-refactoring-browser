@@ -25,7 +25,7 @@ class PhpName implements Hashable
 
     static public function createDeclarationName($fullyQualifiedName)
     {
-        $parts = explode("\\", $fullyQualifiedName);
+        $parts = self::stringToParts($fullyQualifiedName);
 
         return new PhpName(
             $fullyQualifiedName,
@@ -55,12 +55,12 @@ class PhpName implements Hashable
 
     private function overlaps(PhpName $other)
     {
-        $otherParts = explode("\\", $other->fullyQualifiedName);
-        $thisParts = explode("\\", $this->fullyQualifiedName);
+        $otherParts = self::stringToParts($other->fullyQualifiedName);
+        $thisParts = self::stringToParts($this->fullyQualifiedName);
 
         $otherLength = count($otherParts) - 1;
-        $otherRelativeLength = count(explode("\\", $other->relativeName));
-        $thisRelativeStart = count($thisParts) - count(explode("\\", $this->relativeName)) - 1;
+        $otherRelativeLength = count(self::stringToParts($other->relativeName));
+        $thisRelativeStart = count($thisParts) - count(self::stringToParts($this->relativeName)) - 1;
 
         $matches = array();
 
@@ -87,18 +87,8 @@ class PhpName implements Hashable
             return $to;
         }
 
-        $toParts = explode("\\",   $to->fullyQualifiedName);
-        $thisParts = explode("\\", $this->fullyQualifiedName);
-        $count = max(count($thisParts), count($toParts));
-
-        $newParts = array();
-        for ($i = 0; $i < $count; $i++) {
-            if ( ! isset($toParts[$i])) {
-                $newParts[] = $thisParts[$i];
-            } else {
-                $newParts[] = $toParts[$i];
-            }
-        }
+        $newParts = self::stringToParts($to->fullyQualifiedName);
+        $newParts = $this->appendMissingParts($from, $newParts);
 
         if ($this->fullyQualifiedName === $this->relativeName) {
             $relativeNewParts = $newParts;
@@ -106,7 +96,20 @@ class PhpName implements Hashable
             $relativeNewParts = array_slice($newParts, -1 * count(explode('\\', $this->relativeName)));
         }
 
-        return new PhpName(implode('\\', $newParts), implode('\\', $relativeNewParts));
+        return new PhpName(self::partsToString($newParts), self::partsToString($relativeNewParts));
+    }
+
+    private function appendMissingParts($from, $newParts)
+    {
+        $fromParts = self::stringToParts($from->fullyQualifiedName);
+        $thisParts = self::stringToParts($this->fullyQualifiedName);
+        $sizeChange = count($fromParts) - count($newParts);
+
+        if (count($thisParts) > (count($newParts)+$sizeChange)) {
+            $newParts = array_merge($newParts, array_slice($thisParts, count($newParts)+$sizeChange));
+        }
+
+        return $newParts;
     }
 
     public function fullyQualifiedName()
@@ -116,17 +119,17 @@ class PhpName implements Hashable
 
     public function namespaceName()
     {
-        $parts = explode("\\", $this->fullyQualifiedName);
+        $parts = self::stringToParts($this->fullyQualifiedName);
         array_pop($parts);
 
-        $name = implode("\\", $parts);
+        $name = self::partsToString($parts);
 
         return new PhpName($name, $name);
     }
 
     public function shortName()
     {
-        $parts = explode("\\", $this->fullyQualifiedName);
+        $parts = self::stringToParts($this->fullyQualifiedName);
 
         return array_pop($parts);
     }
@@ -155,5 +158,15 @@ class PhpName implements Hashable
     public function fullyQualified()
     {
         return new PhpName($this->fullyQualifiedName, $this->fullyQualifiedName);
+    }
+
+    static private function partsToString($parts)
+    {
+        return implode('\\', $parts);
+    }
+
+    static private function stringToParts($string)
+    {
+        return explode('\\', $string);
     }
 }

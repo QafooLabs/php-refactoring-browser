@@ -17,32 +17,32 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsAffectedByChangesToItself()
     {
-        $name = new PhpName("Foo\Bar\Baz", "Baz", null, null);
+        $name = new PhpName("Foo\Bar\Baz", "Baz");
 
         $this->assertTrue($name->isAffectedByChangesTo($name));
     }
 
     public function testIsNotAffectedByChangesToNonRelativePart()
     {
-        $name = new PhpName("Foo\Bar\Baz", "Baz", null, null);
-        $changing = new PhpName("Foo\Bar", "Foo\Bar", null, null);
+        $name = new PhpName("Foo\Bar\Baz", "Baz");
+        $changing = new PhpName("Foo\Bar", "Foo\Bar");
 
         $this->assertFalse($name->isAffectedByChangesTo($changing));
     }
 
     public function testIsAffectedByRelativeChanges()
     {
-        $name = new PhpName("Foo\Bar\Baz", "Bar\Baz", null, null);
-        $changing = new PhpName("Foo\Bar", "Foo\Bar", null, null);
+        $name = new PhpName("Foo\Bar\Baz", "Bar\Baz");
+        $changing = new PhpName("Foo\Bar", "Foo\Bar");
 
         $this->assertTrue($name->isAffectedByChangesTo($changing));
     }
 
     public function testRelativeChanges()
     {
-        $name = new PhpName("Foo\Bar\Baz", "Bar\Baz", null, null);
-        $from = new PhpName("Foo\Bar", "Foo\Bar", null, null);
-        $to = new PhpName("Foo\Baz", "Foo\Baz", null, null);
+        $name = new PhpName("Foo\Bar\Baz", "Bar\Baz");
+        $from = new PhpName("Foo\Bar", "Foo\Bar");
+        $to = new PhpName("Foo\Baz", "Foo\Baz");
 
         $newName = $name->change($from, $to);
 
@@ -52,17 +52,17 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 
     public function testRegression()
     {
-        $name = new PhpName("Bar\Bar", "Bar\Bar", null, null);
-        $changing = new PhpName("Bar", "Bar", null, null);
+        $name = new PhpName("Bar\Bar", "Bar\Bar");
+        $changing = new PhpName("Bar", "Bar");
 
         $this->assertTrue($name->isAffectedByChangesTo($changing));
     }
 
     public function testRegression2()
     {
-        $name = new PhpName("Foo\\Foo", "Foo\\Foo", null, null);
-        $from = new PhpName("Foo\\Foo", "Foo", null, null);
-        $to = new PhpName("Foo\\Bar", "Bar", null, null);
+        $name = new PhpName("Foo\\Foo", "Foo\\Foo");
+        $from = new PhpName("Foo\\Foo", "Foo");
+        $to = new PhpName("Foo\\Bar", "Bar");
 
         $changed = $name->change($from, $to);
 
@@ -72,9 +72,9 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 
     public function testRegression3()
     {
-        $name = new PhpName("Foo\\Foo", "Foo\\Foo", null, null);
-        $from = new PhpName("Foo\\Foo", "Foo\\Foo", null, null);
-        $to = new PhpName("Foo\\Bar\\Foo", "Foo\\Bar\\Foo", null, null);
+        $name = new PhpName("Foo\\Foo", "Foo\\Foo");
+        $from = new PhpName("Foo\\Foo", "Foo\\Foo");
+        $to = new PhpName("Foo\\Bar\\Foo", "Foo\\Bar\\Foo");
 
         $changed = $name->change($from, $to);
 
@@ -121,5 +121,17 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Foo\Bar\Baz\Boing', $changed->fullyQualifiedName());
         $this->assertEquals('Foo\Bar\Baz\Boing', $changed->relativeName());
+    }
+
+    public function testRegression7()
+    {
+        $from = new PhpName('Foo\Foo\Foo', 'Foo');
+        $to = new PhpName('Foo\Boing', 'Boing');
+
+        $name = new PhpName('Foo\Foo\Foo', 'Foo\Foo\Foo');
+        $changed = $name->change($from, $to);
+
+        $this->assertEquals('Foo\Boing', $changed->fullyQualifiedName());
+        $this->assertEquals('Foo\Boing', $changed->relativeName());
     }
 }
