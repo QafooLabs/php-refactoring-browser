@@ -11,6 +11,7 @@ use QafooLabs\Refactoring\Domain\Model\PhpNameOccurance;
 use PHPParser_Parser;
 use PHPParser_Lexer;
 use PHPParser_NodeTraverser;
+use PHPParser_Error;
 
 class ParserPhpNameScanner implements PhpNameScanner
 {
@@ -20,7 +21,11 @@ class ParserPhpNameScanner implements PhpNameScanner
         $collector = new PhpNameCollector();
         $traverser = new PHPParser_NodeTraverser;
 
-        $stmts = $parser->parse($file->getCode());
+        try {
+            $stmts = $parser->parse($file->getCode());
+        } catch (PHPParser_Error $e) {
+            throw new \RuntimeException("Error parsing " . $file->getRelativePath() .": " . $e->getMessage(), 0, $e);
+        }
 
         $traverser->addVisitor($collector);
         $traverser->traverse($stmts);

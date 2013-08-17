@@ -88,7 +88,7 @@ class PhpName implements Hashable
         }
 
         $newParts = self::stringToParts($to->fullyQualifiedName);
-        $newParts = $this->appendMissingParts($from, $newParts);
+        $newParts = $this->adjustSize($from, $newParts);
 
         if ($this->fullyQualifiedName === $this->relativeName) {
             $relativeNewParts = $newParts;
@@ -99,7 +99,7 @@ class PhpName implements Hashable
         return new PhpName(self::partsToString($newParts), self::partsToString($relativeNewParts));
     }
 
-    private function appendMissingParts($from, $newParts)
+    private function adjustSize($from, $newParts)
     {
         $fromParts = self::stringToParts($from->fullyQualifiedName);
         $thisParts = self::stringToParts($this->fullyQualifiedName);
@@ -107,6 +107,10 @@ class PhpName implements Hashable
 
         if (count($thisParts) > (count($newParts)+$sizeChange)) {
             $newParts = array_merge($newParts, array_slice($thisParts, count($newParts)+$sizeChange));
+        }
+
+        if (count($thisParts) < (count($newParts)+$sizeChange)) {
+            $newParts = array_slice($newParts, 0, count($thisParts) - $sizeChange);
         }
 
         return $newParts;

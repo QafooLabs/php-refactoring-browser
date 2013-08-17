@@ -134,4 +134,16 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo\Boing', $changed->fullyQualifiedName());
         $this->assertEquals('Foo\Boing', $changed->relativeName());
     }
+
+    public function testRegression8()
+    {
+        $from = new PhpName('Foo\Foo\Foo', 'Foo\Foo\Foo');
+        $to = new PhpName('Foo\Boing', 'Foo\Boing');
+
+        $name = new PhpName('Foo\Foo', 'Foo\Foo');
+        $changed = $name->change($from, $to);
+
+        $this->assertEquals('Foo', $changed->fullyQualifiedName());
+        $this->assertEquals('Foo', $changed->relativeName());
+    }
 }
