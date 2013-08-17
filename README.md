@@ -21,10 +21,11 @@ Based on data from these sources the Refactoring Browser consists of two distinc
 
 * ``Patches`` allows to build patches based on change operations on a file.
 * ``Refactoring`` contains the actual Refactoring domain and adapters to third party libraries.
+* ``Collections`` adds some collection semantics on top of PHP arrays. Currently contains a Set type.
 
 ## Install & Basic Usage
 
-[Download PHAR](http://qafoo.com/downloads/refactor.tar.gz)
+[Download PHAR](https://github.com/QafooLabs/php-refactoring-browser/releases)
 
 The refactoring browser is used with:
 
@@ -110,18 +111,16 @@ Integration:
 List of Refactorings to implement:
 
 * Extract Method (Prototype Done)
-    * Check code after line range if assignments are actually used, or just internal to extracted method
-    * Check how previously defined arrays work when not fully part of extracted method.
 * Rename Local Variable (Prototype Done)
-* Optimize use statements
+* Optimize use statements (Done)
 * Convert Local Variable to Instance Variable (Prototype Done)
+* Rename Class PSR-0 aware (Done)
+* Rename Namespace PSR-0 aware (Done)
 * Convert Magic Value to Constant
 * Rename Method
     * Private Methods Only first
 * Rename Instance Variable
     * Private Variables Only First
-* Rename Class PSR-0 aware (Done)
-* Rename Namespace PSR-0 aware (done)
 * Extract Interface
 
 ## Internals
