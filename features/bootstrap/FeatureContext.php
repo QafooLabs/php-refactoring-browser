@@ -99,12 +99,14 @@ class FeatureContext extends BehatContext
     public function thePhpFileShouldBeRefactored($file, PyStringNode $expectedPatch)
     {
         $output = array_map('trim', explode("\n", rtrim($this->output)));
-        $expectedPatch = $this->formatExpectedPatch((string)$expectedPatch);
+        $formattedExpectedPatch = $this->formatExpectedPatch((string)$expectedPatch);
 
         assertEquals(
-            $expectedPatch, $output,
+            $formattedExpectedPatch,
+            $output,
+            "Expected File:\n" . (string)$expectedPatch . "\n\n" .
             "Refactored File:\n" . $this->output . "\n\n" .
-            "Diff:\n" . print_r(array_diff($expectedPatch, $output), true)
+            "Diff:\n" . print_r(array_diff($formattedExpectedPatch, $output), true)
         );
     }
 
