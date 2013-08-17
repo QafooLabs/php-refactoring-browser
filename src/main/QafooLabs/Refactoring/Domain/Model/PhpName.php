@@ -85,9 +85,17 @@ class PhpName implements Hashable
         return false;
     }
 
+    private function shareNamespace(PhpName $other)
+    {
+        $otherName = array();
+        $otherParts = $this->stringToParts($other->fullyQualifiedName);
+
+        return strpos($this->fullyQualifiedName, $otherParts[0]) !== false;
+    }
+
     public function change(PhpName $from, PhpName $to)
     {
-        if ( ! $this->isAffectedByChangesTo($from)) {
+        if ( ! $this->isAffectedByChangesTo($from) && ! $this->shareNamespace($from)) {
             return $this;
         }
 
@@ -101,10 +109,16 @@ class PhpName implements Hashable
         if ($this->fullyQualifiedName === $this->relativeName) {
             $relativeNewParts = $newParts;
         } else {
-            $relativeNewParts = array_slice($newParts, -1 * count(explode('\\', $this->relativeName)));
+            $diff = count($newParts) - $this->numParts();
+            $relativeNewParts = array_slice($newParts, -1 * (count(explode('\\', $this->relativeName))+$diff));
         }
 
         return new PhpName(self::partsToString($newParts), self::partsToString($relativeNewParts), $this->type);
+    }
+
+    private function numParts()
+    {
+        return substr_count($this->fullyQualifiedName, '\\') + 1;
     }
 
     private function adjustSize($from, $newParts)

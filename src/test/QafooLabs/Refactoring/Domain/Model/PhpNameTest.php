@@ -109,7 +109,7 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $changed = $name->change($from, $to);
 
         $this->assertEquals('Qafoo\ChangeTrack\Analyzer\ChangeFeed', $changed->fullyQualifiedName());
-        $this->assertEQuals('ChangeFeed', $changed->relativeName());
+        $this->assertEQuals('Analyzer\ChangeFeed', $changed->relativeName());
     }
 
     public function testRegression6()
@@ -157,5 +157,18 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $changed = $name->change($from, $to);
 
         $this->assertEquals(PhpName::TYPE_NAMESPACE, $changed->type());
+    }
+
+    public function testAddRelativeNameWhenNamespaceExpands()
+    {
+        $from = new PhpName('Foo', 'Foo');
+        $to = new PhpName('Foo\Bar', 'Foo\Bar');
+
+        $name = new PhpName('Foo\Foo', 'Foo');
+        $changed = $name->change($from, $to);
+
+        $this->assertFalse($name->isAffectedByChangesTo($from));
+        $this->assertEquals('Foo\Bar\Foo', $changed->fullyQualifiedName());
+        $this->assertEquals('Bar\Foo', $changed->relativeName());
     }
 }
