@@ -51,7 +51,7 @@ class FixClassNames
             $currentClassName = $class->declarationName();
             $expectedClassName = $phpFile->extractPsr0ClassName();
 
-            $buffer = $this->editor->openBuffer($phpFile);
+            $buffer = $this->editor->openBuffer($phpFile); // This is weird to be required here
 
             if ($expectedClassName->shortName() !== $currentClassName->shortName()) {
                 $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
