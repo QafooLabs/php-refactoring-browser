@@ -57,8 +57,8 @@ class FixClassNames
                 $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
             }
 
-            if ($expectedClassName->namespaceName() !== $currentClassName->namespaceName()) {
-                $renames->add(new PhpNameChange($currentClassName->fullyQualified(), $expectedClassName->fullyQualified()));
+            if (!$expectedClassName->namespaceName()->equals($currentClassName->namespaceName())) {
+                $renames->add(new PhpNameChange($currentClassName->namespaceName(), $expectedClassName->namespaceName()));
             }
         }
 

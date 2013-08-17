@@ -114,7 +114,9 @@ class PhpName implements Hashable
         $parts = explode("\\", $this->fullyQualifiedName);
         array_pop($parts);
 
-        return implode("\\", $parts);
+        $name = implode("\\", $parts);
+
+        return new PhpName($name, $name);
     }
 
     public function shortName()
