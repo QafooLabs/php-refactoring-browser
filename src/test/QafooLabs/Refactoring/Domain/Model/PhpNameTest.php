@@ -184,4 +184,43 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo\Bar\Foo', $changed->fullyQualifiedName());
         $this->assertEquals('Foo', $changed->relativeName());
     }
+
+    /**
+     * @dataProvider provideIsFullyQualified
+     */
+    public function testIsFullyQualified($fqcn, $relativeName, $expected = TRUE)
+    {
+        $name = new PHPName($fqcn, $relativeName);
+
+        $this->assertEquals($expected, $name->isFullyQualified());
+    }
+
+    public static function provideIsFullyQualified()
+    {
+        $tests = array();
+
+        $tests[] = array('Foo', 'Foo', TRUE);
+        $tests[] = array('Foo\\Bar\\Foo', 'Foo\\Bar\\Foo', TRUE);
+
+        $tests[] = array('Foo\\Bar\\Foo', 'Foo', FALSE);
+        $tests[] = array('Foo\\Bar\\Foo', 'Bar\\Foo', FALSE);
+
+        return $tests;
+    }
+
+    public function testGetShortNameReturnsLastPartForFQCN()
+    {
+        $name = new PhpName('Foo\\Bar', "Foo\\Bar", null, null);
+        $short = new PhpName("Foo", "Foo", null, null);
+
+        $this->assertEquals('Bar', $name->shortName());
+        $this->assertEquals('Foo', $short->shortName());
+    }
+
+    public function testIsUseStatementWhenParentIsAUseStatement()
+    {
+        $name = new PhpName('Foo\\Bar', 'Foo\\Bar', PhpName::TYPE_USE);
+
+        $this->assertTrue($name->isUse());
+    }
 }

@@ -42,6 +42,7 @@ ______      __           _             _              ______
         $commands[] = new Commands\RenameLocalVariableCommand();
         $commands[] = new Commands\ConvertLocalToInstanceVariableCommand();
         $commands[] = new Commands\FixClassNamesCommand();
+        $commands[] = new Commands\OptimizeUseCommand();
 
         return $commands;
     }
