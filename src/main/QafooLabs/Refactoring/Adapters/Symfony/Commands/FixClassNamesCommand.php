@@ -60,7 +60,7 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $directory = new Directory($input->getArgument('dir'));
+        $directory = new Directory($input->getArgument('dir'), getcwd());
 
         $codeAnalysis = new StaticCodeAnalysis();
         $phpNameScanner = new ParserPhpNameScanner();

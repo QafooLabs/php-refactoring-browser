@@ -29,9 +29,15 @@ class Directory
      */
     private $path;
 
-    public function __construct($path)
+    /**
+     * @var string
+     */
+    private $workingDirectory;
+
+    public function __construct($path, $workingDirectory)
     {
         $this->path = $path;
+        $this->workingDirectory = $workingDirectory;
     }
 
     /**
@@ -39,7 +45,7 @@ class Directory
      */
     public function findAllPhpFilesRecursivly()
     {
-        $workingPath = $this->path;
+        $workingDirectory = $this->workingDirectory;
 
         return
             new CallbackTransformIterator(
@@ -52,8 +58,8 @@ class Directory
                         return substr($file->getFilename(), -4) === ".php";
                     }
                 ),
-                function ($file) use ($workingPath) {
-                    return File::createFromPath($file->getPathname(), $workingPath);
+                function ($file) use ($workingDirectory) {
+                    return File::createFromPath($file->getPathname(), $workingDirectory);
                 }
             )
         ;
