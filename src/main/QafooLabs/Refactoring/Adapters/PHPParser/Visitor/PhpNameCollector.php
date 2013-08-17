@@ -22,13 +22,22 @@ use PHPParser_Node_Stmt_UseUse;
 use PHPParser_Node_Expr_New;
 use PHPParser_Node_Expr_StaticCall;
 
+/**
+ * Visitor for PHP Parser collecting PHP Names from an AST.
+ */
 class PhpNameCollector extends \PHPParser_NodeVisitorAbstract
 {
     /**
      * @var array
      */
     private $nameDeclarations = array();
+    /**
+     * @var array
+     */
     private $useStatements = array();
+    /**
+     * @var string
+     */
     private $currentNamespace;
 
     public function enterNode(PHPParser_Node $node)
