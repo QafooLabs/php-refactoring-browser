@@ -1,3 +1,8 @@
+# 0.0.4
+
+- Fix paths of fix-class-names generated patches not generated from working
+  directory, preventing a direct pipe to |patch -p1 (GH-30)
+
 # 0.0.3
 
 - Fixed support for `fix-class-names` command. This includes
