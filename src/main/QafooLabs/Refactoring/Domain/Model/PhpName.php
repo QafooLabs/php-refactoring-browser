@@ -168,6 +168,9 @@ class PhpName implements Hashable
         return $this->relativeName;
     }
 
+    /**
+     * @return bool
+     */
     public function equals(PhpName $other)
     {
         return $this->fullyQualifiedName === $other->fullyQualifiedName &&
@@ -202,5 +205,25 @@ class PhpName implements Hashable
     public function type()
     {
         return $this->type;
+    }
+
+    /**
+     * Is the relative name fully qualified ?
+     *
+     * @return bool
+     */
+    public function isFullyQualified()
+    {
+        return $this->fullyQualifiedName === $this->relativeName;
+    }
+
+    /**
+     * Is the php name found in a use statement?
+     *
+     * @return bool
+     */
+    public function isUse()
+    {
+        return $this->type === PhpName::TYPE_USE;
     }
 }

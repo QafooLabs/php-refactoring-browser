@@ -5,6 +5,8 @@ namespace QafooLabs\Refactoring\Adapters\PHPParser;
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\PhpNameCollector;
 use QafooLabs\Refactoring\Domain\Services\PhpNameScanner;
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\LineRange;
+use QafooLabs\Refactoring\Domain\Model\UseStatement;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
 use QafooLabs\Refactoring\Domain\Model\PhpNameOccurance;
 

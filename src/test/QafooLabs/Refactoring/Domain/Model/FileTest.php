@@ -6,8 +6,6 @@ use org\bovigo\vfs\vfsStream;
 
 class FileTest extends \PHPUnit_Framework_TestCase
 {
-    protected $root;
-
     private function createFileSystem()
     {
         return vfsStream::setup('project', 0644,
