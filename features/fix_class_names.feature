@@ -18,8 +18,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo/Bar.php" should be refactored:
             """
-            --- a/Foo/Bar.php
-            +++ b/Foo/Bar.php
+            --- a/vfs://project/src/Foo/Bar.php
+            +++ b/vfs://project/src/Foo/Bar.php
             @@ -2,5 +2,5 @@
              namespace Foo;
 
@@ -44,8 +44,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo/Bar.php" should be refactored:
             """
-            --- a/Foo/Bar.php
-            +++ b/Foo/Bar.php
+            --- a/vfs://project/src/Foo/Bar.php
+            +++ b/vfs://project/src/Foo/Bar.php
             @@ -1,4 +1,4 @@
              <?php
             -namespace Baz;
@@ -73,8 +73,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/src/Foo/Bar.php
-            +++ b/src/Foo/Bar.php
+            --- a/vfs://project/src/src/Foo/Bar.php
+            +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -2,5 +2,5 @@
              namespace Foo;
 
@@ -82,8 +82,8 @@ Feature: Fix Class Names
             +class Bar
              {
              }
-            --- a/Foo.php
-            +++ b/Foo.php
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
              <?php
             -use Foo\Foo;
@@ -109,16 +109,16 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/src/Foo/Bar.php
-            +++ b/src/Foo/Bar.php
+            --- a/vfs://project/src/src/Foo/Bar.php
+            +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -1,4 +1,4 @@
              <?php
             -namespace Bar;
             +namespace Foo;
 
              class Bar
-            --- a/Foo.php
-            +++ b/Foo.php
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
              <?php
             -use Bar\Bar;
@@ -145,8 +145,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/src/Foo/Bar.php
-            +++ b/src/Foo/Bar.php
+            --- a/vfs://project/src/src/Foo/Bar.php
+            +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -2,5 +2,5 @@
              namespace Foo;
 
@@ -154,8 +154,8 @@ Feature: Fix Class Names
             +class Bar
              {
              }
-            --- a/Foo.php
-            +++ b/Foo.php
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
              <?php
             -Foo\Foo::bar();
@@ -181,8 +181,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/src/Foo/Bar.php
-            +++ b/src/Foo/Bar.php
+            --- a/vfs://project/src/src/Foo/Bar.php
+            +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -2,5 +2,5 @@
              namespace Foo;
 
@@ -190,8 +190,8 @@ Feature: Fix Class Names
             +class Bar
              {
              }
-            --- a/Foo.php
-            +++ b/Foo.php
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
              <?php
             -new Foo\Foo();
@@ -221,8 +221,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/src/Foo/Bar.php
-            +++ b/src/Foo/Bar.php
+            --- a/vfs://project/src/src/Foo/Bar.php
+            +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -2,5 +2,5 @@
             namespace Foo;
 
@@ -230,8 +230,8 @@ Feature: Fix Class Names
             +class Bar
              {
              }
-            --- a/Foo/src/Foo/Bar.php
-            +++ b/Foo/src/Foo/Bar.php
+            --- a/vfs://project/src/Foo/src/Foo/Bar.php
+            +++ b/vfs://project/src/Foo/src/Foo/Bar.php
             @@ -2,5 +2,5 @@
              namespace Foo;
 
@@ -239,8 +239,8 @@ Feature: Fix Class Names
             +class Bar
              {
              }
-            --- a/Foo/Baz.php
-            +++ b/Foo/Baz.php
+            --- a/vfs://project/src/Foo/Baz.php
+            +++ b/vfs://project/src/Foo/Baz.php
             @@ -2,5 +2,5 @@
              namespace Foo;
 
@@ -269,8 +269,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/src/Foo/Bar/Baz/Boing.php
-            +++ b/src/Foo/Bar/Baz/Boing.php
+            --- a/vfs://project/src/src/Foo/Bar/Baz/Boing.php
+            +++ b/vfs://project/src/src/Foo/Bar/Baz/Boing.php
            @@ -1,6 +1,6 @@
              <?php
             -namespace Foo\Foo;
@@ -280,8 +280,8 @@ Feature: Fix Class Names
             +class Boing
              {
              }
-            --- a/index.php
-            +++ b/index.php
+            --- a/vfs://project/src/index.php
+            +++ b/vfs://project/src/index.php
             @@ -1,2 +1,2 @@
              <?php
             -$foo = new \Foo\Foo\Foo();
@@ -308,8 +308,8 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/src/Foo/Boing.php
-            +++ b/src/Foo/Boing.php
+            --- a/vfs://project/src/src/Foo/Boing.php
+            +++ b/vfs://project/src/src/Foo/Boing.php
             @@ -1,6 +1,6 @@
              <?php
             -namespace Foo\Foo;
@@ -319,8 +319,8 @@ Feature: Fix Class Names
             +class Boing
              {
              }
-            --- a/index.php
-            +++ b/index.php
+            --- a/vfs://project/src/index.php
+            +++ b/vfs://project/src/index.php
             @@ -1,2 +1,2 @@
              <?php
             -$foo = new \Foo\Foo\Foo();

@@ -92,6 +92,12 @@ class File
 
     private function parseFileForPsr0NamespaceName()
     {
+        $file = ltrim($this->getRelativePath(), DIRECTORY_SEPARATOR);
+
+        if (preg_match('(^([a-z]+:\/\/))', $file, $matches)) {
+            $file = substr($file, strlen($matches[1]));
+        }
+
         $parts = explode(DIRECTORY_SEPARATOR, ltrim($this->getRelativePath(), DIRECTORY_SEPARATOR));
         $namespace = array();
 
@@ -111,7 +117,7 @@ class File
 
     private function startsWithLowerCase($string)
     {
-        return strtolower($string[0]) === $string[0];
+        return isset($string[0]) && strtolower($string[0]) === $string[0];
     }
 }
 
