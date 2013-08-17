@@ -249,3 +249,41 @@ Feature: Fix Class Names
              {
              }
             """
+    Scenario: "Renaming a slice of a namespace"
+        Given a PHP File named "src/Foo/Bar/Baz/Boing.php" with:
+            """
+            <?php
+            namespace Foo\Foo;
+
+            class Foo
+            {
+            }
+            """
+        Given a PHP File named "src/index.php" with:
+            """
+            <?php
+            $foo = new \Foo\Foo\Foo();
+            """
+        When I use refactoring "fix-class-names" with:
+            | arg   | value |
+            | dir   | src/  |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/src/Foo/Bar/Baz/Boing.php
+            +++ b/src/Foo/Bar/Baz/Boing.php
+           @@ -1,6 +1,6 @@
+             <?php
+            -namespace Foo\Foo;
+            +namespace Foo\Bar\Baz;
+
+            -class Foo
+            +class Boing
+             {
+             }
+            --- a/index.php
+            +++ b/index.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -$foo = new \Foo\Foo\Foo();
+            +$foo = new \Foo\Bar\Baz\Boing();
+            """

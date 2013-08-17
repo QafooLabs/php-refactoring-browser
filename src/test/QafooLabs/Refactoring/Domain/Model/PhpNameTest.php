@@ -110,4 +110,16 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Qafoo\ChangeTrack\Analyzer\ChangeFeed', $changed->fullyQualifiedName());
         $this->assertEQuals('ChangeFeed', $changed->relativeName());
     }
+
+    public function testRegression6()
+    {
+        $from = new PhpName('Foo\Foo\Foo', 'Foo');
+        $to = new PhpName('Foo\Bar\Baz\Boing', 'Boing');
+
+        $name = new PhpName('Foo\Foo\Foo', 'Foo\Foo\Foo');
+        $changed = $name->change($from, $to);
+
+        $this->assertEquals('Foo\Bar\Baz\Boing', $changed->fullyQualifiedName());
+        $this->assertEquals('Foo\Bar\Baz\Boing', $changed->relativeName());
+    }
 }

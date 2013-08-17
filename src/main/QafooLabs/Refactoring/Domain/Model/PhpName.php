@@ -100,7 +100,12 @@ class PhpName implements Hashable
             }
         }
 
-        $relativeNewParts = array_slice($newParts, -1 * count(explode('\\', $this->relativeName)));
+        if ($this->fullyQualifiedName === $this->relativeName) {
+            $relativeNewParts = $newParts;
+        } else {
+            $relativeNewParts = array_slice($newParts, -1 * count(explode('\\', $this->relativeName)));
+        }
+
         return new PhpName(implode('\\', $newParts), implode('\\', $relativeNewParts));
     }
 
