@@ -59,8 +59,18 @@ class FixClassNames
 
             if (!$expectedClassName->namespaceName()->equals($currentClassName->namespaceName())) {
                 $renames->add(new PhpNameChange($currentClassName->fullyQualified(), $expectedClassName->fullyQualified()));
+
+                $buffer->replaceString(
+                    $class->namespaceDeclarationLine(),
+                    $currentClassName->namespaceName()->fullyQualifiedName(),
+                    $expectedClassName->namespaceName()->fullyQualifiedName()
+                );
             }
         }
+
+        $occurances = array_filter($occurances, function ($occurance) {
+            return $occurance->name()->type() !== PhpName::TYPE_NAMESPACE;
+        });
 
         foreach ($occurances as $occurance) {
             $name = $occurance->name();

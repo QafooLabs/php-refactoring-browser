@@ -33,8 +33,13 @@ class ParserPhpNameScanner implements PhpNameScanner
         return array_map(function ($use) use ($file) {
             $type = constant('QafooLabs\Refactoring\Domain\Model\PhpName::TYPE_' . strtoupper($use['type']));
             return new PhpNameOccurance(
-                new PhpName($use['fqcn'], $use['alias'], $type),
-                $file, $use['line']
+                new PhpName(
+                    $use['fqcn'],
+                    $use['alias'],
+                    $type
+                ),
+                $file,
+                $use['line']
             );
         }, $collector->collectedNameDeclarations());
     }
