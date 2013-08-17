@@ -20,8 +20,14 @@ use QafooLabs\Collections\Hashable;
  */
 class PhpName implements Hashable
 {
+    const TYPE_NAMESPACE = 1;
+    const TYPE_USE       = 2;
+    const TYPE_CLASS     = 3;
+    const TYPE_USAGE     = 4;
+
     private $fullyQualifiedName;
     private $relativeName;
+    private $type;
 
     static public function createDeclarationName($fullyQualifiedName)
     {
@@ -29,14 +35,16 @@ class PhpName implements Hashable
 
         return new PhpName(
             $fullyQualifiedName,
-            end($parts)
+            end($parts),
+            self::TYPE_CLASS
         );
     }
 
-    public function __construct($fullyQualifiedName, $relativeName)
+    public function __construct($fullyQualifiedName, $relativeName, $type = self::TYPE_USAGE)
     {
         $this->fullyQualifiedName = $fullyQualifiedName;
         $this->relativeName = $relativeName;
+        $this->type = $type;
     }
 
     /**
@@ -96,7 +104,7 @@ class PhpName implements Hashable
             $relativeNewParts = array_slice($newParts, -1 * count(explode('\\', $this->relativeName)));
         }
 
-        return new PhpName(self::partsToString($newParts), self::partsToString($relativeNewParts));
+        return new PhpName(self::partsToString($newParts), self::partsToString($relativeNewParts), $this->type);
     }
 
     private function adjustSize($from, $newParts)
@@ -128,7 +136,7 @@ class PhpName implements Hashable
 
         $name = self::partsToString($parts);
 
-        return new PhpName($name, $name);
+        return new PhpName($name, $name, self::TYPE_NAMESPACE);
     }
 
     public function shortName()
@@ -161,7 +169,7 @@ class PhpName implements Hashable
 
     public function fullyQualified()
     {
-        return new PhpName($this->fullyQualifiedName, $this->fullyQualifiedName);
+        return new PhpName($this->fullyQualifiedName, $this->fullyQualifiedName, $this->type);
     }
 
     static private function partsToString($parts)
@@ -172,5 +180,10 @@ class PhpName implements Hashable
     static private function stringToParts($string)
     {
         return explode('\\', $string);
+    }
+
+    public function type()
+    {
+        return $this->type;
     }
 }

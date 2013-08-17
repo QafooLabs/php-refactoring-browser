@@ -88,6 +88,7 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Foo\Bar\Baz', $name->fullyQualifiedName());
         $this->assertEquals('Baz', $name->relativeName());
+        $this->assertEquals(PhpName::TYPE_CLASS, $name->type());
     }
 
     public function testRegression4()
@@ -145,5 +146,16 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Foo', $changed->fullyQualifiedName());
         $this->assertEquals('Foo', $changed->relativeName());
+    }
+
+    public function testChangeKeepsType()
+    {
+        $from = new PhpName('Foo\Foo\Foo', 'Foo\Foo\Foo');
+        $to = new PhpName('Foo\Boing', 'Foo\Boing');
+
+        $name = new PhpName('Foo\Foo', 'Foo\Foo', PhpName::TYPE_NAMESPACE);
+        $changed = $name->change($from, $to);
+
+        $this->assertEquals(PhpName::TYPE_NAMESPACE, $changed->type());
     }
 }
