@@ -171,4 +171,17 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Foo\Bar\Foo', $changed->fullyQualifiedName());
         $this->assertEquals('Bar\Foo', $changed->relativeName());
     }
+
+    public function testNotExpandWhenRelativeNameIsTypeClass()
+    {
+        $from = new PhpName('Foo', 'Foo');
+        $to = new PhpName('Foo\Bar', 'Foo\Bar');
+
+        $name = new PhpName('Foo\Foo', 'Foo', PhpName::TYPE_CLASS);
+        $changed = $name->change($from, $to);
+
+        $this->assertFalse($name->isAffectedByChangesTo($from));
+        $this->assertEquals('Foo\Bar\Foo', $changed->fullyQualifiedName());
+        $this->assertEquals('Foo', $changed->relativeName());
+    }
 }

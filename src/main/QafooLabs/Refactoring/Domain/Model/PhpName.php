@@ -109,7 +109,10 @@ class PhpName implements Hashable
         if ($this->fullyQualifiedName === $this->relativeName) {
             $relativeNewParts = $newParts;
         } else {
-            $diff = count($newParts) - $this->numParts();
+            $diff = ($this->type === self::TYPE_CLASS)
+                ? 0
+                : count($newParts) - $this->numParts();
+
             $relativeNewParts = array_slice($newParts, -1 * (count(explode('\\', $this->relativeName))+$diff));
         }
 
