@@ -18,6 +18,7 @@ use QafooLabs\Refactoring\Utils\CallbackTransformIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use AppendIterator;
 
 /**
  * A directory in a project.
@@ -25,18 +26,22 @@ use SplFileInfo;
 class Directory
 {
     /**
-     * @var string
+     * @var array
      */
-    private $path;
+    private $paths;
 
     /**
      * @var string
      */
     private $workingDirectory;
 
-    public function __construct($path, $workingDirectory)
+    public function __construct($paths, $workingDirectory)
     {
-        $this->path = $path;
+        if (is_string($paths)) {
+            $paths = array($paths);
+        }
+
+        $this->paths = $paths;
         $this->workingDirectory = $workingDirectory;
     }
 
@@ -47,22 +52,28 @@ class Directory
     {
         $workingDirectory = $this->workingDirectory;
 
-        return
-            new CallbackTransformIterator(
-                new CallbackFilterIterator(
-                    new RecursiveIteratorIterator(
-                        new RecursiveDirectoryIterator($this->path),
-                        RecursiveIteratorIterator::LEAVES_ONLY
+        $iterator = new AppendIterator;
+
+        foreach ($this->paths as $path) {
+            $iterator->append(
+                new CallbackTransformIterator(
+                    new CallbackFilterIterator(
+                        new RecursiveIteratorIterator(
+                            new RecursiveDirectoryIterator($path),
+                            RecursiveIteratorIterator::LEAVES_ONLY
+                        ),
+                        function (SplFileInfo $file) {
+                            return substr($file->getFilename(), -4) === ".php";
+                        }
                     ),
-                    function (SplFileInfo $file) {
-                        return substr($file->getFilename(), -4) === ".php";
+                    function ($file) use ($workingDirectory) {
+                        return File::createFromPath($file->getPathname(), $workingDirectory);
                     }
-                ),
-                function ($file) use ($workingDirectory) {
-                    return File::createFromPath($file->getPathname(), $workingDirectory);
-                }
-            )
-        ;
+                )
+            );
+        }
+
+        return $iterator;
     }
 }
 
