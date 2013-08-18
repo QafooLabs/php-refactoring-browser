@@ -1,19 +1,18 @@
 ---
 layout: main
 ---
-# PHP Refactoring Browser {#php-refactoring-browser}
+
+# PHP Refactoring Browser  {#php-refactoring-browser}
 
     Note: This software is under development and in alpha state. Refactorings
     do not contain all necessary pre-conditions and might mess up your code.
     Check the diffs carefully before applying the patches.
 
-[![Build Status](https://travis-ci.org/QafooLabs/php-refactoring-browser.png)](https://travis-ci.org/QafooLabs/php-refactoring-browser.png)
+[![Build Status](https://travis-ci.org/QafooLabs/php-refactoring-browser.png)](https://travis-ci.org/QafooLabs/php-refactoring-browser)
 
 Automatic Refactorings for PHP Code by generating diffs that describe
 the refactorings steps. To prevent simple mistakes during refactorings, an automated tool
 is a great.
-
-See a [screenshot of extract-method in action](docs/extract_method.png).
 
 The library is standing on the shoulder of giants, using multiple existing libraries:
 
@@ -24,10 +23,11 @@ Based on data from these sources the Refactoring Browser consists of two distinc
 
 * ``Patches`` allows to build patches based on change operations on a file.
 * ``Refactoring`` contains the actual Refactoring domain and adapters to third party libraries.
+* ``Collections`` adds some collection semantics on top of PHP arrays. Currently contains a Set type.
 
-## Install & Basic Usage {#install-&-basic-usage}
+## Install & Basic Usage {#install-and-basic-usage}
 
-[Download PHAR](http://qafoo.com/downloads/refactor.tar.gz)
+[Download PHAR](https://github.com/QafooLabs/php-refactoring-browser/releases)
 
 The refactoring browser is used with:
 
@@ -37,7 +37,7 @@ It outputs a diff to the screen and you can apply it to your code by piping it t
 
     php refactor.phar <refactoring> <arg1>...<argN> | patch -p1
 
-## Why? {#why?}
+## Why? {#why}
 
 Users of PHPStorm (or Netbeans) might wonder why this project exists, all the
 refactorings are available in this IDE. We feel there are several reasons to have
@@ -58,7 +58,7 @@ such a tool in PHP natively:
 
 ## Refactorings {#refactorings}
 
-### Extract Method {#extract-method}
+### Extract Method
 
 Extract a range of lines into a new method and call this method from the original
 location:
@@ -68,20 +68,20 @@ location:
 This refactoring automatically detects all necessary inputs and outputs from the
 function and generates the argument list and return statement accordingly.
 
-### Rename Local Variable {#rename-local-variable}
+### Rename Local Variable
 
 Rename a local variable from one to another name:
 
     php refactor.phar rename-local-variable <file> <line> <old-name> <new-name>
 
-### Convert Local to Instance Variable {#convert-local-to-instance-variable}
+### Convert Local to Instance Variable
 
 Converts a local variable into an instance variable, creates the property and renames
 all the occurrences in the selected method to use the instance variable:
 
     php refactor.phar convert-local-to-instance-variable <file> <line> <variable>
 
-### Rename Class and Namespaces {#rename-class-and-namespaces}
+### Rename Class and Namespaces
 
 Batch Operation to rename classes and namespaces by syncing class-names (IS-state)
 to filesystem names (SHOULD-state) based on the assumption of PSR-0.
@@ -92,6 +92,15 @@ rename classes and namespaces by renaming folders and files and then applying
 the command to fix class and namespaces.
 
     php refactor.phar fix-class-names <dir>
+
+### Optimize use statements
+
+Optimizes the use of Fully qualified names in a file so that FQN is imported with 
+"use" at the top of the file and the FQN is replaced with its classname.
+
+All other use statements will be untouched, only new ones will be added.
+
+    php refactor.phar optimize-use <file>
 
 ## Roadmap {#roadmap}
 
@@ -104,23 +113,21 @@ Integration:
 List of Refactorings to implement:
 
 * Extract Method (Prototype Done)
-    * Check code after line range if assignments are actually used, or just internal to extracted method
-    * Check how previously defined arrays work when not fully part of extracted method.
 * Rename Local Variable (Prototype Done)
-* Optimize use statements
+* Optimize use statements (Done)
 * Convert Local Variable to Instance Variable (Prototype Done)
+* Rename Class PSR-0 aware (Done)
+* Rename Namespace PSR-0 aware (Done)
 * Convert Magic Value to Constant
 * Rename Method
     * Private Methods Only first
 * Rename Instance Variable
     * Private Variables Only First
-* Rename Class PSR-0 aware (Done)
-* Rename Namespace PSR-0 aware (done)
 * Extract Interface
 
-## Internals {#internals}
+## Internals
 
-### Design Goals {#design-goals}
+### Design Goals
 
 * Be independent of third-party libraries and any Type Inference Engine (PDepend, PHP Analyzer) via Ports+Adapters
 * Apply Domain-Driven-Design and find suitable Bounded Contexts and Ubiquitous Language within them
