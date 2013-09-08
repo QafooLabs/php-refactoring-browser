@@ -106,7 +106,7 @@ class PhpName implements Hashable
         $newParts = self::stringToParts($to->fullyQualifiedName);
         $newParts = $this->adjustSize($from, $newParts);
 
-        if ($this->fullyQualifiedName === $this->relativeName) {
+        if ($this->isFullyQualified()) {
             $relativeNewParts = $newParts;
         } else {
             $diff = ($this->type === self::TYPE_CLASS)

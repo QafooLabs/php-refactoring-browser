@@ -18,6 +18,7 @@ use QafooLabs\Refactoring\Domain\Model\Directory;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
 use QafooLabs\Refactoring\Domain\Model\PhpNameChange;
+use QafooLabs\Refactoring\Domain\Model\PhpNames\NoImportedUsagesFilter;
 
 class FixClassNames
 {
@@ -38,10 +39,15 @@ class FixClassNames
 
         $renames = new Set();
         $occurances = array();
+        $noImportedUsages = new NoImportedUsagesFilter();
 
         foreach ($phpFiles as $phpFile) {
             $classes = $this->codeAnalysis->findClasses($phpFile);
-            $occurances = array_merge($this->nameScanner->findNames($phpFile), $occurances);
+
+            $occurances = array_merge(
+                $noImportedUsages->filter($this->nameScanner->findNames($phpFile)),
+                $occurances
+            );
 
             if (count($classes) !== 1) {
                 continue;
