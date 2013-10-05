@@ -121,14 +121,12 @@ class FeatureContext extends BehatContext
     {
         if ('\\' === DIRECTORY_SEPARATOR) {
             $formatLine = function ($line) {
-                if (0 === strpos($line, '---') || 0 === strpos($line, '+++')) {
-                    $line = preg_replace('~/(?<!(a|b)/)~', '\\', $line);
-                }
-
+                // replace lines for diff-path-files starting with --- or +++
                 $line = preg_replace_callback('~^((?:---|\+\+\+)\s*(?:a|b)/)(.*)~', function ($match) {
                     list($all, $diff, $path) = $match;
 
-                    if (0 === preg_match('~^[a-z]+://~i', $path)) {
+                    // dont replace wrapped path separators
+                    if (! preg_match('~^[a-z]+://~i', $path)) {
                         $path = str_replace('/', '\\', $path);
                     }
 
