@@ -22,6 +22,7 @@ use QafooLabs\Refactoring\Domain\Model\PhpName;
 
 use TokenReflection\Broker;
 use TokenReflection\Broker\Backend\Memory;
+use TokenReflection\ReflectionNamespace;
 
 class StaticCodeAnalysis extends CodeAnalysis
 {
@@ -143,11 +144,12 @@ class StaticCodeAnalysis extends CodeAnalysis
 
         $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
         foreach ($file->getNamespaces() as $namespace) {
+            $noNamespace = ReflectionNamespace::NO_NAMESPACE_NAME === $namespace->getName();
             foreach ($namespace->getClasses() as $class) {
                 $classes[] = new PhpClass(
                     PhpName::createDeclarationName($class->getName()),
                     $class->getStartLine(),
-                    $namespace->getStartLine()
+                    $noNamespace ? 0 : $namespace->getStartLine()
                 );
             }
         }
