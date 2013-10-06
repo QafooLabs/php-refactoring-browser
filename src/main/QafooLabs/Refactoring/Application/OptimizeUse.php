@@ -37,6 +37,7 @@ class OptimizeUse
         $occurances = $this->phpNameScanner->findNames($file);
         $class = $classes[0];
 
+        $appendNewLine = 0 === $class->namespaceDeclarationLine();
         $lastUseStatementLine = $class->namespaceDeclarationLine() + 2;
         $usedNames = array();
         $fqcns = array();
@@ -44,7 +45,7 @@ class OptimizeUse
         foreach ($occurances as $occurance) {
             $name = $occurance->name();
 
-            if ($name->type() === PhpName::TYPE_NAMESPACE) {
+            if ($name->type() === PhpName::TYPE_NAMESPACE || $name->type() === PhpName::TYPE_CLASS) {
                 continue;
             }
 
@@ -67,7 +68,13 @@ class OptimizeUse
             $buffer->replaceString($occurance->declarationLine(), '\\'.$name->fullyQualifiedName(), $name->shortname());
 
             if (!in_array($name->fullyQualifiedName(), $usedNames)) {
-                $buffer->append($lastUseStatementLine, array(sprintf('use %s;', $name->fullyQualifiedName())));
+                $lines = array(sprintf('use %s;', $name->fullyQualifiedName()));
+                if ($appendNewLine) {
+                    $appendNewLine = FALSE;
+                    $lines[] = '';
+                }
+
+                $buffer->append($lastUseStatementLine, $lines);
                 $lastUseStatementLine++;
             }
         }
