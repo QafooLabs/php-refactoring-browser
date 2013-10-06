@@ -47,4 +47,38 @@ Feature: Optimize use
 
                      return $service;
             """
+    Scenario: Organize use for file without namespace and other uses
+        Given a PHP File named "src/Foo.php" with:
+            """
+            <?php
 
+            class Foo
+            {
+                public function operation()
+                {
+                    return new \Bar\Qux\Adapter();
+                }
+            }
+            """
+        When I use refactoring "optimize-use" with:
+            | arg       | value       |
+            | file      | src/Foo.php |
+        Then the PHP File "src/Foo.php" should be refactored:
+            """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
+            @@ -1,4 +1,6 @@
+             <?php
+
+            +use Bar\Qux\Adapter;
+            +
+             class Foo
+             {
+            @@ -5,5 +5,5 @@
+                 public function operation()
+                 {
+            -        return new \Bar\Qux\Adapter();
+            +        return new Adapter();
+                 }
+             }
+            """
