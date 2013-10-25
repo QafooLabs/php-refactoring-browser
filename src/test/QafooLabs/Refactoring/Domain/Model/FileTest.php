@@ -34,11 +34,20 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("Foo\Bar.php", $file->getRelativePath());
     }
 
+    public function testRelativePathConstructionForAbsoluteVFSFiles()
+    {
+        $src = $this->createFileSystem()->getChild('src')->url();
+        $bar = $src.DIRECTORY_SEPARATOR.'Foo'.DIRECTORY_SEPARATOR.'Bar.php';
+
+        $file = File::createFromPath($bar, $notRelatedWorkingDir = __DIR__);
+        $this->assertEquals('vfs://project/src/Foo/Bar.php', $file->getRelativePath());
+    }
+
     static public function dataExtractPsr0ClassName()
     {
         return array(
-            array(new PhpName('Foo', 'Foo'), 'src/Foo.php'),
-            array(new PhpName('Foo\Bar', 'Bar'), 'src/Foo/Bar.php'),
+            array(new PhpName('Foo', 'Foo'), 'src'.DIRECTORY_SEPARATOR.'Foo.php'),
+            array(new PhpName('Foo\Bar', 'Bar'), 'src'.DIRECTORY_SEPARATOR.'Foo'.DIRECTORY_SEPARATOR.'Bar.php'),
         );
     }
 
