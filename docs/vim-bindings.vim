@@ -37,7 +37,7 @@
 "   Simple press <Leader>rou to run the optimize use refactoring.
 
 let g:php_refactor_command='php /usr/bin/refactor.phar'
-let g:php_refactor_patch_command='patch'
+let g:php_refactor_patch_command='patch -p1'
 
 func! PhpRefactorExtractMethod()
     " check the file has been saved
