@@ -35,6 +35,10 @@ It outputs a diff to the screen and you can apply it to your code by piping it t
 
     php refactor.phar <refactoring> <arg1>...<argN> | patch -p1
 
+### VIM Bindings
+Some basic VIM bindings are included in the `docs` folder. A more complete VIM
+plugin will be available in the future.
+
 ## Why?
 
 Users of PHPStorm (or Netbeans) might wonder why this project exists, all the
