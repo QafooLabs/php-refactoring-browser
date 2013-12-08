@@ -25,9 +25,13 @@
 "
 " - RENAME LOCAL VARIABLE
 "   In normal mode move the cursor so it's inside the name of the variable
-"   which you want to rename. Press <Leader>rrlv
+"   which you want to rename. Press <Leader>rlv
 "
 "   You will be prompted for the new name of the variable.
+"
+" - LOCAL VARIABLE TO INSTANCE VARIABLE
+"   In normal mode move the cursor so it's inside the name of the variable
+"   which you want to rename. Press <Leader>rli
 "
 " - OPTIMIZE USE
 "   Simple press <Leader>rou to run the optimize use refactoring.
@@ -61,6 +65,24 @@ func! PhpRefactorExtractMethod()
         \ .' | '.g:php_refactor_patch_command
 
     " todo : exit visual mode
+endfunc
+
+func! PhpRefactorLocalVariableToInstanceVariable()
+    " check the file has been saved
+    if &modified
+        echom 'Cannot refactor; file contains unsaved changes'
+        return
+    endif
+
+    let variable=expand('<cword>')
+    let lineNo=line('.')
+
+    exec ':!'.g:php_refactor_command
+        \ .' convert-local-to-instance-variable'
+        \ .' %'
+        \ .' '.lineNo
+        \ .' '.variable
+        \ .' | '.g:php_refactor_patch_command
 endfunc
 
 func! PhpRefactorRenameLocalVariable()
@@ -98,6 +120,6 @@ func! PhpRefactorOptimizeUse()
 endfunc
 
 vnoremap <expr> <Leader>rem PhpRefactorExtractMethod()
-noremap <expr> <Leader>rrlv PhpRefactorRenameLocalVariable()
+noremap <expr> <Leader>rlv PhpRefactorRenameLocalVariable()
+noremap <expr> <Leader>rli PhpRefactorLocalVariableToInstanceVariable()
 noremap <expr> <Leader>rou PhpRefactorOptimizeUse()
-
