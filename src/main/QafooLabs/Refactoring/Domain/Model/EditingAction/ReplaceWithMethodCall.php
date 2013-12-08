@@ -6,6 +6,8 @@ use QafooLabs\Refactoring\Domain\Model\EditingAction;
 use QafooLabs\Refactoring\Domain\Model\EditorBuffer;
 use QafooLabs\Refactoring\Domain\Model\MethodSignature;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
+use QafooLabs\Refactoring\Domain\Model\LineCollection;
+use QafooLabs\Refactoring\Domain\Model\IndentationDetector;
 
 class ReplaceWithMethodCall implements EditingAction
 {
@@ -27,12 +29,23 @@ class ReplaceWithMethodCall implements EditingAction
 
     public function performEdit(EditorBuffer $buffer)
     {
-        $buffer->replace($this->range, array($this->getIndent() . $this->getMethodCall()));
+        $extractedCode = $buffer->getLines($this->range);
+
+        $buffer->replace($this->range, array($this->getIndent($extractedCode) . $this->getMethodCall()));
     }
 
-    private function getIndent()
+    /**
+     * @param string[] $lines
+     *
+     * @return string
+     */
+    private function getIndent(array $lines)
     {
-        return '        ';
+        $detector = new IndentationDetector(
+            LineCollection::createFromArray($lines)
+        );
+
+        return str_repeat(' ', $detector->getFirstLineIndentation());
     }
 
     private function getMethodCall()

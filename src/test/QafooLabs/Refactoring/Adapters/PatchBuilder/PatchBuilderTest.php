@@ -200,4 +200,12 @@ DIFF;
 DIFF;
         $this->assertEquals($expected, $this->builder->generateUnifiedDiff());
     }
+
+    public function testGetOriginalLines()
+    {
+        $this->assertEquals(
+            array('line4', 'line5', 'line6'),
+            $this->builder->getOriginalLines(4, 6)
+        );
+    }
 }
