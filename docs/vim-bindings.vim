@@ -46,23 +46,22 @@ func! PhpRefactorExtractMethod()
         return
     endif
 
-    let startLine=line('v')
-    let endLine=line('.')
-    let method=input('Enter extracted method name: ')
+    let startLine = line('v')
+    let endLine = line('.')
+    let method = input('Enter extracted method name: ')
 
     " check line numbers are the right way around
     if startLine > endLine
-        let temp=startLine
-        let startLine=endLine
-        let endLine=temp
+        let temp = startLine
+        let startLine = endLine
+        let endLine = temp
     endif
 
-    exec ':!'.g:php_refactor_command
-        \ .' extract-method'
-        \ .' %'
-        \ .' '.startLine.'-'.endLine
-        \ .' '.method
-        \ .' | '.g:php_refactor_patch_command
+    let range = startLine . '-' . endLine
+
+    let args = [range, method]
+
+    call PhpRefactorRunCommand('extract-method', args)
 
     " todo : exit visual mode
 endfunc
@@ -74,15 +73,12 @@ func! PhpRefactorLocalVariableToInstanceVariable()
         return
     endif
 
-    let variable=expand('<cword>')
-    let lineNo=line('.')
+    let variable = expand('<cword>')
+    let lineNo = line('.')
 
-    exec ':!'.g:php_refactor_command
-        \ .' convert-local-to-instance-variable'
-        \ .' %'
-        \ .' '.lineNo
-        \ .' '.variable
-        \ .' | '.g:php_refactor_patch_command
+    let args = [lineNo, variable]
+
+    call PhpRefactorRunCommand('convert-local-to-instance-variable', args)
 endfunc
 
 func! PhpRefactorRenameLocalVariable()
@@ -92,18 +88,13 @@ func! PhpRefactorRenameLocalVariable()
         return
     endif
 
-    let oldName=expand('<cword>')
-    let lineNo=line('.')
-    let newName=input('Enter new variable name: ')
+    let oldName = expand('<cword>')
+    let lineNo = line('.')
+    let newName = input('Enter new variable name: ')
 
+    let args = [lineNo, oldName, newName]
 
-    exec ':!'.g:php_refactor_command
-        \ .' rename-local-variable'
-        \ .' %'
-        \ .' '.lineNo
-        \ .' '.oldName
-        \ .' '.newName
-        \ .' | '.g:php_refactor_patch_command
+    call PhpRefactorRunCommand('rename-local-variable', args)
 endfunc
 
 func! PhpRefactorOptimizeUse()
@@ -113,10 +104,23 @@ func! PhpRefactorOptimizeUse()
         return
     endif
 
-    exec ':!'.g:php_refactor_command
-        \ .' optimize-use'
-        \ .' %'
-        \ .' | '.g:php_refactor_patch_command
+    call PhpRefactorRunCommand('optimize-use', [])
+endfunc
+
+func! PhpRefactorRunCommand(refactoring, args)
+    " Enable autoread to stop prompting for reload
+    setlocal autoread
+
+    let command = ':!' . g:php_refactor_command
+        \ . ' ' . a:refactoring . ' %'
+
+    for arg in a:args
+        let command = command . ' ' . arg
+    endfor
+
+    exec command .' | '.g:php_refactor_patch_command
+
+    setlocal noautoread
 endfunc
 
 vnoremap <expr> <Leader>rem PhpRefactorExtractMethod()
