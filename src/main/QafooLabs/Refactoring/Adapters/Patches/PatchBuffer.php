@@ -1,16 +1,15 @@
 <?php
 /**
- * qafoo php refactoring browser
+ * Qafoo PHP Refactoring Browser
  *
- * license
+ * LICENSE
  *
- * this source file is subject to the mit license that is bundled
- * with this package in the file license.txt.
- * if you did not receive a copy of the license and are unable to
+ * This source file is subject to the MIT license that is bundled
+ * with this package in the file LICENSE.txt.
+ * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
- * to kontakt@beberlei.de so i can send you a copy immediately.
+ * to kontakt@beberlei.de so I can send you a copy immediately.
  */
-
 
 namespace QafooLabs\Refactoring\Adapters\Patches;
 
