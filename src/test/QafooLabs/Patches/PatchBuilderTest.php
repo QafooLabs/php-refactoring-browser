@@ -172,4 +172,11 @@ DIFF
 DIFF
             , $builder->generateUnifiedDiff());
     }
+
+    public function testGetLinesReturnsGivenRangeOfLines()
+    {
+        $builder = new PatchBuilder("aaa\nbbb\nccc\nddd\n");
+
+        $this->assertEquals(array('bbb', 'ccc'), $builder->getLines(2, 3));
+    }
 }

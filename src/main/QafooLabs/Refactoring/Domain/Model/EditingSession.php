@@ -53,7 +53,10 @@ class EditingSession
             $call = 'list(' . $this->implodeVariables($newMethod->returnVariables()) . ') = ' . $call;
         }
 
-        $this->buffer->replace($range, array($this->whitespace(8) . $call));
+        $lines = $this->buffer->getLines($range);
+        $indent = $this->leftWhitespacesOf(reset($lines));
+
+        $this->buffer->replace($range, array($this->whitespace($indent) . $call));
     }
 
     public function addMethod($line, MethodSignature $newMethod, $selectedCode)
@@ -104,7 +107,8 @@ class EditingSession
                 return $this->whitespace($whitespaceCorrection) . $line;
             }
 
-            return substr($line, $whitespaceCorrection - 2); // Why -2?
+            // Should we verify that the characters removed here are actually whitespace?
+            return substr($line, abs($whitespaceCorrection));
         }, $lines);
     }
 

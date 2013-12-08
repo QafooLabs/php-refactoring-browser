@@ -59,6 +59,19 @@ class PatchBuilder
     }
 
     /**
+     * Return the given range of lines from the original buffer.
+     *
+     * @param  int $startLine
+     * @param  int $endLine
+     *
+     * @return string[]
+     */
+    public function getLines($startLine, $endLine)
+    {
+        return array_slice($this->lines, $startLine - 1, $endLine - 1);
+    }
+
+    /**
      * Change Token in given line from old to new.
      *
      * @param int $originalLine
