@@ -48,3 +48,45 @@ Feature: Rename Local Variable
                  }
              }
             """
+
+    Scenario: Rename variable in method other other similarly named variables on same line
+        Given a PHP File named "src/SimilarVariableName.php" with:
+            """
+            <?php
+            class SimilarVariableName
+            {
+                public function operation()
+                {
+                    $var = 2;
+
+                    $varsecond = 5;
+
+                    return $var + $varsecond;
+                }
+            }
+            """
+        When I use refactoring "rename-local-variable" with:
+            | arg       | value                       |
+            | file      | src/SimilarVariableName.php |
+            | line      | 6                           |
+            | name      | var                         |
+            | new-name  | number                      |
+        Then the PHP File "src/SimilarVariableName.php" should be refactored:
+            """
+            --- a/vfs://project/src/SimilarVariableName.php
+            +++ b/vfs://project/src/SimilarVariableName.php
+            @@ -3,10 +3,10 @@
+             {
+                 public function operation()
+                 {
+            -        $var = 2;
+            +        $number = 2;
+       
+                     $varsecond = 5;
+       
+            -        return $var + $varsecond;
+            +        return $number + $varsecond;
+                 }
+             }
+
+            """
