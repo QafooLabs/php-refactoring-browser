@@ -19,6 +19,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 use AppendIterator;
+use CallbackFilterIterator as StandardCallbackFilterIterator;
 
 /**
  * A directory in a project.
@@ -73,7 +74,14 @@ class Directory
             );
         }
 
-        return $iterator;
+        $files = array();
+        foreach ($iterator as $filename => $file) {
+            $files[] = $file;
+        }
+
+        return new StandardCallbackFilterIterator($iterator, function($file, $filename) use ($files) {
+            return !in_array($filename, $files);
+        });
     }
 }
 
