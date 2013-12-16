@@ -36,8 +36,11 @@ class DirectoryTest extends \PHPUnit_Framework_TestCase
         $directory = new Directory($dir, $dir);
         $files = $directory->findAllPhpFilesRecursivly();
 
+        $foundFiles = array();
         foreach ($files as $f => $file) {
-            $this->assertEquals('vfs://project/src/Foo/Bar.php', $f);
+            $foundFiles[] = $f;
         }
+
+        $this->assertEquals(array('vfs://project/src/Foo/Bar.php'), $foundFiles);
     }
 }
