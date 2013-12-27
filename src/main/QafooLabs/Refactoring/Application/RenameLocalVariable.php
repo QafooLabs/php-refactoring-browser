@@ -12,63 +12,58 @@ use QafooLabs\Refactoring\Domain\Model\EditingSession;
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 use QafooLabs\Refactoring\Domain\Services\Editor;
+use QafooLabs\Refactoring\Domain\Model\EditingAction\RenameVariable;
 
 /**
  * Rename Local Variable Refactoring
  */
-class RenameLocalVariable
+class RenameLocalVariable extends SingleFileRefactoring
 {
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\VariableScanner
+     * @var Variable
      */
-    private $variableScanner;
+    private $oldName;
 
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\CodeAnalysis
+     * @var Variable
      */
-    private $codeAnalysis;
+    private $newName;
 
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\Editor
+     * @param int $line
      */
-    private $editor;
-
-    public function __construct(VariableScanner $variableScanner, CodeAnalysis $codeAnalysis, Editor $editor)
-    {
-        $this->variableScanner = $variableScanner;
-        $this->codeAnalysis = $codeAnalysis;
-        $this->editor = $editor;
-    }
-
     public function refactor(File $file, $line, Variable $oldName, Variable $newName)
     {
-        if ( ! $this->codeAnalysis->isInsideMethod($file, LineRange::fromSingleLine($line))) {
-            throw RefactoringException::rangeIsNotInsideMethod(LineRange::fromSingleLine($line));
+        $this->file = $file;
+        $this->line = $line;
+        $this->newName = $newName;
+        $this->oldName = $oldName;
+
+        $this->assertIsInsideMethod();
+
+        $this->assertVariableIsLocal($this->oldName);
+        $this->assertVariableIsLocal($this->newName);
+
+        $this->startEditingSession();
+        $this->renameLocalVariable();
+        $this->completeEditingSession();
+    }
+
+    private function assertVariableIsLocal(Variable $variable)
+    {
+        if ( ! $variable->isLocal()) {
+            throw RefactoringException::variableNotLocal($variable);
+        }
+    }
+
+    private function renameLocalVariable()
+    {
+        $definedVariables = $this->getDefinedVariables();
+
+        if ( ! $definedVariables->contains($this->oldName)) {
+            throw RefactoringException::variableNotInRange($this->oldName, $selectedMethodLineRange);
         }
 
-        if ( ! $oldName->isLocal()) {
-            throw RefactoringException::variableNotLocal($oldName);
-        }
-
-        if ( ! $newName->isLocal()) {
-            throw RefactoringException::variableNotLocal($newName);
-        }
-
-        $selectedMethodLineRange = $this->codeAnalysis->findMethodRange($file, LineRange::fromSingleLine($line));
-        $definedVariables = $this->variableScanner->scanForVariables(
-            $file, $selectedMethodLineRange
-        );
-
-        if ( ! $definedVariables->contains($oldName)) {
-            throw RefactoringException::variableNotInRange($oldName, $selectedMethodLineRange);
-        }
-
-        $buffer = $this->editor->openBuffer($file);
-
-        $session = new EditingSession($buffer);
-        $session->replaceString($definedVariables, $oldName, $newName);
-
-        $this->editor->save();
+        $this->session->addEdit(new RenameVariable($definedVariables, $this->oldName, $this->newName));
     }
 }
-
