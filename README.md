@@ -36,8 +36,9 @@ It outputs a diff to the screen and you can apply it to your code by piping it t
     php refactor.phar <refactoring> <arg1>...<argN> | patch -p1
 
 ### VIM Bindings
-Some basic VIM bindings are included in the `docs` folder. A more complete VIM
-plugin will be available in the future.
+
+There is now a VIM plugin for using PHP refactorings within VIM. This plugin
+is maintained as a seperate project which can be found at https://github.com/vim-php/vim-php-refactoring
 
 ## Why?
 
