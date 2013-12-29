@@ -14,11 +14,12 @@
 
 namespace QafooLabs\Refactoring\Adapters\TokenReflection;
 
-use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
-use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\PhpClass;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
+use QafooLabs\Refactoring\Domain\Model\RefactoringException;
+use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 
 use TokenReflection\Broker;
 use TokenReflection\Broker\Backend\Memory;
@@ -89,6 +90,17 @@ class StaticCodeAnalysis extends CodeAnalysis
     public function isInsideMethod(File $file, LineRange $range)
     {
         return $this->findMatchingMethod($file, $range) !== null;
+    }
+
+    public function getMethod(File $file, LineRange $range)
+    {
+        $method = $this->findMatchingMethod($file, $range);
+
+        if ($method === null) {
+            throw RefactoringException::rangeIsNotInsideMethod($range);
+        }
+
+        return $method;
     }
 
     /**
