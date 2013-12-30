@@ -74,11 +74,7 @@ class Directory
             );
         }
 
-        $files = array();
-        foreach ($iterator as $filename => $file) {
-            $files[] = $file;
-        }
-
+        $files = iterator_to_array($iterator);
         return new StandardCallbackFilterIterator($iterator, function($file, $filename) use ($files) {
             return !in_array($filename, $files);
         });
