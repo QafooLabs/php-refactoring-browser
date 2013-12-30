@@ -12,11 +12,11 @@
  */
 
 
-namespace QafooLabs\Refactoring\Adapters\Patches;
+namespace QafooLabs\Refactoring\Adapters\PatchBuilder;
 
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Services\Editor;
-use QafooLabs\Patches\PatchBuilder;
+use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchBuilder;
 
 /**
  * Editor creates patches for all changes.
