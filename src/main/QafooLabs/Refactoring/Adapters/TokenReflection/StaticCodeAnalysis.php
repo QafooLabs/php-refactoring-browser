@@ -34,59 +34,31 @@ class StaticCodeAnalysis extends CodeAnalysis
 
     public function isMethodStatic(File $file, LineRange $range)
     {
-        $this->broker = new Broker(new Memory);
-        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
-        $lastLine = $range->getEnd();
+        $method = $this->findMatchingMethod($file, $range);
 
-        foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->getClasses() as $class) {
-                foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
-                        return $method->isStatic();
-                    }
-                }
-            }
-        }
-
-        return false;
+        return $method ? $method->isStatic() : false;
     }
 
     public function getMethodEndLine(File $file, LineRange $range)
     {
-        $this->broker = new Broker(new Memory);
-        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
-        $lastLine = $range->getEnd();
+        $method = $this->findMatchingMethod($file, $range);
 
-        foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->getClasses() as $class) {
-                foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
-                        return $method->getEndLine();
-                    }
-                }
-            }
+        if ($method === null) {
+            throw new \InvalidArgumentException("Could not find method end line.");
         }
 
-        throw new \InvalidArgumentException("Could not find method end line.");
+        return $method->getEndLine();
     }
 
     public function getMethodStartLine(File $file, LineRange $range)
     {
-        $this->broker = new Broker(new Memory);
-        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
-        $lastLine = $range->getEnd();
+        $method = $this->findMatchingMethod($file, $range);
 
-        foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->getClasses() as $class) {
-                foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
-                        return $method->getStartLine();
-                    }
-                }
-            }
+        if ($method === null) {
+            throw new \InvalidArgumentException("Could not find method start line.");
         }
 
-        throw new \InvalidArgumentException("Could not find method start line.");
+        return $method->getStartLine();
     }
 
     public function getLineOfLastPropertyDefinedInScope(File $file, $lastLine)
@@ -115,20 +87,7 @@ class StaticCodeAnalysis extends CodeAnalysis
 
     public function isInsideMethod(File $file, LineRange $range)
     {
-        $this->broker = new Broker(new Memory);
-        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
-
-        foreach ($file->getNamespaces() as $namespace) {
-            foreach ($namespace->getClasses() as $class) {
-                foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $range->getStart() && $range->getEnd() < $method->getEndLine()) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        return $this->findMatchingMethod($file, $range) !== null;
     }
 
     /**
@@ -153,5 +112,27 @@ class StaticCodeAnalysis extends CodeAnalysis
         }
 
         return $classes;
+    }
+
+    private function findMatchingMethod(File $file, LineRange $range)
+    {
+        $foundMethod = null;
+
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+        $lastLine = $range->getEnd();
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getClasses() as $class) {
+                foreach ($class->getMethods() as $method) {
+                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
+                        $foundMethod = $method;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $foundMethod;
     }
 }
