@@ -20,7 +20,8 @@ Feature: Fix Class Names
             """
             --- a/vfs://project/src/Foo/Bar.php
             +++ b/vfs://project/src/Foo/Bar.php
-            @@ -2,5 +2,5 @@
+            @@ -1,6 +1,6 @@
+             <?php
              namespace Foo;
 
             -class Foo
@@ -46,12 +47,13 @@ Feature: Fix Class Names
             """
             --- a/vfs://project/src/Foo/Bar.php
             +++ b/vfs://project/src/Foo/Bar.php
-            @@ -1,4 +1,4 @@
+            @@ -1,5 +1,5 @@
              <?php
             -namespace Baz;
             +namespace Foo;
 
              class Bar
+             {
             """
     Scenario: "Class renamed changes use statements"
         Given a PHP File named "src/Foo/Bar.php" with:
@@ -75,13 +77,15 @@ Feature: Fix Class Names
             """
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
-            @@ -2,5 +2,5 @@
+            @@ -1,6 +1,6 @@
+             <?php
              namespace Foo;
 
             -class Foo
             +class Bar
              {
              }
+
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
@@ -111,12 +115,14 @@ Feature: Fix Class Names
             """
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
-            @@ -1,4 +1,4 @@
+            @@ -1,5 +1,5 @@
              <?php
             -namespace Bar;
             +namespace Foo;
 
              class Bar
+             {
+
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
@@ -147,13 +153,15 @@ Feature: Fix Class Names
             """
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
-            @@ -2,5 +2,5 @@
+            @@ -1,6 +1,6 @@
+             <?php
              namespace Foo;
 
             -class Foo
             +class Bar
              {
              }
+
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
@@ -183,13 +191,15 @@ Feature: Fix Class Names
             """
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
-            @@ -2,5 +2,5 @@
+            @@ -1,6 +1,6 @@
+             <?php
              namespace Foo;
 
             -class Foo
             +class Bar
              {
              }
+
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
             @@ -1,2 +1,2 @@
@@ -223,31 +233,37 @@ Feature: Fix Class Names
             """
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
-            @@ -2,5 +2,5 @@
+            @@ -1,6 +1,6 @@
+            <?php
             namespace Foo;
 
             -class Foo
             +class Bar
              {
              }
+
             --- a/vfs://project/src/Foo/src/Foo/Bar.php
             +++ b/vfs://project/src/Foo/src/Foo/Bar.php
-            @@ -2,5 +2,5 @@
+            @@ -1,6 +1,6 @@
+             <?php
              namespace Foo;
 
             -class Foo
             +class Bar
              {
              }
+
             --- a/vfs://project/src/Foo/Baz.php
             +++ b/vfs://project/src/Foo/Baz.php
-            @@ -2,5 +2,5 @@
+            @@ -1,6 +1,6 @@
+             <?php
              namespace Foo;
 
             -class Baz extends Foo
             +class Baz extends Bar
              {
              }
+
             """
     Scenario: "Renaming a slice of a namespace"
         Given a PHP File named "src/Foo/Bar/Baz/Boing.php" with:
@@ -280,6 +296,7 @@ Feature: Fix Class Names
             +class Boing
              {
              }
+
             --- a/vfs://project/src/index.php
             +++ b/vfs://project/src/index.php
             @@ -1,2 +1,2 @@
@@ -319,6 +336,7 @@ Feature: Fix Class Names
             +class Boing
              {
              }
+
             --- a/vfs://project/src/index.php
             +++ b/vfs://project/src/index.php
             @@ -1,2 +1,2 @@

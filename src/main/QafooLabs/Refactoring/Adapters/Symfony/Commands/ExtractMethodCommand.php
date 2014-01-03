@@ -22,7 +22,7 @@ use Symfony\Component\Console\Command\Command;
 use QafooLabs\Refactoring\Application\ExtractMethod;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
-use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
+use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchEditor;
 use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
 
 use QafooLabs\Refactoring\Domain\Model\LineRange;

@@ -12,7 +12,8 @@
         "beberlei/assert": "@stable",
         "andrewsville/php-token-reflection": "@stable",
         "symfony/finder": "@stable",
-        "symfony/console": "@stable"
+        "symfony/console": "@stable",
+        "tomphp/patch-builder": "dev-master"
     },
 
     "require-dev": {

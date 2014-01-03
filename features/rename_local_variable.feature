@@ -31,7 +31,8 @@ Feature: Rename Local Variable
             """
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
-            @@ -4,11 +4,11 @@
+            @@ -3,12 +3,12 @@
+             {
                  public function operation()
                  {
             -        $var = 2;

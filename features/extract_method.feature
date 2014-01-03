@@ -24,17 +24,17 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
-            @@ -4,5 +4,10 @@
+            @@ -3,6 +3,11 @@
+             {
                  public function operation()
                  {
-            -        echo "Hello World";
             +        $this->hello();
-                 }
+            +    }
             +
             +    private function hello()
             +    {
-            +        echo "Hello World";
-            +    }
+                     echo "Hello World";
+                 }
              }
             """
 
@@ -59,17 +59,17 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
-            @@ -4,5 +4,10 @@
+            @@ -3,6 +3,11 @@
+             {
                  public static function operation()
                  {
-            -        echo "Hello World";
             +        self::hello();
-                 }
+            +    }
             +
             +    private static function hello()
             +    {
-            +        echo "Hello World";
-            +    }
+                     echo "Hello World";
+                 }
              }
             """
 
@@ -95,17 +95,17 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/WithInstance.php
             +++ b/vfs://project/src/WithInstance.php
-            @@ -5,5 +5,10 @@
+            @@ -4,6 +4,11 @@
+                 private $hello = 'Hello World!';
                  public function test()
                  {
-            -        echo $this->hello;
             +        $this->printHello();
-                 }
+            +    }
             +
             +    private function printHello()
             +    {
-            +        echo $this->hello;
-            +    }
+                     echo $this->hello;
+                 }
              }
             """
 
@@ -131,17 +131,17 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/WithLocal.php
             +++ b/vfs://project/src/WithLocal.php
-            @@ -5,5 +5,10 @@
+            @@ -4,6 +4,11 @@
+                 public function test()
                  {
                      $hello = 'Hello World!';
-            -        echo $hello;
             +        $this->printHello($hello);
-                 }
+            +    }
             +
             +    private function printHello($hello)
             +    {
-            +        echo $hello;
-            +    }
+                     echo $hello;
+                 }
              }
             """
 
@@ -168,22 +168,18 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/MultiLineCorrection.php
             +++ b/vfs://project/src/MultiLineCorrection.php
-            @@ -4,7 +4,12 @@
+            @@ -2,6 +2,11 @@
+             class MultiLineCorrection
+             {
                  public function test()
-                 {
-            -        foo(
-            -            "bar"
-            -        );
+            +    {
             +        $this->foo();
-                 }
+            +    }
             +
             +    private function foo()
-            +    {
-            +        foo(
-            +            "bar"
-            +        );
-            +    }
-             }
+                 {
+                     foo(
+                         "bar"
             """
 
     Scenario: "Extract Method with one assignment returns value"
@@ -208,7 +204,8 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/Assignment.php
             +++ b/vfs://project/src/Assignment.php
-            @@ -4,6 +4,13 @@
+            @@ -3,7 +3,14 @@
+             {
                  public function test()
                  {
             -        $var = "foo";
@@ -249,22 +246,22 @@ Feature: Extract Method
             """
             --- a/vfs://project/src/MultiAssignmentSingleReturn.php
             +++ b/vfs://project/src/MultiAssignmentSingleReturn.php
-            @@ -4,8 +4,15 @@
+            @@ -3,9 +3,16 @@
+             {
                  public function test()
                  {
-            -        $var = 'foo';
-            -        $var2 = $var;
             +        $var2 = $this->foo();
-
-                     echo $var2;
-                 }
+            +
+            +        echo $var2;
+            +    }
             +
             +    private function foo()
             +    {
-            +        $var = 'foo';
-            +        $var2 = $var;
-            +
+                     $var = 'foo';
+                     $var2 = $var;
+             
+            -        echo $var2;
             +        return $var2;
-            +    }
+                 }
              }
             """

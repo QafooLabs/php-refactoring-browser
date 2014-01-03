@@ -25,7 +25,7 @@ use QafooLabs\Refactoring\Domain\Model\Variable;
 use QafooLabs\Refactoring\Application\ConvertLocalToInstanceVariable;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
-use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
+use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchEditor;
 use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
 
 class ConvertLocalToInstanceVariableCommand extends Command

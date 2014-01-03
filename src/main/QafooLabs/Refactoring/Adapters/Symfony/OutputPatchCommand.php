@@ -15,7 +15,7 @@
 namespace QafooLabs\Refactoring\Adapters\Symfony;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use QafooLabs\Refactoring\Adapters\Patches\ApplyPatchCommand;
+use QafooLabs\Refactoring\Adapters\PatchBuilder\ApplyPatchCommand;
 
 /**
  * Print Patch to Symfony Console Output
