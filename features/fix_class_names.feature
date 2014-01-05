@@ -75,6 +75,13 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -use Foo\Foo;
+            +use Foo\Bar;
+
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -1,6 +1,6 @@
@@ -85,13 +92,6 @@ Feature: Fix Class Names
             +class Bar
              {
              }
-
-            --- a/vfs://project/src/Foo.php
-            +++ b/vfs://project/src/Foo.php
-            @@ -1,2 +1,2 @@
-             <?php
-            -use Foo\Foo;
-            +use Foo\Bar;
             """
     Scenario: "Namespace moved changes use statements"
         Given a PHP File named "src/Foo/Bar.php" with:
@@ -113,6 +113,13 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -use Bar\Bar;
+            +use Foo\Bar;
+
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -1,5 +1,5 @@
@@ -122,13 +129,6 @@ Feature: Fix Class Names
 
              class Bar
              {
-
-            --- a/vfs://project/src/Foo.php
-            +++ b/vfs://project/src/Foo.php
-            @@ -1,2 +1,2 @@
-             <?php
-            -use Bar\Bar;
-            +use Foo\Bar;
             """
 
     Scenario: "Rename class changes static occurances"
@@ -151,6 +151,13 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -Foo\Foo::bar();
+            +Foo\Bar::bar();
+
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -1,6 +1,6 @@
@@ -161,13 +168,6 @@ Feature: Fix Class Names
             +class Bar
              {
              }
-
-            --- a/vfs://project/src/Foo.php
-            +++ b/vfs://project/src/Foo.php
-            @@ -1,2 +1,2 @@
-             <?php
-            -Foo\Foo::bar();
-            +Foo\Bar::bar();
             """
     Scenario: "Rename class changes new instantiations"
         Given a PHP File named "src/Foo/Bar.php" with:
@@ -189,6 +189,13 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/Foo.php
+            +++ b/vfs://project/src/Foo.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -new Foo\Foo();
+            +new Foo\Bar();
+
             --- a/vfs://project/src/src/Foo/Bar.php
             +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -1,6 +1,6 @@
@@ -200,12 +207,6 @@ Feature: Fix Class Names
              {
              }
 
-            --- a/vfs://project/src/Foo.php
-            +++ b/vfs://project/src/Foo.php
-            @@ -1,2 +1,2 @@
-             <?php
-            -new Foo\Foo();
-            +new Foo\Bar();
             """
     Scenario: "Rename class changes that is extended"
         Given a PHP File named "src/Foo/Bar.php" with:
@@ -231,14 +232,14 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
-            --- a/vfs://project/src/src/Foo/Bar.php
-            +++ b/vfs://project/src/src/Foo/Bar.php
+            --- a/vfs://project/src/Foo/Baz.php
+            +++ b/vfs://project/src/Foo/Baz.php
             @@ -1,6 +1,6 @@
-            <?php
-            namespace Foo;
+             <?php
+             namespace Foo;
 
-            -class Foo
-            +class Bar
+            -class Baz extends Foo
+            +class Baz extends Bar
              {
              }
 
@@ -253,14 +254,14 @@ Feature: Fix Class Names
              {
              }
 
-            --- a/vfs://project/src/Foo/Baz.php
-            +++ b/vfs://project/src/Foo/Baz.php
+            --- a/vfs://project/src/src/Foo/Bar.php
+            +++ b/vfs://project/src/src/Foo/Bar.php
             @@ -1,6 +1,6 @@
-             <?php
-             namespace Foo;
+            <?php
+            namespace Foo;
 
-            -class Baz extends Foo
-            +class Baz extends Bar
+            -class Foo
+            +class Bar
              {
              }
 
@@ -285,9 +286,16 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/index.php
+            +++ b/vfs://project/src/index.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -$foo = new \Foo\Foo\Foo();
+            +$foo = new \Foo\Bar\Baz\Boing();
+
             --- a/vfs://project/src/src/Foo/Bar/Baz/Boing.php
             +++ b/vfs://project/src/src/Foo/Bar/Baz/Boing.php
-           @@ -1,6 +1,6 @@
+            @@ -1,6 +1,6 @@
              <?php
             -namespace Foo\Foo;
             +namespace Foo\Bar\Baz;
@@ -296,13 +304,6 @@ Feature: Fix Class Names
             +class Boing
              {
              }
-
-            --- a/vfs://project/src/index.php
-            +++ b/vfs://project/src/index.php
-            @@ -1,2 +1,2 @@
-             <?php
-            -$foo = new \Foo\Foo\Foo();
-            +$foo = new \Foo\Bar\Baz\Boing();
             """
 
     Scenario: "Removing a slice of a namespace"
@@ -325,6 +326,13 @@ Feature: Fix Class Names
             | dir   | src/  |
         Then the PHP File "src/Foo.php" should be refactored:
             """
+            --- a/vfs://project/src/index.php
+            +++ b/vfs://project/src/index.php
+            @@ -1,2 +1,2 @@
+             <?php
+            -$foo = new \Foo\Foo\Foo();
+            +$foo = new \Foo\Boing();
+
             --- a/vfs://project/src/src/Foo/Boing.php
             +++ b/vfs://project/src/src/Foo/Boing.php
             @@ -1,6 +1,6 @@
@@ -336,12 +344,5 @@ Feature: Fix Class Names
             +class Boing
              {
              }
-
-            --- a/vfs://project/src/index.php
-            +++ b/vfs://project/src/index.php
-            @@ -1,2 +1,2 @@
-             <?php
-            -$foo = new \Foo\Foo\Foo();
-            +$foo = new \Foo\Boing();
             """
 
