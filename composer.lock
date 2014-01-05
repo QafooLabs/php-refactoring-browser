@@ -275,12 +275,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/tomphp/PatchBuilder.git",
-                "reference": "8a0d77b74e3e4487d46ce49d1832c06df272d907"
+                "reference": "7aa22bde7adf1020ed278c0cfb19bc1d61b26413"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tomphp/PatchBuilder/zipball/8a0d77b74e3e4487d46ce49d1832c06df272d907",
-                "reference": "8a0d77b74e3e4487d46ce49d1832c06df272d907",
+                "url": "https://api.github.com/repos/tomphp/PatchBuilder/zipball/7aa22bde7adf1020ed278c0cfb19bc1d61b26413",
+                "reference": "7aa22bde7adf1020ed278c0cfb19bc1d61b26413",
                 "shasum": ""
             },
             "require": {
@@ -301,7 +301,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "PHP Library for manipulating files to produce a patch.",
-            "time": "2013-12-30 11:51:41"
+            "time": "2014-01-05 14:39:47"
         }
     ],
     "packages-dev": [
