@@ -13,8 +13,8 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 use QafooLabs\Refactoring\Adapters\Symfony\CliApplication;
 
-require_once 'PHPUnit/Autoload.php';
-require_once 'PHPUnit/Framework/Assert/Functions.php';
+require_once 'vendor/autoload.php';
+require_once 'src/Framework/Assert/Functions.php';
 
 /**
  * Features context.
