@@ -64,7 +64,7 @@ class PatchBuilder
         $newLine = $this->buffer->getLine($this->createLineNumber($originalLine));
 
         $newLine = preg_replace(
-            '!(^|[^a-z0-9])(' . preg_quote($oldToken) . ')([^a-z0-9]|$)!i',
+            '!(^|[^a-z0-9])(' . preg_quote($oldToken) . ')([^a-z0-9]|$)!',
             '\1' . $newToken . '\3',
             $newLine
         );
