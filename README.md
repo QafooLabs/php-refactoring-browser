@@ -35,10 +35,14 @@ It outputs a diff to the screen and you can apply it to your code by piping it t
 
     php refactor.phar <refactoring> <arg1>...<argN> | patch -p1
 
-### VIM Bindings
+### Editor Plugins
 
-There is now a VIM plugin for using PHP refactorings within VIM. This plugin
-is maintained as a seperate project which can be found at https://github.com/vim-php/vim-php-refactoring
+There are third-party plugins available for using PHP refactorings within
+different text editors.  These separately maintained projects can be found at
+the links below:
+
+* vim : https://github.com/vim-php/vim-php-refactoring
+* emacs : https://github.com/keelerm84/php-refactor-mode.el
 
 ## Why?
 
