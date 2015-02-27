@@ -8,6 +8,7 @@ use QafooLabs\Refactoring\Domain\Services\Editor;
 use QafooLabs\Refactoring\Domain\Model\EditingSession;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
+use QafooLabs\Refactoring\Domain\Model\RefactoringException;
 
 abstract class SingleFileRefactoring
 {
