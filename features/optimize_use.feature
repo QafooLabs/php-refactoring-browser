@@ -70,14 +70,13 @@ Feature: Optimize use
             """
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
-            @@ -1,4 +1,6 @@
+            @@ -1,9 +1,11 @@
              <?php
-
-            +use Bar\Qux\Adapter;
             +
+            +use Bar\Qux\Adapter;
+
              class Foo
              {
-            @@ -5,5 +5,5 @@
                  public function operation()
                  {
             -        return new \Bar\Qux\Adapter();
