@@ -1,5 +1,6 @@
 language: php
 before_script:
+  - composer self-update
   - composer install --dev --prefer-dist
 script: php vendor/bin/phpunit; php vendor/bin/behat --format progress
 php:

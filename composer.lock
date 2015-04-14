@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e7e411f7332b77e8d5a8e13c7327ac43",
+    "hash": "766e6fb00e1d952b8d95c860b74df6e4",
     "packages": [
         {
             "name": "andrewsville/php-token-reflection",
@@ -720,12 +720,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "34a9c28761a7513d59c461f321f712c92c561188"
+                "reference": "0a4c4ed40888783c992198d5d520d49c1c87f9d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/34a9c28761a7513d59c461f321f712c92c561188",
-                "reference": "34a9c28761a7513d59c461f321f712c92c561188",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/0a4c4ed40888783c992198d5d520d49c1c87f9d5",
+                "reference": "0a4c4ed40888783c992198d5d520d49c1c87f9d5",
                 "shasum": ""
             },
             "require": {
@@ -774,7 +774,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-04-11 09:01:16"
+            "time": "2015-04-14 09:28:40"
         },
         {
             "name": "phpunit/php-file-iterator",
