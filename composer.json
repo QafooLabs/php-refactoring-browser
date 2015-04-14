@@ -11,17 +11,18 @@
         "nikic/php-parser": "@stable",
         "beberlei/assert": "@stable",
         "andrewsville/php-token-reflection": "@stable",
-        "symfony/finder": "@stable",
-        "symfony/console": "@stable",
-        "tomphp/patch-builder": "dev-master"
+        "symfony/finder": "~2.4@stable",
+        "symfony/console": "~2.4@stable",
+        "tomphp/patch-builder": "~0.1"
     },
 
     "require-dev": {
         "php": ">=5.4",
-        "behat/behat": "@stable",
+        "behat/behat": "~2.5@stable",
         "mikey179/vfsStream": "@stable",
         "phake/phake": "@stable",
-        "symfony/process": "@stable"
+        "symfony/process": "@stable",
+        "phpunit/phpunit": "~4.6@stable"
     },
 
     "autoload": {

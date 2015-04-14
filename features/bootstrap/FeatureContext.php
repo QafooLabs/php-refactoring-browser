@@ -13,8 +13,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 use QafooLabs\Refactoring\Adapters\Symfony\CliApplication;
 
-require_once 'PHPUnit/Autoload.php';
-require_once 'PHPUnit/Framework/Assert/Functions.php';
+use PHPUnit_Framework_Assert as PHPUnit;
 
 /**
  * Features context.
@@ -101,7 +100,7 @@ class FeatureContext extends BehatContext
         $output = array_map('trim', explode("\n", rtrim($this->output)));
         $formattedExpectedPatch = $this->formatExpectedPatch((string)$expectedPatch);
 
-        assertEquals(
+        PHPUnit::assertEquals(
             $formattedExpectedPatch,
             $output,
             "Expected File:\n" . (string)$expectedPatch . "\n\n" .
@@ -112,12 +111,12 @@ class FeatureContext extends BehatContext
 
     /**
      * converts / paths in expectedPatch text to \ paths
-     * 
+     *
      * leaves the a/ b/ slashes untouched
      * returns an array of lines
      * @return array
      */
-    protected function formatExpectedPatch($patch) 
+    protected function formatExpectedPatch($patch)
     {
         if ('\\' === DIRECTORY_SEPARATOR) {
             $formatLine = function ($line) {
