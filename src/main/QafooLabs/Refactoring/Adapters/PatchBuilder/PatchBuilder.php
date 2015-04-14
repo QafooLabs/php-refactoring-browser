@@ -94,10 +94,7 @@ class PatchBuilder
      */
     public function appendToLine($originalLine, array $lines)
     {
-        // Why is this one method different to the rest?
-        $originalLine++;
-
-        $this->buffer->insert($this->createLineNumber($originalLine), $lines);
+        $this->buffer->append($this->createLineNumber($originalLine), $lines);
     }
 
     /**

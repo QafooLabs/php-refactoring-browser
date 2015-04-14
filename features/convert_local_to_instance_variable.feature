@@ -46,3 +46,44 @@ Feature: Convert Local to Instance Variable
              }
             """
 
+    Scenario: Convert Argument Variable
+        Given a PHP File named "src/FooWithArgument.php" with:
+            """
+            <?php
+            class FooWithArgument
+            {
+                public function operation($service)
+                {
+                    $service->operation();
+
+                    return $service;
+                }
+            }
+            """
+        When I use refactoring "convert-local-to-instance-variable" with:
+            | arg       | value       |
+            | file      | src/FooWithArgument.php |
+            | line      | 6           |
+            | variable  | service     |
+        Then the PHP File "src/FooWithArgument.php" should be refactored:
+            """
+            --- a/vfs://project/src/FooWithArgument.php
+            +++ b/vfs://project/src/FooWithArgument.php
+            @@ -1,10 +1,14 @@
+             <?php
+             class FooWithArgument
+             {
+            +    private $service;
+            +
+                 public function operation($service)
+                 {
+            -        $service->operation();
+            +        $this->service = $service;
+             
+            -        return $service;
+            +        $this->service->operation();
+            +
+            +        return $this->service;
+                 }
+             }
+            """
