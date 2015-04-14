@@ -46,7 +46,8 @@ DIFF;
         $this->assertEquals($expected, $this->builder->generateUnifiedDiff());
     }
 
-    public function testChangeIsCaseSensitive() {
+    public function testChangeIsCaseSensitive()
+    {
         $this->builder = new PatchBuilder('$bar = new Bar();');
         $this->builder->changeToken(1, 'Bar', 'Foo');
 
