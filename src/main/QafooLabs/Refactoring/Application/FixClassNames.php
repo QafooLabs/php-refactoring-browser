@@ -19,78 +19,143 @@ use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
 use QafooLabs\Refactoring\Domain\Model\PhpNameChange;
 use QafooLabs\Refactoring\Domain\Model\PhpNames\NoImportedUsagesFilter;
+use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
+use QafooLabs\Refactoring\Domain\Services\Editor;
+use QafooLabs\Refactoring\Adapters\PHPParser\ParserPhpNameScanner;
+use QafooLabs\Refactoring\Domain\Model\PhpNameOccurance;
 
 class FixClassNames
 {
+    /**
+     * @var CodeAnalysis
+     */
     private $codeAnalysis;
+
+    /**
+     * @var Editor
+     */
     private $editor;
+
+    /**
+     * @var ParserPhpNameScanner
+     */
     private $nameScanner;
 
-    public function __construct($codeAnalysis, $editor, $nameScanner)
+    /**
+     * @var Set
+     */
+    private $renames;
+
+
+    public function __construct(CodeAnalysis $codeAnalysis, Editor $editor, ParserPhpNameScanner $nameScanner)
     {
         $this->codeAnalysis = $codeAnalysis;
         $this->editor = $editor;
         $this->nameScanner = $nameScanner;
     }
 
+
     public function refactor(Directory $directory)
     {
         $phpFiles = $directory->findAllPhpFilesRecursivly();
 
-        $renames = new Set();
-        $occurances = array();
-        $noImportedUsages = new NoImportedUsagesFilter();
+        $this->renames = new Set();
 
         foreach ($phpFiles as $phpFile) {
-            $classes = $this->codeAnalysis->findClasses($phpFile);
-
-            $occurances = array_merge(
-                $noImportedUsages->filter($this->nameScanner->findNames($phpFile)),
-                $occurances
-            );
-
-            if (count($classes) !== 1) {
-                continue;
-            }
-
-            $class = $classes[0];
-            $currentClassName = $class->declarationName();
-            $expectedClassName = $phpFile->extractPsr0ClassName();
-
-            $buffer = $this->editor->openBuffer($phpFile); // This is weird to be required here
-
-            if ($expectedClassName->shortName() !== $currentClassName->shortName()) {
-                $renames->add(new PhpNameChange($currentClassName, $expectedClassName));
-            }
-
-            if (!$expectedClassName->namespaceName()->equals($currentClassName->namespaceName())) {
-                $renames->add(new PhpNameChange($currentClassName->fullyQualified(), $expectedClassName->fullyQualified()));
-
-                $buffer->replaceString(
-                    $class->namespaceDeclarationLine(),
-                    $currentClassName->namespaceName()->fullyQualifiedName(),
-                    $expectedClassName->namespaceName()->fullyQualifiedName()
-                );
-            }
+            $this->checkIfRenameIsRequired($phpFile);
         }
 
-        $occurances = array_filter($occurances, function ($occurance) {
-            return $occurance->name()->type() !== PhpName::TYPE_NAMESPACE;
-        });
+        $occurances = $this->findOccurances($phpFiles);
 
         foreach ($occurances as $occurance) {
-            $name = $occurance->name();
-
-            foreach ($renames as $rename) {
-                if ($rename->affects($name)) {
-                    $buffer = $this->editor->openBuffer($occurance->file());
-                    $buffer->replaceString($occurance->declarationLine(), $name->relativeName(), $rename->change($name)->relativeName());
-                    continue 2;
-                }
-            }
+            $this->performRename($occurance);
         }
 
         $this->editor->save();
     }
-}
 
+
+    private function checkIfRenameIsRequired(File $phpFile)
+    {
+        $classes = $this->codeAnalysis->findClasses($phpFile);
+
+        // Why skip for multiple classes in a file?
+        if (count($classes) !== 1) {
+            return;
+        }
+
+        $class = $classes[0];
+
+        $currentClassName = $class->declarationName();
+        $expectedClassName = $phpFile->extractPsr0ClassName();
+
+        if ($this->shortNameHasChanged($expectedClassName, $currentClassName)) {
+            // Queue a rename to happen in the next loop
+            $this->renames->add(new PhpNameChange($currentClassName, $expectedClassName));
+        }
+
+        if ($this->namespaceHasChanged($expectedClassName, $currentClassName)) {
+            $this->renames->add(new PhpNameChange($currentClassName->fullyQualified(), $expectedClassName->fullyQualified()));
+        }
+    }
+
+    /**
+     * @return boolean
+     */
+    private function shortNameHasChanged(PhpName $expectedClassName, PhpName $currentClassName)
+    {
+        return $expectedClassName->shortName() !== $currentClassName->shortName();
+    }
+
+    /**
+     * @return boolean
+     */
+    private function namespaceHasChanged(PhpName $expectedClassName, PhpName $currentClassName)
+    {
+        return !$expectedClassName->namespaceName()->equals($currentClassName->namespaceName());
+    }
+
+    private function performRename(PhpNameOccurance $occurance)
+    {
+        $name = $occurance->name();
+
+        foreach ($this->renames as $rename) {
+            if (!$rename->affects($name)) {
+                continue;
+            }
+
+            $buffer = $this->editor->openBuffer($occurance->file());
+
+            $buffer->replaceString(
+                $occurance->declarationLine(),
+                $name->relativeName(),
+                $rename->change($name)->relativeName()
+            );
+
+            // Why is a contnue required? Surely 2 renames can't apply
+            // to the same occurance?
+            break;
+        }
+    }
+
+    /**
+     * @param File[] $phpFiles
+     *
+     * @return PhpNameOccurance[]
+     */
+    private function findOccurances($phpFiles)
+    {
+        $occurances = array();
+
+        $noImportedUsages = new NoImportedUsagesFilter();
+
+        foreach ($phpFiles as $phpFile) {
+            $occurances = array_merge(
+                $noImportedUsages->filter($this->nameScanner->findNames($phpFile)),
+                $occurances
+            );
+        }
+
+        return $occurances;
+    }
+}
