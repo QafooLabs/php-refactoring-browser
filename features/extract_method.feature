@@ -265,3 +265,43 @@ Feature: Extract Method
                  }
              }
             """
+
+    Scenario: Extract method from inside a block
+        Given a PHP File named "src/ExtractMethodFromBlock.php" with:
+            """
+            <?php
+            class ExtractMethodFromBlock
+            {
+                public function operation()
+                {
+                    for ($i=0; $i<5; $i++) {
+                        echo "Hello World";
+                    }
+                }
+            }
+            """
+        When I use refactoring "extract-method" with:
+            | arg       | value       |
+            | file      | src/ExtractMethodFromBlock.php |
+            | range     | 7-7         |
+            | newmethod | hello       |
+        Then the PHP File "src/ExtractMethodFromBlock.php" should be refactored:
+            """
+            --- a/vfs://project/src/ExtractMethodFromBlock.php
+            +++ b/vfs://project/src/ExtractMethodFromBlock.php
+            @@ -4,7 +4,12 @@
+                 public function operation()
+                 {
+                     for ($i=0; $i<5; $i++) {
+            -            echo "Hello World";
+            +            $this->hello();
+                     }
+                 }
+            +
+            +    private function hello()
+            +    {
+            +        echo "Hello World";
+            +    }
+             }
+
+            """

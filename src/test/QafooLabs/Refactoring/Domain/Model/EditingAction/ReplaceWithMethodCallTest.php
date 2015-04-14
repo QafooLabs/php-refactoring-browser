@@ -39,6 +39,8 @@ class ReplaceWithMethodCallTest extends \PHPUnit_Framework_TestCase
              ->method('replace')
              ->with($this->equalTo($range), $this->anything());
 
+        $this->setCodeBeingReplaced();
+
         $action->performEdit($this->buffer);
     }
 
@@ -48,6 +50,8 @@ class ReplaceWithMethodCallTest extends \PHPUnit_Framework_TestCase
             LineRange::fromLines(1, 2),
             new MethodSignature('testMethod')
         );
+
+        $this->setCodeBeingReplaced();
 
         $this->assertGeneratedMethodCallMatches('$this->testMethod();', $action);
     }
@@ -59,6 +63,8 @@ class ReplaceWithMethodCallTest extends \PHPUnit_Framework_TestCase
             new MethodSignature('realMethod')
         );
 
+        $this->setCodeBeingReplaced();
+
         $this->assertGeneratedMethodCallMatches('$this->realMethod();', $action);
     }
 
@@ -68,6 +74,8 @@ class ReplaceWithMethodCallTest extends \PHPUnit_Framework_TestCase
             LineRange::fromLines(1, 2),
             new MethodSignature('testMethod', MethodSignature::IS_STATIC)
         );
+
+        $this->setCodeBeingReplaced();
 
         $this->assertGeneratedMethodCallMatches('self::testMethod();', $action);
     }
@@ -79,6 +87,8 @@ class ReplaceWithMethodCallTest extends \PHPUnit_Framework_TestCase
             new MethodSignature('testMethod', 0, array(), array('result'))
         );
 
+        $this->setCodeBeingReplaced();
+
         $this->assertGeneratedMethodCallMatches('$result = $this->testMethod();', $action);
     }
 
@@ -88,6 +98,8 @@ class ReplaceWithMethodCallTest extends \PHPUnit_Framework_TestCase
             LineRange::fromLines(1, 2),
             new MethodSignature('testMethod', 0, array(), array('result1', 'result2'))
         );
+
+        $this->setCodeBeingReplaced();
 
         $this->assertGeneratedMethodCallMatches(
             'list($result1, $result2) = $this->testMethod();',
@@ -102,15 +114,67 @@ class ReplaceWithMethodCallTest extends \PHPUnit_Framework_TestCase
             new MethodSignature('testMethod', 0, array('arg1', 'arg2'))
         );
 
+        $this->setCodeBeingReplaced();
+
         $this->assertGeneratedMethodCallMatches(
             '$this->testMethod($arg1, $arg2);',
             $action
         );
     }
 
-    private function assertGeneratedMethodCallMatches($expected, $action)
+    public function testExtractedRangeIsReadFromTheBuffer()
     {
-        $expected = '        ' . $expected;
+        $range = LineRange::fromLines(1, 2);
+
+        $this->buffer
+             ->expects($this->once())
+             ->method('getLines')
+             ->with($this->equalTo($range))
+             ->will($this->returnValue(array()));
+
+        $action = new ReplaceWithMethodCall(
+            $range,
+            new MethodSignature('testMethod')
+        );
+
+        $action->performEdit($this->buffer);
+    }
+
+    public function testExtractRangeIndentsMethodCallForFirstLineWithExtraIndent()
+    {
+        $lines = array(
+            '            echo "Something";',
+        );
+
+        $this->buffer
+             ->expects($this->once())
+             ->method('getLines')
+             ->will($this->returnValue($lines));
+
+        $action = new ReplaceWithMethodCall(
+            LineRange::fromLines(1, 2),
+            new MethodSignature('testMethod')
+        );
+
+        $this->assertGeneratedMethodCallMatches(
+            '$this->testMethod();',
+            $action,
+            12
+        );
+    }
+
+    private function setCodeBeingReplaced(
+        array $lines = array('        echo "Replace me";')
+    ) {
+        $this->buffer
+             ->expects($this->any())
+             ->method('getLines')
+             ->will($this->returnValue($lines));
+    }
+
+    private function assertGeneratedMethodCallMatches($expected, $action, $indentSize = 8)
+    {
+        $expected = str_repeat(' ', $indentSize) . $expected;
 
         $this->buffer
              ->expects($this->once())

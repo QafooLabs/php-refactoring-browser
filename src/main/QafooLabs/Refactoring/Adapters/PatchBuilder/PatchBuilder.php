@@ -50,6 +50,15 @@ class PatchBuilder
         $this->path = $path;
     }
 
+    public function getOriginalLines($start, $end)
+    {
+        return array_slice(
+            $this->buffer->getOriginalContents(),
+            $start - 1,
+            $end - $start + 1
+        );
+    }
+
     /**
      * Change Token in given line from old to new.
      *
@@ -74,7 +83,6 @@ class PatchBuilder
             array($newLine)
         );
     }
-
 
     /**
      * Append new lines to an original line of the file.
