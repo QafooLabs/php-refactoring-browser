@@ -13,8 +13,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 
 use QafooLabs\Refactoring\Adapters\Symfony\CliApplication;
 
-require_once 'PHPUnit/Autoload.php';
-require_once 'PHPUnit/Framework/Assert/Functions.php';
+use PHPUnit_Framework_Assert as PHPUnit;
 
 /**
  * Features context.
@@ -101,7 +100,7 @@ class FeatureContext extends BehatContext
         $output = array_map('trim', explode("\n", rtrim($this->output)));
         $formattedExpectedPatch = $this->formatExpectedPatch((string)$expectedPatch);
 
-        assertEquals(
+        PHPUnit::assertEquals(
             $formattedExpectedPatch,
             $output,
             "Expected File:\n" . (string)$expectedPatch . "\n\n" .
@@ -112,23 +111,21 @@ class FeatureContext extends BehatContext
 
     /**
      * converts / paths in expectedPatch text to \ paths
-     * 
+     *
      * leaves the a/ b/ slashes untouched
      * returns an array of lines
      * @return array
      */
-    protected function formatExpectedPatch($patch) 
+    protected function formatExpectedPatch($patch)
     {
         if ('\\' === DIRECTORY_SEPARATOR) {
             $formatLine = function ($line) {
-                if (0 === strpos($line, '---') || 0 === strpos($line, '+++')) {
-                    $line = preg_replace('~/(?<!(a|b)/)~', '\\', $line);
-                }
-
+                // replace lines for diff-path-files starting with --- or +++
                 $line = preg_replace_callback('~^((?:---|\+\+\+)\s*(?:a|b)/)(.*)~', function ($match) {
                     list($all, $diff, $path) = $match;
 
-                    if (0 === preg_match('~^[a-z]+://~i', $path)) {
+                    // dont replace wrapped path separators
+                    if (! preg_match('~^[a-z]+://~i', $path)) {
                         $path = str_replace('/', '\\', $path);
                     }
 

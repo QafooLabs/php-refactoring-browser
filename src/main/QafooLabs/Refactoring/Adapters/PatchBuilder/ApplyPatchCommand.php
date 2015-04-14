@@ -12,10 +12,12 @@
  */
 
 
-namespace QafooLabs\Patches;
+namespace QafooLabs\Refactoring\Adapters\PatchBuilder;
 
-use Assert\Assertion as BaseAssertion;
-
-class Assertion extends BaseAssertion
+interface ApplyPatchCommand
 {
+    /**
+     * @var string
+     */
+    public function apply($patch);
 }

@@ -11,12 +11,11 @@
  * to kontakt@beberlei.de so I can send you a copy immediately.
  */
 
-
-namespace QafooLabs\Refactoring\Adapters\Patches;
+namespace QafooLabs\Refactoring\Adapters\PatchBuilder;
 
 use QafooLabs\Refactoring\Domain\Model\EditorBuffer;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
-use QafooLabs\Patches\PatchBuilder;
+use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchBuilder;
 
 class PatchBuffer implements EditorBuffer
 {
@@ -28,6 +27,11 @@ class PatchBuffer implements EditorBuffer
     public function __construct(PatchBuilder $builder)
     {
         $this->builder = $builder;
+    }
+
+    public function getLines(LineRange $range)
+    {
+        return $this->builder->getOriginalLines($range->getStart(), $range->getEnd());
     }
 
     public function replace(LineRange $range, array $newLines)

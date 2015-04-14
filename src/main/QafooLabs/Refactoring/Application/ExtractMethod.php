@@ -11,60 +11,91 @@ use QafooLabs\Refactoring\Domain\Model\RefactoringException;
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 use QafooLabs\Refactoring\Domain\Services\Editor;
+use QafooLabs\Refactoring\Domain\Model\LineCollection;
+use QafooLabs\Refactoring\Domain\Model\EditingAction\AddMethod;
+use QafooLabs\Refactoring\Domain\Model\EditingAction\ReplaceWithMethodCall;
 
 /**
  * Extract Method Refactoring
  */
-class ExtractMethod
+class ExtractMethod extends SingleFileRefactoring
 {
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\VariableScanner
+     * @var LineRange
      */
-    private $variableScanner;
+    private $extractRange;
 
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\CodeAnalysis
+     * @var MethodSignature
      */
-    private $codeAnalysis;
+    private $newMethod;
 
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\Editor
+     * @param string $newMethodName
      */
-    private $editor;
-
-    public function __construct(VariableScanner $variableScanner, CodeAnalysis $codeAnalysis, Editor $editor)
-    {
-        $this->variableScanner = $variableScanner;
-        $this->codeAnalysis = $codeAnalysis;
-        $this->editor = $editor;
-    }
-
     public function refactor(File $file, LineRange $extractRange, $newMethodName)
     {
-        if ( ! $this->codeAnalysis->isInsideMethod($file, $extractRange)) {
-            throw RefactoringException::rangeIsNotInsideMethod($extractRange);
+        $this->file = $file;
+        $this->extractRange = $extractRange;
+
+        $this->assertIsInsideMethod();
+
+        $this->createNewMethodSignature($newMethodName);
+
+        $this->startEditingSession();
+        $this->replaceCodeWithMethodCall();
+        $this->addNewMethod();
+        $this->completeEditingSession();
+    }
+
+    protected function assertIsInsideMethod()
+    {
+        if ( ! $this->codeAnalysis->isInsideMethod($this->file, $this->extractRange)) {
+            throw RefactoringException::rangeIsNotInsideMethod($this->extractRange);
         }
+    }
 
-        $isStatic = $this->codeAnalysis->isMethodStatic($file, $extractRange);
-        $methodRange = $this->codeAnalysis->findMethodRange($file, $extractRange);
-        $selectedCode = $extractRange->sliceCode($file->getCode());
+    private function createNewMethodSignature($newMethodName)
+    {
+        $extractVariables = $this->variableScanner->scanForVariables($this->file, $this->extractRange);
+        $methodVariables = $this->variableScanner->scanForVariables($this->file, $this->findMethodRange());
 
-        $extractVariables = $this->variableScanner->scanForVariables($file, $extractRange);
-        $methodVariables = $this->variableScanner->scanForVariables($file, $methodRange);
+        $isStatic = $this->codeAnalysis->isMethodStatic($this->file, $this->extractRange);
 
-        $buffer = $this->editor->openBuffer($file);
-
-        $newMethod = new MethodSignature(
+        $this->newMethod = new MethodSignature(
             $newMethodName,
             $isStatic ? MethodSignature::IS_STATIC : 0,
             $methodVariables->variablesFromSelectionUsedBefore($extractVariables),
             $methodVariables->variablesFromSelectionUsedAfter($extractVariables)
         );
+    }
 
-        $session = new EditingSession($buffer);
-        $session->replaceRangeWithMethodCall($extractRange, $newMethod);
-        $session->addMethod($methodRange->getEnd(), $newMethod, $selectedCode);
+    private function addNewMethod()
+    {
+        $this->session->addEdit(new AddMethod(
+            $this->findMethodRange()->getEnd(),
+            $this->newMethod,
+            $this->getSelectedCode()
+        ));
+    }
 
-        $this->editor->save();
+    private function replaceCodeWithMethodCall()
+    {
+        $this->session->addEdit(new ReplaceWithMethodCall(
+            $this->extractRange,
+            $this->newMethod
+        ));
+    }
+
+    private function findMethodRange()
+    {
+        return $this->codeAnalysis->findMethodRange($this->file, $this->extractRange);
+    }
+
+    private function getSelectedCode()
+    {
+        return LineCollection::createFromArray(
+            $this->extractRange->sliceCode($this->file->getCode())
+        );
     }
 }

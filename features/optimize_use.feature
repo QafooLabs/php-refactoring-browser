@@ -32,20 +32,23 @@ Feature: Optimize use
             """
             --- a/vfs://project/src/Foo.php
             +++ b/vfs://project/src/Foo.php
-            @@ -3,5 +3,6 @@
+            @@ -3,6 +3,7 @@
              namespace Bar;
 
              use Bar\Baz\Service;
             +use Bar\Qux\Adapter;
 
              class Foo
-            @@ -12,5 +12,5 @@
+             {
+            @@ -11,7 +12,7 @@
+                     $flag = Qux\Adapter::CONSTANT_ARG;
 
                      $service = new Service();
             -        $service->operation(new \Bar\Qux\Adapter($flag));
             +        $service->operation(new Adapter($flag));
 
                      return $service;
+                 }
             """
     Scenario: Organize use for file without namespace and other uses
         Given a PHP File named "src/Foo.php" with:

@@ -20,6 +20,15 @@ namespace QafooLabs\Refactoring\Domain\Model;
 interface EditorBuffer
 {
     /**
+     * Return the given range of lines from the buffer.
+     *
+     * @param  LineRange $range
+     *
+     * @return string[]
+     */
+    public function getLines(LineRange $range);
+
+    /**
      * Replace LineRange with new lines.
      *
      * @param LineRange $range

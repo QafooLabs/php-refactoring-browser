@@ -13,56 +13,50 @@ use QafooLabs\Refactoring\Domain\Model\EditingSession;
 use QafooLabs\Refactoring\Domain\Services\VariableScanner;
 use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
 use QafooLabs\Refactoring\Domain\Services\Editor;
+use QafooLabs\Refactoring\Domain\Model\EditingAction\AddProperty;
+use QafooLabs\Refactoring\Domain\Model\EditingAction\LocalVariableToInstance;
 
-class ConvertLocalToInstanceVariable
+class ConvertLocalToInstanceVariable extends SingleFileRefactoring
 {
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\VariableScanner
+     * @var Variable
      */
-    private $variableScanner;
+    private $convertVariable;
 
     /**
-     * @var \QafooLabs\Refactoring\Domain\Services\CodeAnalysis
+     * @param int $line
      */
-    private $codeAnalysis;
-
-    /**
-     * @var \QafooLabs\Refactoring\Domain\Services\Editor
-     */
-    private $editor;
-
-    public function __construct(VariableScanner $variableScanner, CodeAnalysis $codeAnalysis, Editor $editor)
-    {
-        $this->variableScanner = $variableScanner;
-        $this->codeAnalysis = $codeAnalysis;
-        $this->editor = $editor;
-    }
-
     public function refactor(File $file, $line, Variable $convertVariable)
     {
-        if ( ! $this->codeAnalysis->isInsideMethod($file, LineRange::fromSingleLine($line))) {
-            throw RefactoringException::rangeIsNotInsideMethod(LineRange::fromSingleLine($line));
-        }
+        $this->file = $file;
+        $this->line = $line;
+        $this->convertVariable = $convertVariable;
 
-        $instanceVariable = $convertVariable->convertToInstance();
-        $lastPropertyLine = $this->codeAnalysis->getLineOfLastPropertyDefinedInScope($file, $line);
+        $this->assertIsInsideMethod();
 
-        $selectedMethodLineRange = $this->codeAnalysis->findMethodRange($file, LineRange::fromSingleLine($line));
-        $definedVariables = $this->variableScanner->scanForVariables(
-            $file, $selectedMethodLineRange
+        $this->startEditingSession();
+        $this->addProperty();
+        $this->convertVariablesToInstanceVariables();
+        $this->completeEditingSession();
+    }
+
+    private function addProperty()
+    {
+        $line = $this->codeAnalysis->getLineOfLastPropertyDefinedInScope($this->file, $this->line);
+
+        $this->session->addEdit(
+            new AddProperty($line, $this->convertVariable->getName())
         );
+    }
 
-        if ( ! $definedVariables->contains($convertVariable)) {
-            throw RefactoringException::variableNotInRange($convertVariable, $selectedMethodLineRange);
+    private function convertVariablesToInstanceVariables()
+    {
+        $definedVariables = $this->getDefinedVariables();
+
+        if ( ! $definedVariables->contains($this->convertVariable)) {
+            throw RefactoringException::variableNotInRange($this->convertVariable, $selectedMethodLineRange);
         }
 
-        $buffer = $this->editor->openBuffer($file);
-
-        $session = new EditingSession($buffer);
-        $session->addProperty($lastPropertyLine, $convertVariable->getName());
-        $session->replaceString($definedVariables, $convertVariable, $instanceVariable);
-
-        $this->editor->save();
+        $this->session->addEdit(new LocalVariableToInstance($definedVariables, $this->convertVariable));
     }
 }
-

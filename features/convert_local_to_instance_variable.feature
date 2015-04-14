@@ -36,8 +36,8 @@ Feature: Convert Local to Instance Variable
                  public function operation()
                  {
             -        $service = new Service();
-            +        $this->service = new Service();
             -        $service->operation();
+            +        $this->service = new Service();
             +        $this->service->operation();
 
             -        return $service;

@@ -23,7 +23,7 @@ use QafooLabs\Refactoring\Application\OptimizeUse;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserPhpNameScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
-use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
+use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchEditor;
 use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
 
 use QafooLabs\Refactoring\Domain\Model\LineRange;
@@ -41,7 +41,7 @@ class OptimizeUseCommand extends Command
             ->setDescription('Optimize use statements of a file. Replace FQNs with imported aliases.')
             ->addArgument('file', InputArgument::REQUIRED, 'File that contains the use statements to optimize')
             ->setHelp(<<<HELP
-Optimizes the use of Fully qualified names in a file so that FQN is imported with 
+Optimizes the use of Fully qualified names in a file so that FQN is imported with
 "use" at the top of the file and the FQN is replaced with its classname.
 
 All other use statements will be untouched, only new ones will be added.

@@ -37,6 +37,11 @@ class File
         $workingDirectory = rtrim($workingDirectory, '/\\');
         $relativePath = ltrim(str_replace($workingDirectory, "", $path), "/\\");
 
+        // converted mixed, wrapped, absolute paths on windows
+        if (DIRECTORY_SEPARATOR === '\\' && strpos($relativePath, '://') !== FALSE) {
+            $relativePath = str_replace('\\', '/', $relativePath);
+        }
+
         return new self($relativePath, $code);
     }
 
@@ -94,11 +99,13 @@ class File
     {
         $file = ltrim($this->getRelativePath(), DIRECTORY_SEPARATOR);
 
+        $separator = DIRECTORY_SEPARATOR;
         if (preg_match('(^([a-z]+:\/\/))', $file, $matches)) {
             $file = substr($file, strlen($matches[1]));
+            $separator = '/';
         }
 
-        $parts = explode(DIRECTORY_SEPARATOR, ltrim($this->getRelativePath(), DIRECTORY_SEPARATOR));
+        $parts = explode($separator, $file);
         $namespace = array();
 
         foreach ($parts as $part) {
@@ -120,4 +127,3 @@ class File
         return isset($string[0]) && strtolower($string[0]) === $string[0];
     }
 }
-
