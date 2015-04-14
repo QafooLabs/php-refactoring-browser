@@ -42,6 +42,22 @@ class PatchBuilderTest extends \PHPUnit_Framework_TestCase
  line7
 
 DIFF;
+
+        $this->assertEquals($expected, $this->builder->generateUnifiedDiff());
+    }
+
+    public function testChangeIsCaseSensitive() {
+        $this->builder = new PatchBuilder('$bar = new Bar();');
+        $this->builder->changeToken(1, 'Bar', 'Foo');
+
+        $expected = <<<DIFF
+--- a/
++++ b/
+@@ -1,1 +1,1 @@
+-\$bar = new Bar();
++\$bar = new Foo();
+
+DIFF;
         $this->assertEquals($expected, $this->builder->generateUnifiedDiff());
     }
 
