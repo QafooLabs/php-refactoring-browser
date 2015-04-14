@@ -33,7 +33,5 @@
         }
     },
 
-    "bin": ["src/bin/refactor"],
-
-    "minimum-stability": "dev"
+    "bin": ["src/bin/refactor"]
 }
