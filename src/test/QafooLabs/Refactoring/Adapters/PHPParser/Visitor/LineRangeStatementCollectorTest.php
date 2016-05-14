@@ -18,7 +18,7 @@ class LineRangeStatementCollectorTest extends \PHPUnit_Framework_TestCase
     {
         $stmts = $this->statements('$this->foo(bar(baz()));');
 
-        $collector = new LineRangeStatementCollector($this->range("2-2"));
+        $collector = new LineRangeStatementCollector($this->range('2-2'));
 
         $this->traverse($stmts, $collector);
 
@@ -54,7 +54,7 @@ class LineRangeStatementCollectorTest extends \PHPUnit_Framework_TestCase
 
     private function statements($code)
     {
-        if (strpos($code, "<?php") === false) {
+        if (strpos($code, '<?php') === false) {
             $code = "<?php\n" . $code;
         }
 

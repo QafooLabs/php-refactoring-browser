@@ -22,7 +22,7 @@ class ParserPhpNameScanner implements PhpNameScanner
         try {
             $stmts = $parser->parse($file->getCode());
         } catch (\PHPParser\Error $e) {
-            throw new \RuntimeException("Error parsing " . $file->getRelativePath() .": " . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('Error parsing ' . $file->getRelativePath() . ': ' . $e->getMessage(), 0, $e);
         }
 
         $traverser->addVisitor($collector);

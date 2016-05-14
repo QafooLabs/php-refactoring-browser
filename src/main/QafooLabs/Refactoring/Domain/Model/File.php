@@ -30,12 +30,12 @@ class File
     public static function createFromPath($path, $workingDirectory)
     {
         if ( ! file_exists($path) || ! is_file($path)) {
-            throw new \InvalidArgumentException("Not a valid file: " . $path);
+            throw new \InvalidArgumentException('Not a valid file: ' . $path);
         }
 
         $code = file_get_contents($path);
         $workingDirectory = rtrim($workingDirectory, '/\\');
-        $relativePath = ltrim(str_replace($workingDirectory, "", $path), "/\\");
+        $relativePath = ltrim(str_replace($workingDirectory, '', $path), "/\\");
 
         // converted mixed, wrapped, absolute paths on windows
         if (DIRECTORY_SEPARATOR === '\\' && strpos($relativePath, '://') !== FALSE) {
@@ -92,7 +92,7 @@ class File
 
     private function parseFileForPsr0ClassShortName()
     {
-        return str_replace(".php", "", $this->getBaseName());
+        return str_replace('.php', '', $this->getBaseName());
     }
 
     private function parseFileForPsr0NamespaceName()
@@ -119,7 +119,7 @@ class File
 
         array_pop($namespace);
 
-        return str_replace(".php", "", implode("\\", $namespace));
+        return str_replace('.php', '', implode("\\", $namespace));
     }
 
     private function startsWithLowerCase($string)

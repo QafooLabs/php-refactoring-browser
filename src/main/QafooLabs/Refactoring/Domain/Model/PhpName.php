@@ -184,7 +184,7 @@ class PhpName implements Hashable
 
     public function hashCode()
     {
-        return "1373136332" . $this->fullyQualifiedName . $this->relativeName;
+        return '1373136332' . $this->fullyQualifiedName . $this->relativeName;
     }
 
     public function fullyQualified()

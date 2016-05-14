@@ -44,7 +44,7 @@ class ParserVariableScanner implements VariableScanner
         $selectedStatements = $collector->getStatements();
 
         if ( ! $selectedStatements) {
-            throw new \RuntimeException("No statements found in line range.");
+            throw new \RuntimeException('No statements found in line range.');
         }
 
         $localVariableClassifier = new LocalVariableClassifier();

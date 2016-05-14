@@ -47,7 +47,7 @@ class MethodSignature
         }
 
         if ( ! in_array(($flags & $visibility), $allowedVisibilities)) {
-            throw new \InvalidArgumentException("Mix of visibilities is not allowed.");
+            throw new \InvalidArgumentException('Mix of visibilities is not allowed.');
         }
 
         return $flags;

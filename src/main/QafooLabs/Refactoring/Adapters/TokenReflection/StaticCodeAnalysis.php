@@ -45,7 +45,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $method = $this->findMatchingMethod($file, $range);
 
         if ($method === null) {
-            throw new \InvalidArgumentException("Could not find method end line.");
+            throw new \InvalidArgumentException('Could not find method end line.');
         }
 
         return $method->getEndLine();
@@ -56,7 +56,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $method = $this->findMatchingMethod($file, $range);
 
         if ($method === null) {
-            throw new \InvalidArgumentException("Could not find method start line.");
+            throw new \InvalidArgumentException('Could not find method start line.');
         }
 
         return $method->getStartLine();
@@ -67,7 +67,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $function = $this->findMatchingFunction($file, $range);
 
         if ($function === null) {
-            throw new \InvalidArgumentException("Could not find function end line.");
+            throw new \InvalidArgumentException('Could not find function end line.');
         }
 
         return $function->getEndLine();
@@ -78,7 +78,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $function = $this->findMatchingFunction($file, $range);
 
         if ($function === null) {
-            throw new \InvalidArgumentException("Could not find function start line.");
+            throw new \InvalidArgumentException('Could not find function start line.');
         }
 
         return $function->getStartLine();
@@ -105,7 +105,7 @@ class StaticCodeAnalysis extends CodeAnalysis
             }
         }
 
-        throw new \InvalidArgumentException("Could not find method start line.");
+        throw new \InvalidArgumentException('Could not find method start line.');
     }
 
     public function isInsideMethod(File $file, LineRange $range)

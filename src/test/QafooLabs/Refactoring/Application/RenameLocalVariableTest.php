@@ -33,7 +33,7 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
         \Phake::when($this->editor)->openBuffer(\Phake::anyParameters())->thenReturn($buffer);
         \Phake::when($this->codeAnalysis)->findMethodRange(\Phake::anyParameters())->thenReturn(LineRange::fromSingleLine(1));
 
-        $patch = $this->refactoring->refactor(new File("foo.php", <<<'PHP'
+        $patch = $this->refactoring->refactor(new File('foo.php', <<<'PHP'
 <?php
 class Foo
 {
@@ -53,7 +53,7 @@ PHP
         $this->setExpectedException('QafooLabs\Refactoring\Domain\Model\RefactoringException', 'Given variable "$this->foo" is required to be local to the current method.');
 
         $this->refactoring->refactor(
-            new File("foo.php", ''), 6,
+            new File('foo.php', ''), 6,
             new Variable('$this->foo'),
             new Variable('$foo')
         );
@@ -64,7 +64,7 @@ PHP
         $this->setExpectedException('QafooLabs\Refactoring\Domain\Model\RefactoringException', 'Given variable "$this->foo" is required to be local to the current method.');
 
         $this->refactoring->refactor(
-            new File("foo.php", ''), 6,
+            new File('foo.php', ''), 6,
             new Variable('$foo'),
             new Variable('$this->foo')
         );

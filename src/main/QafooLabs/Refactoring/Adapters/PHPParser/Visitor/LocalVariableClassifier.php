@@ -68,7 +68,7 @@ class LocalVariableClassifier extends NodeVisitorAbstract
 
     private function enterVariableNode(Node\Expr\Variable $node)
     {
-        if ($node->name === "this" || $this->seenAssignmentVariables->contains($node)) {
+        if ($node->name === 'this' || $this->seenAssignmentVariables->contains($node)) {
             return;
         }
 
