@@ -159,7 +159,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         foreach ($file->getNamespaces() as $namespace) {
             foreach ($namespace->getClasses() as $class) {
                 foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
+                    if ($method->getStartLine() <= $lastLine && $lastLine <= $method->getEndLine()) {
                         $foundMethod = $method;
                         break;
                     }
@@ -180,7 +180,7 @@ class StaticCodeAnalysis extends CodeAnalysis
 
         foreach ($file->getNamespaces() as $namespace) {
             foreach ($namespace->getFunctions() as $function) {
-                if ($function->getStartLine() < $lastLine && $lastLine < $function->getEndLine()) {
+                if ($function->getStartLine() <= $lastLine && $lastLine <= $function->getEndLine()) {
                     $foundFunction = $function;
                     break;
                 }
