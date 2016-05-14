@@ -67,7 +67,6 @@ function and generates the argument list and return statement accordingly.
 Will extract lines <info>10-16</info> from <info>file.php</info> into a new method called <info>newMethodName</info>.
 HELP
             );
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

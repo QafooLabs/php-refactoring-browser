@@ -67,7 +67,6 @@ All other use statements will be untouched, only new ones will be added.
 Will optimize the use statements in <info>file.php</info>.
 HELP
             );
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

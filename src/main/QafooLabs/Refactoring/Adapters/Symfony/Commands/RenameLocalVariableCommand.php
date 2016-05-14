@@ -59,7 +59,6 @@ Renames <info>\$hello</info> in line <info>17</info> of <info>file.php</info> in
 
 HELP
             );
-        ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
