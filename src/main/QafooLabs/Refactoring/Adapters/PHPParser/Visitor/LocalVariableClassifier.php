@@ -58,7 +58,7 @@ class LocalVariableClassifier extends NodeVisitorAbstract
         if ($node->var instanceof Node\Expr\Variable) {
             $this->assignments[$node->var->name][] = $node->getLine();
             $this->seenAssignmentVariables->attach($node->var);
-        } else if ($node instanceof Node\Expr\ArrayDimFetch) {
+        } else if ($node->var instanceof Node\Expr\ArrayDimFetch) {
             // $foo[] = "baz" is both a read and a write access to $foo
             $this->localVariables[$node->var->var->name][] = $node->getLine();
             $this->assignments[$node->var->var->name][] = $node->getLine();

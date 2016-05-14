@@ -7,10 +7,6 @@ use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\Variable;
 use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 
-use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
-use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
-use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
-
 class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -20,7 +16,7 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
         $this->editor = \Phake::mock('QafooLabs\Refactoring\Domain\Services\Editor');
         $this->refactoring = new RenameLocalVariable($this->scanner, $this->codeAnalysis, $this->editor);
 
-        \Phake::when($this->codeAnalysis)->isInsideMethod(\Phake::anyParameters())->thenReturn(true);
+        \Phake::when($this->codeAnalysis)->isLocalScope(\Phake::anyParameters())->thenReturn(true);
     }
 
     public function testRenameLocalVariable()

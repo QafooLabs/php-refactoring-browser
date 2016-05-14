@@ -2,6 +2,9 @@
 
 namespace QafooLabs\Refactoring\Adapters\PHPParser\Visitor;
 
+use PhpParser\Node\Expr;
+use PhpParser\NodeTraverser;
+
 class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -10,7 +13,7 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
     public function givenVariable_WhenClassification_ThenLocalVariableFound()
     {
         $classifier = new LocalVariableClassifier();
-        $variable = new \PHPParser_Node_Expr_Variable('foo');
+        $variable = new Expr\Variable('foo');
 
         $classifier->enterNode($variable);
 
@@ -23,9 +26,9 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
     public function givenAssignment_WhenClassification_ThenAssignmentFound()
     {
         $classifier = new LocalVariableClassifier();
-        $assign = new \PHPParser_Node_Expr_Assign(
-            new \PHPParser_Node_Expr_Variable('foo'),
-            new \PHPParser_Node_Expr_Variable('bar')
+        $assign = new Expr\Assign(
+            new Expr\Variable('foo'),
+            new Expr\Variable('bar')
         );
 
         $classifier->enterNode($assign);
@@ -39,12 +42,12 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
     public function givenAssignmentAndReadOfSameVariable_WhenClassification_ThenFindBoth()
     {
         $classifier = new LocalVariableClassifier();
-        $assign = new \PHPParser_Node_Expr_Assign(
-            new \PHPParser_Node_Expr_Variable('foo'),
-            new \PHPParser_Node_Expr_Variable('foo')
+        $assign = new Expr\Assign(
+            new Expr\Variable('foo'),
+            new Expr\Variable('foo')
         );
 
-        $traverser     = new \PHPParser_NodeTraverser;
+        $traverser = new NodeTraverser();
         $traverser->addVisitor($classifier);
         $traverser->traverse(array($assign));
 
@@ -58,7 +61,7 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
     public function givenThisVariable_WhenClassification_ThenNoLocalVariables()
     {
         $classifier = new LocalVariableClassifier();
-        $variable = new \PHPParser_Node_Expr_Variable('this');
+        $variable = new Expr\Variable('this');
 
         $classifier->enterNode($variable);
 
@@ -71,7 +74,7 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
     public function givenParam_WhenClassification_FindAsAssignment()
     {
         $classifier = new LocalVariableClassifier();
-        $variable = new \PHPParser_Node_Param('foo');
+        $variable = new \PhpParser\Node\Param('foo');
 
         $classifier->enterNode($variable);
 
@@ -86,11 +89,11 @@ class LocalVariableClassifierTest extends \PHPUnit_Framework_TestCase
     {
         $classifier = new LocalVariableClassifier();
 
-        $assign = new \PHPParser_Node_Expr_Assign(
-            new \PHPParser_Node_Expr_ArrayDimFetch(
-                new \PHPParser_Node_Expr_Variable('foo')
+        $assign = new Expr\Assign(
+            new Expr\ArrayDimFetch(
+                new Expr\Variable('foo')
             ),
-            new \PHPParser_Node_Expr_Variable('bar')
+            new Expr\Variable('bar')
         );
 
         $classifier->enterNode($assign);
