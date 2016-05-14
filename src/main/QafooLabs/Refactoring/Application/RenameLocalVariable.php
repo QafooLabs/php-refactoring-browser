@@ -61,7 +61,7 @@ class RenameLocalVariable extends SingleFileRefactoring
         $definedVariables = $this->getDefinedVariables();
 
         if ( ! $definedVariables->contains($this->oldName)) {
-            throw RefactoringException::variableNotInRange($this->oldName, $selectedMethodLineRange);
+            throw RefactoringException::variableNotInRange($this->oldName, LineRange::fromSingleLine($this->line));
         }
 
         $this->session->addEdit(new RenameVariable($definedVariables, $this->oldName, $this->newName));
