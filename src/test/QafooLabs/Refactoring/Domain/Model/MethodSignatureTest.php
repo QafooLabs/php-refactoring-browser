@@ -22,7 +22,7 @@ class MethodSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('InvalidArgumentException');
 
-        $method = new MethodSignature('foo', MethodSignature::IS_PRIVATE | MethodSignature::IS_PUBLIC);
+        new MethodSignature('foo', MethodSignature::IS_PRIVATE | MethodSignature::IS_PUBLIC);
     }
 
     /**

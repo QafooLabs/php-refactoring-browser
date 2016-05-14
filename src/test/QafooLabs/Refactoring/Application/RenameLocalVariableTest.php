@@ -29,7 +29,7 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
         \Phake::when($this->editor)->openBuffer(\Phake::anyParameters())->thenReturn($buffer);
         \Phake::when($this->codeAnalysis)->findMethodRange(\Phake::anyParameters())->thenReturn(LineRange::fromSingleLine(1));
 
-        $patch = $this->refactoring->refactor(new File('foo.php', <<<'PHP'
+        $this->refactoring->refactor(new File('foo.php', <<<'PHP'
 <?php
 class Foo
 {

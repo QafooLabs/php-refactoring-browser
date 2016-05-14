@@ -95,7 +95,6 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
     {
         $name = new PhpName('Foo', 'Foo');
         $from = new PhpName('Foo\\Foo', 'Foo');
-        $to = new PhpName('Foo\\Bar', 'Bar');
 
         $this->assertFalse($name->isAffectedByChangesTo($from), 'Namespace should not be affected by changes to Class in namespace.');
     }

@@ -28,7 +28,7 @@ class ExtractMethodTest extends \PHPUnit_Framework_TestCase
      */
     public function testRefactorSimpleMethod()
     {
-        $patch = $this->refactoring->refactor(new File('foo.php', <<<'PHP'
+        $this->refactoring->refactor(new File('foo.php', <<<'PHP'
 <?php
 class Foo
 {
@@ -69,7 +69,7 @@ CODE
     {
         $this->markTestIncomplete('Failing over some invisible whitespace issue?');
 
-        $patch = $this->refactoring->refactor(new File('foo.php', <<<'PHP'
+        $this->refactoring->refactor(new File('foo.php', <<<'PHP'
 <?php
 class Foo
 {
