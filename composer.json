@@ -8,21 +8,21 @@
     ],
 
     "require": {
-        "nikic/php-parser": "@stable",
-        "beberlei/assert": "@stable",
-        "andrewsville/php-token-reflection": "@stable",
-        "symfony/finder": "~2.4@stable",
-        "symfony/console": "~2.4@stable",
+        "nikic/php-parser": "~1.2",
+        "beberlei/assert": "~2.3",
+        "andrewsville/php-token-reflection": "~1.4",
+        "symfony/finder": "~2.4",
+        "symfony/console": "~2.4",
         "tomphp/patch-builder": "~0.1"
     },
 
     "require-dev": {
-        "php": ">=5.4",
-        "behat/behat": "~2.5@stable",
-        "mikey179/vfsStream": "@stable",
-        "phake/phake": "@stable",
-        "symfony/process": "@stable",
-        "phpunit/phpunit": "~4.6@stable"
+        "php": "~5.4|~7.0",
+        "behat/behat": "~2.5",
+        "mikey179/vfsStream": "~1.5",
+        "phake/phake": "~2.0",
+        "symfony/process": "~2.6",
+        "phpunit/phpunit": "~4.6"
     },
 
     "autoload": {
