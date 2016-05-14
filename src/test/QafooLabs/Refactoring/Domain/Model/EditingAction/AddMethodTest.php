@@ -3,7 +3,7 @@
 namespace QafooLabs\Refactoring\Domain\Model\EditingAction;
 
 use QafooLabs\Refactoring\Domain\Model\MethodSignature;
-use QafooLabs\Refactoring\Domain\Model\Line;
+
 use QafooLabs\Refactoring\Domain\Model\LineCollection;
 
 class AddMethodTest extends \PHPUnit_Framework_TestCase

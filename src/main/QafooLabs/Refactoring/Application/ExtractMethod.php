@@ -5,12 +5,10 @@ namespace QafooLabs\Refactoring\Application;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\MethodSignature;
-use QafooLabs\Refactoring\Domain\Model\EditingSession;
+
 use QafooLabs\Refactoring\Domain\Model\RefactoringException;
 
-use QafooLabs\Refactoring\Domain\Services\VariableScanner;
-use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
-use QafooLabs\Refactoring\Domain\Services\Editor;
+
 use QafooLabs\Refactoring\Domain\Model\LineCollection;
 use QafooLabs\Refactoring\Domain\Model\EditingAction\AddMethod;
 use QafooLabs\Refactoring\Domain\Model\EditingAction\ReplaceWithMethodCall;

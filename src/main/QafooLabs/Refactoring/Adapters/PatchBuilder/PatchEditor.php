@@ -16,7 +16,7 @@ namespace QafooLabs\Refactoring\Adapters\PatchBuilder;
 
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Services\Editor;
-use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchBuilder;
+
 
 /**
  * Editor creates patches for all changes.

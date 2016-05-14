@@ -13,7 +13,7 @@
 
 namespace QafooLabs\Refactoring\Application;
 
-use QafooLabs\Refactoring\Domain\Model\Directory;
+
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\PhpClassName;
 use QafooLabs\Refactoring\Domain\Model\PhpName;
