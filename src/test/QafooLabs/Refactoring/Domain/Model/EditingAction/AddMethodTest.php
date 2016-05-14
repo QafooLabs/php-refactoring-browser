@@ -8,8 +8,6 @@ use QafooLabs\Refactoring\Domain\Model\LineCollection;
 
 class AddMethodTest extends \PHPUnit_Framework_TestCase
 {
-    private $action;
-
     private $buffer;
 
     protected function setUp()
