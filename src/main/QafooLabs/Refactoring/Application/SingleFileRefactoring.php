@@ -59,6 +59,13 @@ abstract class SingleFileRefactoring
         }
     }
 
+    protected function assertIsLocalScope()
+    {
+        if ( ! $this->codeAnalysis->isLocalScope($this->file, LineRange::fromSingleLine($this->line)) ) {
+            throw RefactoringException::rangeIsNotLocalScope(LineRange::fromSingleLine($this->line));
+        }
+    }
+
     protected function startEditingSession()
     {
         $buffer = $this->editor->openBuffer($this->file);
@@ -75,7 +82,11 @@ abstract class SingleFileRefactoring
 
     protected function getDefinedVariables()
     {
-        $selectedMethodLineRange = $this->codeAnalysis->findMethodRange($this->file, LineRange::fromSingleLine($this->line));
+        if ($this->codeAnalysis->isInsideFunction($this->file, LineRange::fromSingleLine($this->line))) {
+            $selectedMethodLineRange = $this->codeAnalysis->findFunctionRange($this->file, LineRange::fromSingleLine($this->line));
+        } else {
+            $selectedMethodLineRange = $this->codeAnalysis->findMethodRange($this->file, LineRange::fromSingleLine($this->line));
+        }
 
         $definedVariables = $this->variableScanner->scanForVariables(
             $this->file, $selectedMethodLineRange

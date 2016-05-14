@@ -45,4 +45,12 @@ class RefactoringException extends Exception
             $range->getStart(), $range->getEnd()
         ));
     }
+
+    static public function rangeIsNotLocalScope(LineRange $range)
+    {
+        return new self(sprintf(
+            'The range %d-%d is not inside a method or a function.',
+            $range->getStart(), $range->getEnd()
+        ));
+    }
 }

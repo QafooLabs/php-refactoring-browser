@@ -39,7 +39,7 @@ class RenameLocalVariable extends SingleFileRefactoring
         $this->newName = $newName;
         $this->oldName = $oldName;
 
-        $this->assertIsInsideMethod();
+        $this->assertIsLocalScope();
 
         $this->assertVariableIsLocal($this->oldName);
         $this->assertVariableIsLocal($this->newName);

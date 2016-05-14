@@ -62,6 +62,28 @@ class StaticCodeAnalysis extends CodeAnalysis
         return $method->getStartLine();
     }
 
+    public function getFunctionEndLine(File $file, LineRange $range)
+    {
+        $function = $this->findMatchingFunction($file, $range);
+
+        if ($function === null) {
+            throw new \InvalidArgumentException("Could not find function end line.");
+        }
+
+        return $function->getEndLine();
+    }
+
+    public function getFunctionStartLine(File $file, LineRange $range)
+    {
+        $function = $this->findMatchingFunction($file, $range);
+
+        if ($function === null) {
+            throw new \InvalidArgumentException("Could not find function start line.");
+        }
+
+        return $function->getStartLine();
+    }
+
     public function getLineOfLastPropertyDefinedInScope(File $file, $lastLine)
     {
         $this->broker = new Broker(new Memory);
@@ -89,6 +111,16 @@ class StaticCodeAnalysis extends CodeAnalysis
     public function isInsideMethod(File $file, LineRange $range)
     {
         return $this->findMatchingMethod($file, $range) !== null;
+    }
+
+    public function isInsideFunction(File $file, LineRange $range)
+    {
+        return $this->findMatchingFunction($file, $range) !== null;
+    }
+
+    public function isLocalScope(File $file, LineRange $range)
+    {
+        return $this->isInsideMethod($file, $range) || $this->isInsideFunction($file, $range);
     }
 
     /**
@@ -136,5 +168,25 @@ class StaticCodeAnalysis extends CodeAnalysis
         }
 
         return $foundMethod;
+    }
+
+    private function findMatchingFunction(File $file, LineRange $range)
+    {
+        $foundFunction = null;
+
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+        $lastLine = $range->getEnd();
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getFunctions() as $function) {
+                if ($function->getStartLine() < $lastLine && $lastLine < $function->getEndLine()) {
+                    $foundFunction = $function;
+                    break;
+                }
+            }
+        }
+
+        return $foundFunction;
     }
 }
