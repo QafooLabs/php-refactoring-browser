@@ -3,6 +3,7 @@
 namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\File;
+use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\Variable;
 use QafooLabs\Refactoring\Domain\Model\RefactoringException;
 use QafooLabs\Refactoring\Domain\Model\EditingAction\AddProperty;
@@ -46,7 +47,7 @@ class ConvertLocalToInstanceVariable extends SingleFileRefactoring
         $definedVariables = $this->getDefinedVariables();
 
         if ( ! $definedVariables->contains($this->convertVariable)) {
-            throw RefactoringException::variableNotInRange($this->convertVariable, $selectedMethodLineRange);
+            throw RefactoringException::variableNotInRange($this->convertVariable, LineRange::fromSingleLine($this->line));
         }
 
         $this->session->addEdit(new LocalVariableToInstance($definedVariables, $this->convertVariable));
