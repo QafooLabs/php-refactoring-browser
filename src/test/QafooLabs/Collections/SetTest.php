@@ -15,7 +15,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
         $set->add($item);
         $set->add($item);
 
-        $this->assertEquals(1, count($set));
+        $this->assertCount(1, $set);
     }
 
     /**
@@ -31,7 +31,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
         $set->add($item1);
         $set->add($item2);
 
-        $this->assertEquals(2, count($set));
+        $this->assertCount(2, $set);
     }
 
     /**
@@ -48,7 +48,7 @@ class SetTest extends \PHPUnit_Framework_TestCase
         $set->add($item2);
         $set->add($item2);
 
-        $this->assertEquals(2, count($set));
+        $this->assertCount(2, $set);
     }
 
     /**
