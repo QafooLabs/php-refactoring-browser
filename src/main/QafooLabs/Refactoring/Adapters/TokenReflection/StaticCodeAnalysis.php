@@ -33,6 +33,28 @@ class StaticCodeAnalysis extends CodeAnalysis
         // caching in memory gives us error for now :(
     }
 
+    public function getClassStartLine(File $file, LineRange $range)
+    {
+        $class = $this->findMatchingClass($file, $range);
+
+        if ($class === null) {
+            throw new \InvalidArgumentException('Could not find class start line.');
+        }
+
+        return $class->getStartLine();
+    }
+
+    public function getClassEndLine(File $file, LineRange $range)
+    {
+        $class = $this->findMatchingClass($file, $range);
+
+        if ($class === null) {
+            throw new \InvalidArgumentException('Could not find class end line.');
+        }
+
+        return $class->getEndLine();
+    }
+
     public function isMethodStatic(File $file, LineRange $range)
     {
         $method = $this->findMatchingMethod($file, $range);
@@ -123,6 +145,11 @@ class StaticCodeAnalysis extends CodeAnalysis
         return $this->isInsideMethod($file, $range) || $this->isInsideFunction($file, $range);
     }
 
+    public function isClassScope(File $file, LineRange $range)
+    {
+        return $this->findMatchingClass($file, $range) !== null;
+    }
+
     /**
      * @param File $file
      * @return PhpClass[]
@@ -146,6 +173,26 @@ class StaticCodeAnalysis extends CodeAnalysis
         }
 
         return $classes;
+    }
+
+    private function findMatchingClass(File $file, LineRange $range)
+    {
+        $foundClass = null;
+
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+        $lastLine = $range->getEnd();
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getClasses() as $class) {
+                if ($class->getStartLine() <= $lastLine && $lastLine <= $class->getEndLine()) {
+                    $foundClass = $class;
+                    break;
+                }
+            }
+        }
+
+        return $foundClass;
     }
 
     private function findMatchingMethod(File $file, LineRange $range)

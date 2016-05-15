@@ -77,6 +77,16 @@ abstract class CodeAnalysis
     abstract public function isLocalScope(File $file, LineRange $range);
 
     /**
+     * Check if the line range is inside a class scope.
+     *
+     * @param File $file
+     * @param LineRange $range
+     *
+     * @return bool
+     */
+    abstract public function isClassScope(File $file, LineRange $range);
+
+    /**
      * Check if the line range is inside exactly one class method.
      *
      * @param File $file
@@ -103,6 +113,22 @@ abstract class CodeAnalysis
      * @return PhpClass[]
      */
     abstract public function findClasses(File $file);
+
+    /**
+     * From a range within a class, find the start and end range of that class.
+     *
+     * @param File $file
+     * @param LineRange $range
+     *
+     * @return LineRange
+     */
+    public function findClassRange(File $file, LineRange $range)
+    {
+        $classStartLine = $this->getClassStartLine($file, $range);
+        $classEndLine = $this->getClassEndLine($file, $range);
+
+        return LineRange::fromLines($classStartLine, $classEndLine);
+    }
 
     /**
      * From a range within a method, find the start and end range of that method.

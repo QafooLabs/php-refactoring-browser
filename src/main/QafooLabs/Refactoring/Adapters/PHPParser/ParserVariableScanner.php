@@ -16,6 +16,8 @@ namespace QafooLabs\Refactoring\Adapters\PHPParser;
 
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
+use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\PropertiesCollector;
+use QafooLabs\Refactoring\Domain\Model\DefinedProperties;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
@@ -29,9 +31,7 @@ class ParserVariableScanner implements VariableScanner
 {
     public function scanForVariables(File $file, LineRange $range)
     {
-        $parserFactory = new ParserFactory();
-        $parser = $parserFactory->create(ParserFactory::PREFER_PHP7);
-        $stmts = $parser->parse($file->getCode());
+        $stmts = $this->parse($file);
 
         $collector = new LineRangeStatementCollector($range);
 
@@ -56,5 +56,41 @@ class ParserVariableScanner implements VariableScanner
         $assignments = $localVariableClassifier->getAssignments();
 
         return new DefinedVariables($localVariables, $assignments);
+    }
+
+    public function scanForProperties(File $file, LineRange $range)
+    {
+        $stmts = $this->parse($file);
+
+        $collector = new LineRangeStatementCollector($range);
+
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($collector);
+
+        $traverser->traverse($stmts);
+
+        $selectedStatements = $collector->getStatements();
+
+        if ( ! $selectedStatements) {
+            throw new \RuntimeException('No statements found in line range.');
+        }
+
+        $propertiesCollector = new PropertiesCollector();
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($propertiesCollector);
+        $traverser->traverse($selectedStatements);
+
+        $definitions = $propertiesCollector->getDeclarations();
+        $usages = $propertiesCollector->getUsages();
+
+        return new DefinedProperties($definitions, $usages);
+    }
+
+    private function parse(File $file)
+    {
+        $parserFactory = new ParserFactory();
+        $parser = $parserFactory->create(ParserFactory::PREFER_PHP7);
+
+        return $parser->parse($file->getCode());
     }
 }

@@ -66,6 +66,13 @@ abstract class SingleFileRefactoring
         }
     }
 
+    protected function assertIsClassScope()
+    {
+        if ( ! $this->codeAnalysis->isClassScope($this->file, LineRange::fromSingleLine($this->line)) ) {
+            throw RefactoringException::rangeIsNotClassScope(LineRange::fromSingleLine($this->line));
+        }
+    }
+
     protected function startEditingSession()
     {
         $buffer = $this->editor->openBuffer($this->file);
@@ -93,5 +100,14 @@ abstract class SingleFileRefactoring
         );
 
         return $definedVariables;
+    }
+
+    protected function getDefinedProperties()
+    {
+        $selectedClassLineRange = $this->codeAnalysis->findClassRange($this->file, LineRange::fromSingleLine($this->line));
+
+        return $this->variableScanner->scanForProperties(
+            $this->file, $selectedClassLineRange
+        );
     }
 }

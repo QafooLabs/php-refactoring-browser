@@ -30,6 +30,13 @@ class RefactoringException extends Exception
         ));
     }
 
+    static public function propertyNotInRange(Variable $variable, LineRange $range)
+    {
+        return new self(sprintf('Could not find property "%s" in line range %d-%d.',
+            $variable->getToken(), $range->getStart(), $range->getEnd()
+        ));
+    }
+
     static public function variableNotLocal(Variable $variable)
     {
         return new self(sprintf(
@@ -50,6 +57,14 @@ class RefactoringException extends Exception
     {
         return new self(sprintf(
             'The range %d-%d is not inside a method or a function.',
+            $range->getStart(), $range->getEnd()
+        ));
+    }
+
+    static public function rangeIsNotClassScope(LineRange $range)
+    {
+        return new self(sprintf(
+            'The range %d-%d is not inside a class.',
             $range->getStart(), $range->getEnd()
         ));
     }
