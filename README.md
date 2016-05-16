@@ -81,6 +81,12 @@ Rename a local variable from one to another name:
 
     php refactor.phar rename-local-variable <file> <line> <old-name> <new-name>
 
+### Rename Class Property
+
+Rename a class property from one to another name:
+
+    php refactor.phar rename-property <file> <line> <old-name> <new-name>
+
 ### Convert Local to Instance Variable
 
 Converts a local variable into an instance variable, creates the property and renames
