@@ -72,7 +72,19 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = File::createFromPath($input->getArgument('file'), getcwd());
+        $filename = $input->getArgument('file');
+        if ('-' == $filename) {
+            $filename = false;
+            $contents = '';
+            while (!feof(STDIN)) {
+                $contents .= fread(STDIN, 1024);
+            }
+        }
+        if ($filename) {
+            $file = File::createFromPath($filename, getcwd());
+        } else {
+            $file = File::createFromContents($contents, getcwd());
+        }
 
         $codeAnalysis = new StaticCodeAnalysis();
         $editor = new PatchEditor(new OutputPatchCommand($output));
