@@ -55,10 +55,19 @@ class File
     public static function createFromContents($content, $workingDirectory)
     {
         $temp = tmpfile();
-        $metaDatas = stream_get_meta_data($temp);
-        $tmpFilename = $metaDatas['uri'];
+        $meta_datas = stream_get_meta_data($temp);
+        $tmp_filename = $meta_datas['uri'];
         fwrite($temp, $content);
-        return File::createFromPath($tmpFilename, $workingDirectory);
+
+        // Now we move the file to prevent it being instantly deleted at the
+        // end of the script. This allows piping it to 'patch' for instance,
+        // which requires the original file.
+        $new_tmp_filename = $tmp_filename.'1';
+        if (!rename($tmp_filename, $new_tmp_filename)) {
+            throw new RuntimeException("Could not move temporary file " . $tmp_filename);
+        }
+
+        return File::createFromPath($new_tmp_filename, $workingDirectory);
     }
 
 
