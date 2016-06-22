@@ -20,6 +20,7 @@ class File
 {
     private $relativePath;
     private $code;
+    private $temp_file;
 
     /**
      * @param string $path
@@ -44,6 +45,22 @@ class File
 
         return new self($relativePath, $code);
     }
+
+    /**
+     * @param mixed $content
+     * @param mixed $workingDirectory
+     *
+     * @return File
+     */
+    public static function createFromContents($content, $workingDirectory)
+    {
+        $temp = tmpfile();
+        $metaDatas = stream_get_meta_data($temp);
+        $tmpFilename = $metaDatas['uri'];
+        fwrite($temp, $content);
+        return File::createFromPath($tmpFilename, $workingDirectory);
+    }
+
 
     public function __construct($relativePath, $code)
     {
