@@ -7,10 +7,17 @@
         {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"}
     ],
 
+    "repositories": [
+	{
+	    "type": "vcs",
+	    "url": "https://github.com/kdambekalns/PHP-Token-Reflection"
+	}
+    ],
+
     "require": {
-        "nikic/php-parser": "@stable",
+        "nikic/php-parser": "^1",
         "beberlei/assert": "@stable",
-        "andrewsville/php-token-reflection": "@stable",
+        "andrewsville/php-token-reflection": "dev-scalar-expression-constants",
         "symfony/finder": "~2.4@stable",
         "symfony/console": "~2.4@stable",
         "tomphp/patch-builder": "~0.1"
