@@ -33,15 +33,19 @@ class OptimizeUse
 
     public function refactor(File $file)
     {
+        $appendNewLine = false;
         $classes = $this->codeAnalysis->findClasses($file);
-        $occurances = $this->phpNameScanner->findNames($file);
-        $class = $classes[0];
+        $lastUseStatementLine = 2;
+        if ($classes) {
+            $class = $classes[0];
 
-        $appendNewLine = 0 === $class->namespaceDeclarationLine();
-        $lastUseStatementLine = $class->namespaceDeclarationLine() + 2;
+            $appendNewLine = 0 === $class->namespaceDeclarationLine();
+            $lastUseStatementLine = $class->namespaceDeclarationLine() + 2;
+        }
         $usedNames = array();
         $fqcns = array();
 
+        $occurances = $this->phpNameScanner->findNames($file);
         foreach ($occurances as $occurance) {
             $name = $occurance->name();
 
