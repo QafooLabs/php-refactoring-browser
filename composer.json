@@ -7,10 +7,17 @@
         {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"}
     ],
 
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/POPSuL/PHP-Token-Reflection"
+        }
+    ],
+
     "require": {
         "nikic/php-parser": "~2.1",
         "beberlei/assert": "~2.3",
-        "andrewsville/php-token-reflection": "~1.4",
+        "POPSuL/php-token-reflection": "dev-develop",
         "symfony/finder": "~2.4",
         "symfony/console": "~2.4",
         "tomphp/patch-builder": "~0.1"
