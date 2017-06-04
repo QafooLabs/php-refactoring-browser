@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd3b1ea574a4236057c35fa9b536d672",
+    "content-hash": "69f1d3096260391b5c482defdfa591c4",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -151,13 +151,13 @@
             "version": "dev-develop",
             "source": {
                 "type": "git",
-                "url": "https://github.com/POPSuL/PHP-Token-Reflection.git",
-                "reference": "8883ecd6f63a2ac8e97a3f7ef4529484a8e57ddf"
+                "url": "https://github.com/AJenbo/PHP-Token-Reflection.git",
+                "reference": "21b9a442e62be8c1ba063a89f0f785807c98c96f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/POPSuL/PHP-Token-Reflection/zipball/8883ecd6f63a2ac8e97a3f7ef4529484a8e57ddf",
-                "reference": "8883ecd6f63a2ac8e97a3f7ef4529484a8e57ddf",
+                "url": "https://api.github.com/repos/AJenbo/PHP-Token-Reflection/zipball/21b9a442e62be8c1ba063a89f0f785807c98c96f",
+                "reference": "21b9a442e62be8c1ba063a89f0f785807c98c96f",
                 "shasum": ""
             },
             "require": {
@@ -204,9 +204,9 @@
                 "tokenizer"
             ],
             "support": {
-                "source": "https://github.com/POPSuL/PHP-Token-Reflection/tree/develop"
+                "source": "https://github.com/AJenbo/PHP-Token-Reflection/tree/develop"
             },
-            "time": "2016-09-29 14:10:38"
+            "time": "2017-06-04 16:08:02"
         },
         {
             "name": "psr/log",

@@ -10,7 +10,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/POPSuL/PHP-Token-Reflection"
+            "url": "https://github.com/AJenbo/PHP-Token-Reflection"
         }
     ],
 
