@@ -59,10 +59,15 @@ class LocalVariableClassifier extends NodeVisitorAbstract
             $this->assignments[$node->var->name][] = $node->getLine();
             $this->seenAssignmentVariables->attach($node->var);
         } else if ($node->var instanceof Node\Expr\ArrayDimFetch) {
+            // unfold $array[$var][$var]
+            $var = $node->var->var;
+            while (!isset($var->name)) {
+                $var = $var->var;
+            }
             // $foo[] = "baz" is both a read and a write access to $foo
-            $this->localVariables[$node->var->var->name][] = $node->getLine();
-            $this->assignments[$node->var->var->name][] = $node->getLine();
-            $this->seenAssignmentVariables->attach($node->var->var);
+            $this->localVariables[$var->name][] = $node->getLine();
+            $this->assignments[$var->name][] = $node->getLine();
+            $this->seenAssignmentVariables->attach($var);
         }
     }
 
