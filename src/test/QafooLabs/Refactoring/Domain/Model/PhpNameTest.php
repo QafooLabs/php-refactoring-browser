@@ -17,14 +17,14 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsAffectedByChangesToItself()
     {
-        $name = new PhpName("Foo\Bar\Baz", "Baz");
+        $name = new PhpName("Foo\Bar\Baz", 'Baz');
 
         $this->assertTrue($name->isAffectedByChangesTo($name));
     }
 
     public function testIsNotAffectedByChangesToNonRelativePart()
     {
-        $name = new PhpName("Foo\Bar\Baz", "Baz");
+        $name = new PhpName("Foo\Bar\Baz", 'Baz');
         $changing = new PhpName("Foo\Bar", "Foo\Bar");
 
         $this->assertFalse($name->isAffectedByChangesTo($changing));
@@ -53,7 +53,7 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
     public function testRegression()
     {
         $name = new PhpName("Bar\Bar", "Bar\Bar");
-        $changing = new PhpName("Bar", "Bar");
+        $changing = new PhpName('Bar', 'Bar');
 
         $this->assertTrue($name->isAffectedByChangesTo($changing));
     }
@@ -61,8 +61,8 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
     public function testRegression2()
     {
         $name = new PhpName("Foo\\Foo", "Foo\\Foo");
-        $from = new PhpName("Foo\\Foo", "Foo");
-        $to = new PhpName("Foo\\Bar", "Bar");
+        $from = new PhpName("Foo\\Foo", 'Foo');
+        $to = new PhpName("Foo\\Bar", 'Bar');
 
         $changed = $name->change($from, $to);
 
@@ -95,21 +95,20 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
     {
         $name = new PhpName('Foo', 'Foo');
         $from = new PhpName('Foo\\Foo', 'Foo');
-        $to = new PhpName('Foo\\Bar', 'Bar');
 
-        $this->assertFalse($name->isAffectedByChangesTo($from), "Namespace should not be affected by changes to Class in namespace.");
+        $this->assertFalse($name->isAffectedByChangesTo($from), 'Namespace should not be affected by changes to Class in namespace.');
     }
 
     public function testRegression5()
     {
         $from = new PhpName("Qafoo\ChangeTrack\ChangeFeed", "Qafoo\ChangeTrack\ChangeFeed");
         $to = new PhpName("Qafoo\ChangeTrack\Analyzer\ChangeFeed", "Qafoo\ChangeTrack\Analyzer\ChangeFeed");
-        $name = new PhpName("Qafoo\ChangeTrack\ChangeFeed", "ChangeFeed");
+        $name = new PhpName("Qafoo\ChangeTrack\ChangeFeed", 'ChangeFeed');
 
         $changed = $name->change($from, $to);
 
         $this->assertEquals('Qafoo\ChangeTrack\Analyzer\ChangeFeed', $changed->fullyQualifiedName());
-        $this->assertEQuals('Analyzer\ChangeFeed', $changed->relativeName());
+        $this->assertEquals('Analyzer\ChangeFeed', $changed->relativeName());
     }
 
     public function testRegression6()
@@ -211,7 +210,7 @@ class PhpNameTest extends \PHPUnit_Framework_TestCase
     public function testGetShortNameReturnsLastPartForFQCN()
     {
         $name = new PhpName('Foo\\Bar', "Foo\\Bar", null, null);
-        $short = new PhpName("Foo", "Foo", null, null);
+        $short = new PhpName('Foo', 'Foo', null, null);
 
         $this->assertEquals('Bar', $name->shortName());
         $this->assertEquals('Foo', $short->shortName());

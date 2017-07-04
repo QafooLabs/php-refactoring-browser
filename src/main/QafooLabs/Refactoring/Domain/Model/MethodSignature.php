@@ -43,11 +43,11 @@ class MethodSignature
         $allowedVisibilities = array(self::IS_PRIVATE, self::IS_PROTECTED, self::IS_PUBLIC);
 
         if (($flags & $visibility) === 0) {
-            $flags = $flags | self::IS_PRIVATE;
+            $flags |= self::IS_PRIVATE;
         }
 
         if ( ! in_array(($flags & $visibility), $allowedVisibilities)) {
-            throw new \InvalidArgumentException("Mix of visibilities is not allowed.");
+            throw new \InvalidArgumentException('Mix of visibilities is not allowed.');
         }
 
         return $flags;

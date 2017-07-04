@@ -14,15 +14,14 @@
 
 namespace QafooLabs\Refactoring\Adapters\PHPParser\Visitor;
 
+use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
-use PHPParser_Node;
-use PHPParser_Node_Stmt;
-use PHPParser_Node_Expr_FuncCall;
 
 /**
  * Given a line range, collect the AST slice that is inside that range.
  */
-class LineRangeStatementCollector extends \PHPParser_NodeVisitorAbstract
+class LineRangeStatementCollector extends NodeVisitorAbstract
 {
     /**
      * @var LineRange
@@ -36,7 +35,7 @@ class LineRangeStatementCollector extends \PHPParser_NodeVisitorAbstract
         $this->statements = new \SplObjectStorage();
     }
 
-    public function enterNode(PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
         if ( ! $this->lineRange->isInRange($node->getLine())) {
             return;

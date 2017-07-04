@@ -33,6 +33,28 @@ class StaticCodeAnalysis extends CodeAnalysis
         // caching in memory gives us error for now :(
     }
 
+    public function getClassStartLine(File $file, LineRange $range)
+    {
+        $class = $this->findMatchingClass($file, $range);
+
+        if ($class === null) {
+            throw new \InvalidArgumentException('Could not find class start line.');
+        }
+
+        return $class->getStartLine();
+    }
+
+    public function getClassEndLine(File $file, LineRange $range)
+    {
+        $class = $this->findMatchingClass($file, $range);
+
+        if ($class === null) {
+            throw new \InvalidArgumentException('Could not find class end line.');
+        }
+
+        return $class->getEndLine();
+    }
+
     public function isMethodStatic(File $file, LineRange $range)
     {
         $method = $this->findMatchingMethod($file, $range);
@@ -45,7 +67,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         $method = $this->findMatchingMethod($file, $range);
 
         if ($method === null) {
-            throw new \InvalidArgumentException("Could not find method end line.");
+            throw new \InvalidArgumentException('Could not find method end line.');
         }
 
         return $method->getEndLine();
@@ -56,10 +78,32 @@ class StaticCodeAnalysis extends CodeAnalysis
         $method = $this->findMatchingMethod($file, $range);
 
         if ($method === null) {
-            throw new \InvalidArgumentException("Could not find method start line.");
+            throw new \InvalidArgumentException('Could not find method start line.');
         }
 
         return $method->getStartLine();
+    }
+
+    public function getFunctionEndLine(File $file, LineRange $range)
+    {
+        $function = $this->findMatchingFunction($file, $range);
+
+        if ($function === null) {
+            throw new \InvalidArgumentException('Could not find function end line.');
+        }
+
+        return $function->getEndLine();
+    }
+
+    public function getFunctionStartLine(File $file, LineRange $range)
+    {
+        $function = $this->findMatchingFunction($file, $range);
+
+        if ($function === null) {
+            throw new \InvalidArgumentException('Could not find function start line.');
+        }
+
+        return $function->getStartLine();
     }
 
     public function getLineOfLastPropertyDefinedInScope(File $file, $lastLine)
@@ -83,12 +127,27 @@ class StaticCodeAnalysis extends CodeAnalysis
             }
         }
 
-        throw new \InvalidArgumentException("Could not find method start line.");
+        throw new \InvalidArgumentException('Could not find method start line.');
     }
 
     public function isInsideMethod(File $file, LineRange $range)
     {
         return $this->findMatchingMethod($file, $range) !== null;
+    }
+
+    public function isInsideFunction(File $file, LineRange $range)
+    {
+        return $this->findMatchingFunction($file, $range) !== null;
+    }
+
+    public function isLocalScope(File $file, LineRange $range)
+    {
+        return $this->isInsideMethod($file, $range) || $this->isInsideFunction($file, $range);
+    }
+
+    public function isClassScope(File $file, LineRange $range)
+    {
+        return $this->findMatchingClass($file, $range) !== null;
     }
 
     /**
@@ -116,6 +175,26 @@ class StaticCodeAnalysis extends CodeAnalysis
         return $classes;
     }
 
+    private function findMatchingClass(File $file, LineRange $range)
+    {
+        $foundClass = null;
+
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+        $lastLine = $range->getEnd();
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getClasses() as $class) {
+                if ($class->getStartLine() <= $lastLine && $lastLine <= $class->getEndLine()) {
+                    $foundClass = $class;
+                    break;
+                }
+            }
+        }
+
+        return $foundClass;
+    }
+
     private function findMatchingMethod(File $file, LineRange $range)
     {
         $foundMethod = null;
@@ -127,7 +206,7 @@ class StaticCodeAnalysis extends CodeAnalysis
         foreach ($file->getNamespaces() as $namespace) {
             foreach ($namespace->getClasses() as $class) {
                 foreach ($class->getMethods() as $method) {
-                    if ($method->getStartLine() < $lastLine && $lastLine < $method->getEndLine()) {
+                    if ($method->getStartLine() <= $lastLine && $lastLine <= $method->getEndLine()) {
                         $foundMethod = $method;
                         break;
                     }
@@ -136,5 +215,25 @@ class StaticCodeAnalysis extends CodeAnalysis
         }
 
         return $foundMethod;
+    }
+
+    private function findMatchingFunction(File $file, LineRange $range)
+    {
+        $foundFunction = null;
+
+        $this->broker = new Broker(new Memory);
+        $file = $this->broker->processString($file->getCode(), $file->getRelativePath(), true);
+        $lastLine = $range->getEnd();
+
+        foreach ($file->getNamespaces() as $namespace) {
+            foreach ($namespace->getFunctions() as $function) {
+                if ($function->getStartLine() <= $lastLine && $lastLine <= $function->getEndLine()) {
+                    $foundFunction = $function;
+                    break;
+                }
+            }
+        }
+
+        return $foundFunction;
     }
 }

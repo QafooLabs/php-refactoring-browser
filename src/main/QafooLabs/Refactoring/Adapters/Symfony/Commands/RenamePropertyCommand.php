@@ -20,40 +20,39 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Command\Command;
 
-use QafooLabs\Refactoring\Domain\Model\File;
-use QafooLabs\Refactoring\Domain\Model\Variable;
+use QafooLabs\Refactoring\Application\RenameProperty;
+use QafooLabs\Refactoring\Domain\Model;
 
-use QafooLabs\Refactoring\Application\RenameLocalVariable;
 use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
 use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
 use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchEditor;
 use QafooLabs\Refactoring\Adapters\Symfony\OutputPatchCommand;
 
-class RenameLocalVariableCommand extends Command
+class RenamePropertyCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('rename-local-variable')
-            ->setDescription('Rename a local variable inside a method')
-            ->addArgument('file', InputArgument::REQUIRED, 'File that contains list of statements to extract')
-            ->addArgument('line', InputArgument::REQUIRED, 'Line where the local variable is defined.')
-            ->addArgument('name', InputArgument::REQUIRED, 'Current name of the variable, with or without the $')
-            ->addArgument('new-name', InputArgument::REQUIRED, 'New name of the variable')
+            ->setName('rename-property')
+            ->setDescription('Rename a class property.')
+            ->addArgument('file', InputArgument::REQUIRED, 'File that contains the class')
+            ->addArgument('line', InputArgument::REQUIRED, 'Line where the property is defined or used.')
+            ->addArgument('name', InputArgument::REQUIRED, 'Current name of the property without the "$this->"')
+            ->addArgument('new-name', InputArgument::REQUIRED, 'New name of the property')
             ->setHelp(<<<HELP
-Rename a local variable of a method.
+Rename a class property.
 
 <comment>Operations:</comment>
 
-1. Renames a local variable by giving it a new name inside the method.
+1. Renames a property by giving it a new name inside the class.
 
 <comment>Pre-Conditions:</comment>
 
-1. Check that new variable name does not exist (NOT YET CHECKED).
+1. Check that new property name does not exist (NOT YET CHECKED).
 
 <comment>Usage:</comment>
 
-    <info>php refactor.phar rename-local-variable file.php 17 hello newHello</info>
+    <info>php refactor.phar rename-property file.php 17 hello newHello</info>
 
 Renames <info>\$hello</info> in line <info>17</info> of <info>file.php</info> into <info>\$newHello</info>.
 
@@ -63,16 +62,16 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = File::createFromPath($input->getArgument('file'), getcwd());
+        $file = Model\File::createFromPath($input->getArgument('file'), getcwd());
         $line = (int)$input->getArgument('line');
-        $name = new Variable($input->getArgument('name'));
-        $newName = new Variable($input->getArgument('new-name'));
+        $name = new Model\Variable($input->getArgument('name'));
+        $newName = new Model\Variable($input->getArgument('new-name'));
 
         $scanner = new ParserVariableScanner();
         $codeAnalysis = new StaticCodeAnalysis();
         $editor = new PatchEditor(new OutputPatchCommand($output));
 
-        $renameLocalVariable = new RenameLocalVariable($scanner, $codeAnalysis, $editor);
+        $renameLocalVariable = new RenameProperty($scanner, $codeAnalysis, $editor);
         $renameLocalVariable->refactor($file, $line, $name, $newName);
     }
 }

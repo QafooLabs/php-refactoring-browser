@@ -4,14 +4,11 @@ namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\Variable;
-use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
+
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\RefactoringException;
-use QafooLabs\Refactoring\Domain\Model\EditingSession;
 
-use QafooLabs\Refactoring\Domain\Services\VariableScanner;
-use QafooLabs\Refactoring\Domain\Services\CodeAnalysis;
-use QafooLabs\Refactoring\Domain\Services\Editor;
+
 use QafooLabs\Refactoring\Domain\Model\EditingAction\RenameVariable;
 
 /**
@@ -39,7 +36,7 @@ class RenameLocalVariable extends SingleFileRefactoring
         $this->newName = $newName;
         $this->oldName = $oldName;
 
-        $this->assertIsInsideMethod();
+        $this->assertIsLocalScope();
 
         $this->assertVariableIsLocal($this->oldName);
         $this->assertVariableIsLocal($this->newName);
@@ -61,7 +58,7 @@ class RenameLocalVariable extends SingleFileRefactoring
         $definedVariables = $this->getDefinedVariables();
 
         if ( ! $definedVariables->contains($this->oldName)) {
-            throw RefactoringException::variableNotInRange($this->oldName, $selectedMethodLineRange);
+            throw RefactoringException::variableNotInRange($this->oldName, LineRange::fromSingleLine($this->line));
         }
 
         $this->session->addEdit(new RenameVariable($definedVariables, $this->oldName, $this->newName));

@@ -2,7 +2,7 @@
 <?php
 
 if ((!@include __DIR__ . '/../../../../autoload.php') && (!@include __DIR__ . '/../../vendor/autoload.php')) {
-    die("You must set up the project dependencies, run composer install");
+    die('You must set up the project dependencies, run composer install');
 }
 
 use QafooLabs\Refactoring\Adapters\Symfony\CliApplication;

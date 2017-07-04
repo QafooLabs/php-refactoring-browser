@@ -31,7 +31,7 @@ class ParserPhpNameScannerTest extends \PHPUnit_Framework_TestCase
 
     public function testRegressionFindNamesDetectsFQCNCorrectly()
     {
-        $file = new File("Fqcn.php", <<<'PHP'
+        $file = new File('Fqcn.php', <<<'PHP'
 <?php
 
 namespace Bar;
@@ -69,7 +69,7 @@ PHP
 
     public function testFindNamesFindsParentForPhpNameInSingleLineUseStatement()
     {
-        $file = new File("Fqcn.php", <<<'PHP'
+        $file = new File('Fqcn.php', <<<'PHP'
 <?php
 
 use Bar\Qux\Adapter;
@@ -97,7 +97,7 @@ PHP
 
     public function testFindNamesFindsParentForPhpNameInMultiLineUseStatement()
     {
-        $file = new File("Fqcn.php", <<<'PHP'
+        $file = new File('Fqcn.php', <<<'PHP'
 <?php
 
 use Bar\Qux\Adapter,
