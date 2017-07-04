@@ -25,7 +25,7 @@ Based on data from these sources the Refactoring Browser consists of two distinc
 
 ## Install & Basic Usage
 
-[Download PHAR](https://github.com/QafooLabs/php-refactoring-browser/releases)
+[Download PHAR](https://github.com/AJenbo/php-refactoring-browser/releases)
 
 The refactoring browser is used with:
 
