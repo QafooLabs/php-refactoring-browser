@@ -1,8 +1,7 @@
 language: php
-before_script:
-  - composer self-update
-  - composer install --dev --prefer-dist
-script: php vendor/bin/phpunit; php vendor/bin/behat --format progress
+
+sudo: false
+
 php:
   - 5.4
   - 5.5
@@ -12,5 +11,15 @@ php:
 matrix:
     fast_finish: true
     allow_failures:
-        - php: hhvm
-        - php: 7
+        - php: 5.4
+
+before_install:
+    - phpenv config-rm xdebug.ini || true
+    - composer self-update
+
+install:
+    - composer install --optimize-autoloader --no-interaction --ignore-platform-reqs
+
+script:
+    - php vendor/bin/phpunit
+    - php vendor/bin/behat --format progress

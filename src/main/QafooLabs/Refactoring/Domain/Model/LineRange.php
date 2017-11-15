@@ -51,7 +51,7 @@ class LineRange
      */
     static public function fromString($range)
     {
-        list($start, $end) = explode("-", $range);
+        list($start, $end) = explode('-', $range);
 
         return self::fromLines($start, $end);
     }

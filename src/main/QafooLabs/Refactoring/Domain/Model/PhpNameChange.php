@@ -38,6 +38,6 @@ class PhpNameChange implements Hashable
 
     public function hashCode()
     {
-        return "1373136290" . $this->fromName->hashCode() . $this->toName->hashCode();
+        return '1373136290' . $this->fromName->hashCode() . $this->toName->hashCode();
     }
 }

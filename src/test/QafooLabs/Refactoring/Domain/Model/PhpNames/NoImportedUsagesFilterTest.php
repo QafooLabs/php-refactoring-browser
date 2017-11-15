@@ -21,6 +21,6 @@ class NoImportedUsagesFilterTest extends \PHPUnit_Framework_TestCase
             new PhpNameOccurance(new PhpName('Foo\Bar', 'Bar', PhpName::TYPE_USAGE), $file, 12),
         ));
 
-        $this->assertEquals(1, count($names));
+        $this->assertCount(1, $names);
     }
 }

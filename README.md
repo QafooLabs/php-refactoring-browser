@@ -25,7 +25,7 @@ Based on data from these sources the Refactoring Browser consists of two distinc
 
 ## Install & Basic Usage
 
-[Download PHAR](https://github.com/QafooLabs/php-refactoring-browser/releases)
+[Download PHAR](https://github.com/AJenbo/php-refactoring-browser/releases)
 
 The refactoring browser is used with:
 
@@ -80,6 +80,12 @@ function and generates the argument list and return statement accordingly.
 Rename a local variable from one to another name:
 
     php refactor.phar rename-local-variable <file> <line> <old-name> <new-name>
+
+### Rename Class Property
+
+Rename a class property from one to another name:
+
+    php refactor.phar rename-property <file> <line> <old-name> <new-name>
 
 ### Convert Local to Instance Variable
 

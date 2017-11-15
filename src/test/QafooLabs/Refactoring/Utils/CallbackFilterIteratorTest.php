@@ -20,7 +20,7 @@ class CallbackFilterIteratorTest extends \PHPUnit_Framework_TestCase
     public function testFilterEmptyElements()
     {
         $values = new CallbackFilterIterator(
-            new ArrayIterator(array(1, null, false, "", 2)),
+            new ArrayIterator(array(1, null, false, '', 2)),
             function ($value) {
                 return !empty($value);
             }

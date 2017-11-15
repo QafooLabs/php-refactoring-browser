@@ -14,6 +14,10 @@
 
 namespace QafooLabs\Refactoring\Adapters\PHPParser;
 
+use PhpParser\NodeTraverser;
+use PhpParser\ParserFactory;
+use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\PropertiesCollector;
+use QafooLabs\Refactoring\Domain\Model\DefinedProperties;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\File;
 use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
@@ -23,23 +27,15 @@ use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LineRangeStatementCollector
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\LocalVariableClassifier;
 use QafooLabs\Refactoring\Adapters\PHPParser\Visitor\NodeConnector;
 
-use PHPParser_Parser;
-use PHPParser_Lexer;
-use PHPParser_Node;
-use PHPParser_Node_Stmt;
-use PHPParser_Node_Expr_FuncCall;
-use PHPParser_NodeTraverser;
-
 class ParserVariableScanner implements VariableScanner
 {
     public function scanForVariables(File $file, LineRange $range)
     {
-        $parser = new PHPParser_Parser(new PHPParser_Lexer());
-        $stmts = $parser->parse($file->getCode());
+        $stmts = $this->parse($file);
 
         $collector = new LineRangeStatementCollector($range);
 
-        $traverser     = new PHPParser_NodeTraverser;
+        $traverser = new NodeTraverser();
         $traverser->addVisitor(new NodeConnector);
         $traverser->addVisitor($collector);
 
@@ -48,11 +44,11 @@ class ParserVariableScanner implements VariableScanner
         $selectedStatements = $collector->getStatements();
 
         if ( ! $selectedStatements) {
-            throw new \RuntimeException("No statements found in line range.");
+            throw new \RuntimeException('No statements found in line range.');
         }
 
         $localVariableClassifier = new LocalVariableClassifier();
-        $traverser     = new PHPParser_NodeTraverser;
+        $traverser = new NodeTraverser();
         $traverser->addVisitor($localVariableClassifier);
         $traverser->traverse($selectedStatements);
 
@@ -60,5 +56,41 @@ class ParserVariableScanner implements VariableScanner
         $assignments = $localVariableClassifier->getAssignments();
 
         return new DefinedVariables($localVariables, $assignments);
+    }
+
+    public function scanForProperties(File $file, LineRange $range)
+    {
+        $stmts = $this->parse($file);
+
+        $collector = new LineRangeStatementCollector($range);
+
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($collector);
+
+        $traverser->traverse($stmts);
+
+        $selectedStatements = $collector->getStatements();
+
+        if ( ! $selectedStatements) {
+            throw new \RuntimeException('No statements found in line range.');
+        }
+
+        $propertiesCollector = new PropertiesCollector();
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor($propertiesCollector);
+        $traverser->traverse($selectedStatements);
+
+        $definitions = $propertiesCollector->getDeclarations();
+        $usages = $propertiesCollector->getUsages();
+
+        return new DefinedProperties($definitions, $usages);
+    }
+
+    private function parse(File $file)
+    {
+        $parserFactory = new ParserFactory();
+        $parser = $parserFactory->create(ParserFactory::PREFER_PHP7);
+
+        return $parser->parse($file->getCode());
     }
 }

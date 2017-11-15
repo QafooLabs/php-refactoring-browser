@@ -7,10 +7,6 @@ use QafooLabs\Refactoring\Domain\Model\LineRange;
 use QafooLabs\Refactoring\Domain\Model\Variable;
 use QafooLabs\Refactoring\Domain\Model\DefinedVariables;
 
-use QafooLabs\Refactoring\Adapters\PHPParser\ParserVariableScanner;
-use QafooLabs\Refactoring\Adapters\TokenReflection\StaticCodeAnalysis;
-use QafooLabs\Refactoring\Adapters\Patches\PatchEditor;
-
 class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -20,7 +16,7 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
         $this->editor = \Phake::mock('QafooLabs\Refactoring\Domain\Services\Editor');
         $this->refactoring = new RenameLocalVariable($this->scanner, $this->codeAnalysis, $this->editor);
 
-        \Phake::when($this->codeAnalysis)->isInsideMethod(\Phake::anyParameters())->thenReturn(true);
+        \Phake::when($this->codeAnalysis)->isLocalScope(\Phake::anyParameters())->thenReturn(true);
     }
 
     public function testRenameLocalVariable()
@@ -33,7 +29,7 @@ class RenameLocalVariableTest extends \PHPUnit_Framework_TestCase
         \Phake::when($this->editor)->openBuffer(\Phake::anyParameters())->thenReturn($buffer);
         \Phake::when($this->codeAnalysis)->findMethodRange(\Phake::anyParameters())->thenReturn(LineRange::fromSingleLine(1));
 
-        $patch = $this->refactoring->refactor(new File("foo.php", <<<'PHP'
+        $this->refactoring->refactor(new File('foo.php', <<<'PHP'
 <?php
 class Foo
 {
@@ -53,7 +49,7 @@ PHP
         $this->setExpectedException('QafooLabs\Refactoring\Domain\Model\RefactoringException', 'Given variable "$this->foo" is required to be local to the current method.');
 
         $this->refactoring->refactor(
-            new File("foo.php", ''), 6,
+            new File('foo.php', ''), 6,
             new Variable('$this->foo'),
             new Variable('$foo')
         );
@@ -64,7 +60,7 @@ PHP
         $this->setExpectedException('QafooLabs\Refactoring\Domain\Model\RefactoringException', 'Given variable "$this->foo" is required to be local to the current method.');
 
         $this->refactoring->refactor(
-            new File("foo.php", ''), 6,
+            new File('foo.php', ''), 6,
             new Variable('$foo'),
             new Variable('$this->foo')
         );

@@ -15,7 +15,7 @@ namespace QafooLabs\Refactoring\Application;
 
 use QafooLabs\Collections\Set;
 use QafooLabs\Refactoring\Domain\Model\Directory;
-use QafooLabs\Refactoring\Domain\Model\File;
+
 use QafooLabs\Refactoring\Domain\Model\PhpName;
 use QafooLabs\Refactoring\Domain\Model\PhpNameChange;
 use QafooLabs\Refactoring\Domain\Model\PhpNames\NoImportedUsagesFilter;

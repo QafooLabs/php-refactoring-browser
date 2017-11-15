@@ -17,7 +17,7 @@ class LineRangeTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFromString()
     {
-        $range = LineRange::fromString("1-4");
+        $range = LineRange::fromString('1-4');
 
         $this->assertEquals(1, $range->getStart());
         $this->assertEquals(4, $range->getEnd());

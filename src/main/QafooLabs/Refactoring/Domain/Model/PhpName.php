@@ -87,7 +87,6 @@ class PhpName implements Hashable
 
     private function shareNamespace(PhpName $other)
     {
-        $otherName = array();
         $otherParts = $this->stringToParts($other->fullyQualifiedName);
 
         return strpos($this->fullyQualifiedName, $otherParts[0]) !== false;
@@ -184,7 +183,7 @@ class PhpName implements Hashable
 
     public function hashCode()
     {
-        return "1373136332" . $this->fullyQualifiedName . $this->relativeName;
+        return '1373136332' . $this->fullyQualifiedName . $this->relativeName;
     }
 
     public function fullyQualified()
