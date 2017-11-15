@@ -9,7 +9,7 @@ class MethodSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function whenCreateMethodSignatureWithDefaults_ThenIsPrivateAndNotStatic()
     {
-        $method = new MethodSignature("foo");
+        $method = new MethodSignature('foo');
 
         $this->assertTrue($method->isPrivate());
         $this->assertFalse($method->isStatic());
@@ -20,9 +20,9 @@ class MethodSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function whenCreateMethodSignatureWithInvalidVisibility_ThenThrowException()
     {
-        $this->setExpectedException("InvalidArgumentException");
+        $this->setExpectedException('InvalidArgumentException');
 
-        $method = new MethodSignature("foo", MethodSignature::IS_PRIVATE | MethodSignature::IS_PUBLIC);
+        new MethodSignature('foo', MethodSignature::IS_PRIVATE | MethodSignature::IS_PUBLIC);
     }
 
     /**
@@ -30,7 +30,7 @@ class MethodSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function whenCreateMethodSignatureWithStaticOnly_ThenAssumePrivateVisibility()
     {
-        $method = new MethodSignature("foo", MethodSignature::IS_STATIC);
+        $method = new MethodSignature('foo', MethodSignature::IS_STATIC);
 
         $this->assertTrue($method->isPrivate());
         $this->assertTrue($method->isStatic());

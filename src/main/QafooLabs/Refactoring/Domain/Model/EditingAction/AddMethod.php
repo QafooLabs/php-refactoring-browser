@@ -6,7 +6,7 @@ use QafooLabs\Refactoring\Domain\Model\EditingAction;
 use QafooLabs\Refactoring\Domain\Model\EditorBuffer;
 use QafooLabs\Refactoring\Domain\Model\IndentationDetector;
 use QafooLabs\Refactoring\Domain\Model\IndentingLineCollection;
-use QafooLabs\Refactoring\Domain\Model\Line;
+
 use QafooLabs\Refactoring\Domain\Model\LineCollection;
 use QafooLabs\Refactoring\Domain\Model\MethodSignature;
 use QafooLabs\Refactoring\Utils\ToStringIterator;

@@ -64,7 +64,7 @@ class Directory
                             RecursiveIteratorIterator::LEAVES_ONLY
                         ),
                         function (SplFileInfo $file) {
-                            return substr($file->getFilename(), -4) === ".php";
+                            return substr($file->getFilename(), -4) === '.php';
                         }
                     ),
                     function ($file) use ($workingDirectory) {

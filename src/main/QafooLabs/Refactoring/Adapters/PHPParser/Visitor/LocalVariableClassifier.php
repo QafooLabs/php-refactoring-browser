@@ -14,19 +14,15 @@
 
 namespace QafooLabs\Refactoring\Adapters\PHPParser\Visitor;
 
-use PHPParser_Node;
-use PHPParser_NodeVisitorAbstract;
-use PHPParser_Node_Expr_Variable;
-use PHPParser_Node_Expr_Assign;
-use PHPParser_Node_Expr_ArrayDimFetch;
-use PHPParser_Node_Param;
+use PhpParser\Node;
+use PhpParser\NodeVisitorAbstract;
 use SplObjectStorage;
 
 /**
  * Classify local variables into assignments and usages,
  * permanent and temporary variables.
  */
-class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
+class LocalVariableClassifier extends NodeVisitorAbstract
 {
     private $localVariables = array();
     private $assignments = array();
@@ -37,42 +33,47 @@ class LocalVariableClassifier extends PHPParser_NodeVisitorAbstract
         $this->seenAssignmentVariables = new SplObjectStorage();
     }
 
-    public function enterNode(PHPParser_Node $node)
+    public function enterNode(Node $node)
     {
-        if ($node instanceof PHPParser_Node_Expr_Variable) {
+        if ($node instanceof Node\Expr\Variable) {
             $this->enterVariableNode($node);
         }
 
-        if ($node instanceof PHPParser_Node_Expr_Assign) {
+        if ($node instanceof Node\Expr\Assign) {
             $this->enterAssignment($node);
         }
 
-        if ($node instanceof PHPParser_Node_Param) {
+        if ($node instanceof Node\Param) {
             $this->enterParam($node);
         }
     }
 
-    private function enterParam($node)
+    private function enterParam(Node\Param $node)
     {
         $this->assignments[$node->name][] = $node->getLine();
     }
 
-    private function enterAssignment($node)
+    private function enterAssignment(Node\Expr\Assign $node)
     {
-        if ($node->var instanceof PHPParser_Node_Expr_Variable) {
+        if ($node->var instanceof Node\Expr\Variable) {
             $this->assignments[$node->var->name][] = $node->getLine();
             $this->seenAssignmentVariables->attach($node->var);
-        } else if ($node->var instanceof PHPParser_Node_Expr_ArrayDimFetch) {
+        } else if ($node->var instanceof Node\Expr\ArrayDimFetch) {
+            // unfold $array[$var][$var]
+            $var = $node->var->var;
+            while (!isset($var->name)) {
+                $var = $var->var;
+            }
             // $foo[] = "baz" is both a read and a write access to $foo
-            $this->localVariables[$node->var->var->name][] = $node->getLine();
-            $this->assignments[$node->var->var->name][] = $node->getLine();
-            $this->seenAssignmentVariables->attach($node->var->var);
+            $this->localVariables[$var->name][] = $node->getLine();
+            $this->assignments[$var->name][] = $node->getLine();
+            $this->seenAssignmentVariables->attach($var);
         }
     }
 
-    private function enterVariableNode($node)
+    private function enterVariableNode(Node\Expr\Variable $node)
     {
-        if ($node->name === "this" || $this->seenAssignmentVariables->contains($node)) {
+        if ($node->name === 'this' || $this->seenAssignmentVariables->contains($node)) {
             return;
         }
 

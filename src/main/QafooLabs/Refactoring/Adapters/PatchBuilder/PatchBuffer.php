@@ -15,7 +15,7 @@ namespace QafooLabs\Refactoring\Adapters\PatchBuilder;
 
 use QafooLabs\Refactoring\Domain\Model\EditorBuffer;
 use QafooLabs\Refactoring\Domain\Model\LineRange;
-use QafooLabs\Refactoring\Adapters\PatchBuilder\PatchBuilder;
+
 
 class PatchBuffer implements EditorBuffer
 {
